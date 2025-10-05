@@ -24,7 +24,7 @@ export const TextField = ({
           id={name}
           type={type}
           placeholder={placeholder}
-          className="bg-white h-10 p-2 w-full placeholder:text-gray-400"
+          className="bg-white h-10 p-2 w-full placeholder:text-gray-400 text-black"
         />
       </div>
     </>
