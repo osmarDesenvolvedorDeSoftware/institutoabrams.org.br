@@ -1,3 +1,8 @@
+import WhoWeAreSection from "@/components/organisms/WhoWeAreSection";
+
 export default function Home() {
-  return <div></div>;
+  return (
+    <main className="min-h-screen">
+    </main>
+  );
 }
