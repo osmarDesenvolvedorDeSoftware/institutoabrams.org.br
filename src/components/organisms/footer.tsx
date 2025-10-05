@@ -1,5 +1,6 @@
 import { Typography } from '../atoms';
 import { FooterInfo } from '../molecules';
+import { TextField } from '../molecules/text-field/text-field';
 
 export const FooterComponent = () => {
   return (
@@ -38,6 +39,27 @@ export const FooterComponent = () => {
           <FooterInfo.LinkNavigation to="#" text="Focus Areas" />
         </FooterInfo.Navigation>
       </FooterInfo>
+      <div className="col-span-3 text-white flex flex-col gap-8">
+        <Typography
+          elementType="h3"
+          className="font-semibold text-xl mb-2.5 w-44"
+        >
+          Newsletter
+        </Typography>
+        <form className="grid grid-cols-8">
+          <TextField
+            name="email"
+            placeholder="Enter your email"
+            className="col-span-5"
+          />
+          <button className="bg-orange-500 h-10 col-span-3 text-white font-semibold">
+            SUBSCRIBE
+          </button>
+          <span className="text-gray-400 col-span-8 mt-2.5">
+            Your email is safe with us,we don’t spam.
+          </span>
+        </form>
+      </div>
     </footer>
   );
 };
