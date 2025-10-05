@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { Typography } from '../atoms';
 import { FooterInfo } from '../molecules';
 import { TextField } from '../molecules/text-field/text-field';
@@ -62,9 +61,7 @@ export const FooterComponent = () => {
             </span>
           </form>
         </div>
-        <Link href={'/google.com.br'}>não redireciona</Link>
       </footer>
-      <Link href={'/google.com.br'}>redireciona</Link>
     </div>
   );
 };
