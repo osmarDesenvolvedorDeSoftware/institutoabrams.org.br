@@ -8,7 +8,7 @@ interface FooterInfoProps {
 }
 
 const FooterInfo = ({ children }: FooterInfoProps) => {
-  return <section className="col-span-3">{children}</section>;
+  return <section className="col-span-3 z-20">{children}</section>;
 };
 
 FooterInfo.Description = Description;
