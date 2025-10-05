@@ -54,7 +54,7 @@ export const FooterComponent = () => {
               placeholder="Enter your email"
               className="col-span-6"
             />
-            <button className="bg-orange-500 h-10 col-span-2 text-white font-semibold">
+            <button className="bg-orange-500 h-10 col-span-2 text-white font-semibold self-end">
               SUBSCRIBE
             </button>
             <span className="text-gray-400 col-span-8 mt-2.5">
