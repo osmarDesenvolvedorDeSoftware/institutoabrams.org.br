@@ -40,26 +40,19 @@ export const FooterComponent = () => {
             <FooterInfo.LinkNavigation to="#" text="Focus Areas" />
           </FooterInfo.Navigation>
         </FooterInfo>
-        <div className="col-span-3 text-white flex flex-col gap-8 z-20">
-          <Typography
-            elementType="h3"
-            className="font-semibold text-xl mb-2.5 w-44"
-          >
-            Newsletter
+        <FooterInfo className="text-white flex flex-col gap-4">
+          <FooterInfo.FormNews />
+          <Typography elementType="span" className="text-lg font-normal">
+            Follow Me On
           </Typography>
-          <form className="grid grid-cols-8">
-            <TextField
-              name="email"
-              placeholder="Enter your email"
-              className="col-span-6"
-            />
-            <button className="bg-orange-500 h-10 col-span-2 text-white font-semibold self-end">
-              SUBSCRIBE
-            </button>
-            <span className="text-gray-400 col-span-8 mt-2.5">
-              Your email is safe with us,we don’t spam.
-            </span>
-          </form>
+          <FooterInfo.Container className="flex gap-3">
+            <FooterInfo.SocialNetwork href="#" name="facebook" />
+            <FooterInfo.SocialNetwork href="#" name="twitter" />
+            <FooterInfo.SocialNetwork href="#" name="instagram" />
+            <FooterInfo.SocialNetwork href="#" name="youtube" />
+            <FooterInfo.SocialNetwork href="#" name="linkedin" />
+          </FooterInfo.Container>
+        </FooterInfo>
         </div>
       </footer>
     </div>
