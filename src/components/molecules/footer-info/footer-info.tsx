@@ -2,6 +2,7 @@ import React from 'react';
 import { Description } from './description';
 import { Navigation } from './navigation';
 import { LinkNavigation } from './link-navigation';
+import { FormNews } from './form-news';
 
 interface FooterInfoProps {
   children: React.ReactNode;
@@ -14,5 +15,6 @@ const FooterInfo = ({ children }: FooterInfoProps) => {
 FooterInfo.Description = Description;
 FooterInfo.Navigation = Navigation;
 FooterInfo.LinkNavigation = LinkNavigation;
+FooterInfo.FormNews = FormNews;
 
 export { FooterInfo };
