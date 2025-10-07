@@ -54,6 +54,8 @@ export const FooterComponent = () => {
           </FooterInfo.Container>
         </FooterInfo>
         <div className="col-span-12 border-t-2 border-light-gray" />
+        <div className="col-span-12 flex justify-center text-white">
+          <Typography elementType="span">Designed By Anjani</Typography>
         </div>
       </footer>
     </div>
