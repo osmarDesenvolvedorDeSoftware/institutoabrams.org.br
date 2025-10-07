@@ -53,6 +53,7 @@ export const FooterComponent = () => {
             <FooterInfo.SocialNetwork href="#" name="linkedin" />
           </FooterInfo.Container>
         </FooterInfo>
+        <div className="col-span-12 border-t-2 border-light-gray" />
         </div>
       </footer>
     </div>
