@@ -5,7 +5,7 @@ import { TextField } from '../molecules/text-field/text-field';
 export const FooterComponent = () => {
   return (
     <div>
-      <footer className="relative bg-dark h-[548px] grid grid-cols-12">
+      <footer className="relative bg-dark h-[548px] grid grid-cols-12 justify-center px-28 py-14">
         <div className="absolute bg-footer opacity-5 bg-no-repeat bg-center bg-cover inset-0 z-0" />
         <FooterInfo>
           <FooterInfo.Description />
