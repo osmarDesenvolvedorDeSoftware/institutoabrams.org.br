@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import styles from "./we-need-support.module.css"
 interface CardProps {
   title: string;
   image: string;
@@ -6,24 +7,24 @@ interface CardProps {
 }
 
 const Card = ({title, image, children}: CardProps) => {
-  return <div>
+  return <div className={styles.card}>
     <img src={image} alt="" />
-    <h3>{title}</h3>
-    <p>{children}</p>
+    <h3 className={styles.cardTitle}>{title}</h3>
+    <p className={styles.cardText}>{children}</p>
   </div>
 }
 
 export const WeNeedSupport = (): React.ReactNode => {
-  return <section>
-    <div>
-      <p>Why We Need Your Support</p>
+  return <section className={styles.weNeedSupport}>
+    <div className={styles.heading}>
+      <p className={styles.headingSubTitle}>Why We Need Your Support</p>
       <span></span>
-      <h2>Because They Deserve Better</h2>
-      <p>Every child deserves a safe, healthy, and fair start in life. 
+      <h2 className={styles.headingTitle}>Because They Deserve Better</h2>
+      <p className={styles.headingText}>Every child deserves a safe, healthy, and fair start in life. 
         Yet millions around the world still face challenges that 
         deny them access to education, protection, and basic needs.</p>
     </div>
-    <div>
+    <div className={styles.containerCard}>
       <Card 
         title="Limited Access to Quality Education" 
         image="/book.png">
@@ -31,7 +32,7 @@ export const WeNeedSupport = (): React.ReactNode => {
       </Card>
       <Card 
         title="Youth Unemployment Challenges" 
-        image="/book.png">
+        image="/book2.png">
           1 in 5 young people are not engaged in education, employment, or training, limiting their future prospects.
       </Card>
       <Card 
