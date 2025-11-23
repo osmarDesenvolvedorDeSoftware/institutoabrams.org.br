@@ -1,8 +1,9 @@
-import WhoWeAreSection from "@/components/organisms/WhoWeAreSection";
+import WhoWeAreSection from "@/components/organisms/who-we-are-section";
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <main>
+      <WhoWeAreSection />
     </main>
   );
 }
