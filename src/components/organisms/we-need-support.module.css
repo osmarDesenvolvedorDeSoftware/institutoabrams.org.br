@@ -19,28 +19,6 @@
     margin-bottom: 40px;
 }
 
-.headingSubTitle {
-    align-items: center;
-    color: var(--orange);
-    display: inline-flex;
-    font-size: 1.123rem;
-    gap: 10px;
-}
-
-.headingSubTitle::after {
-    background-color: var(--orange);
-    content: "";
-    display: block;
-    height: 1px;   
-    width: 80px;
-}
-
-.headingTitle {
-    font-family: "Poppins", sans-serif;
-    font-size: 1.875rem;
-    font-weight: 600;
-}
-
 .headingText {
     font-size: 1.123rem;
     color: var(--text-dark);
