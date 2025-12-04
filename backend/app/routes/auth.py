@@ -43,7 +43,7 @@ def register_user():
         is_admin=payload.get("is_admin", True),
         role=payload.get("role", "admin"),
     )
-    token = create_access_token(identity=user.id)
+    token = create_access_token(identity=str(user.id))
     return jsonify({"access_token": token, "user": user_schema.dump(user)}), 201
 
 
@@ -58,14 +58,14 @@ def login():
     if not user:
         return jsonify({"message": "Invalid e-mail or password"}), 401
 
-    token = create_access_token(identity=user.id)
+    token = create_access_token(identity=str(user.id))
     return jsonify({"access_token": token, "user": user_schema.dump(user)})
 
 
 @bp.get("/me")
 @jwt_required()
 def me():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     user = db.session.get(User, user_id)
     if not user:
         return jsonify({"message": "User not found"}), 404
