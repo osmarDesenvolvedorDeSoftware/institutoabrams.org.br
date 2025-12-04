@@ -10,7 +10,7 @@ services:
     volumes:
       - pgdata_prod:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5440:5432"
 
   backend:
     build: ./backend
@@ -20,7 +20,7 @@ services:
     depends_on:
       - db
     ports:
-      - "8000:8000"
+      - "8200:8000"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
       interval: 30s
@@ -33,7 +33,7 @@ services:
     depends_on:
       - backend
     ports:
-      - "8080:80"
+      - "8100:80"
 
 volumes:
   pgdata_prod:
