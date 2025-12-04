@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Instituto ABRAMS – stack inicial
 
-## Getting Started
+Backend Flask (API v1), frontend React + Vite e infraestrutura com Docker, Traefik e PostgreSQL.
 
-First, run the development server:
+## Como rodar o backend (dev)
+1) `cd backend`
+2) Crie `.env` a partir de `.env.example` (ajuste `DATABASE_URL`, `JWT_SECRET_KEY`, `BACKEND_CORS_ORIGINS`, `API_PREFIX`).
+3) Ambiente Python 3.12:  
+   ```bash
+   python -m venv .venv && source .venv/bin/activate  # Windows: .venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
+4) Migrações: `flask db upgrade`
+5) Suba a API: `flask --app wsgi run --debug`
+6) Healthcheck: `GET /api/v1/health`
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Como rodar o frontend (dev)
+1) `cd frontend`
+2) Crie `.env` a partir de `.env.example` (ajuste `VITE_API_BASE_URL`, ex: `http://localhost:5000/api/v1`).
+3) Instale deps: `npm install`
+4) Suba o dev server: `npm run dev` (porta 5173)
+5) Tema/estilo: edite `frontend/src/styles/global.css` (variáveis `--primary`, tipografia) e layouts em `frontend/src/routes/public/*`.
+6) Menus e textos: menus vêm do backend (`/api/v1/menus`, editáveis em Admin > Menus em `/admin/menus`); i18n está em `frontend/src/i18n/config.ts`.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Como subir tudo com Docker
+1) Na raiz: `docker-compose up --build`
+2) Rotas:
+   - Backend: http://api.localhost (Traefik) → health em `/api/v1/health`
+   - Frontend: http://localhost
+3) Postgres com volume nomeado `pgdata`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Endpoints principais
+- Auth: `POST /api/v1/auth/login`, `GET /api/v1/auth/me`
+- Páginas: CRUD `/api/v1/pages`
+- Menus: CRUD `/api/v1/menus`
+- Oportunidades: CRUD `/api/v1/opportunities` (+ filtros `status`, `category`)
+- Leads: `POST /api/v1/leads` (público), `GET /api/v1/leads` (JWT)
+- Traduções: CRUD `/api/v1/translations`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Frontend
+- Rotas públicas: Home, Projetos, Oportunidades, Contato (captura lead)
+- Painel admin (login) com gestão inicial de páginas e oportunidades.
+- i18n pt/en prontos; placeholders para es/fr.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Próximos passos rápidos
+- Ajustar branding/estilo e UX do painel.
+- Completar CRUD visual de menus e traduções.
+- Adicionar testes (API e UI) e pipeline CI.

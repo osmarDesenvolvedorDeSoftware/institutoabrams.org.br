@@ -1,0 +1,28 @@
+http:
+  middlewares:
+    compress-all:
+      compress: {}
+  routers:
+    api:
+      rule: Host(`api.localhost`)
+      service: api
+      entryPoints:
+        - web
+    web:
+      rule: Host(`localhost`)
+      service: web
+      entryPoints:
+        - web
+  services:
+    api:
+      loadBalancer:
+        servers:
+          - url: "http://backend:5000"
+        healthCheck:
+          path: /api/v1/health
+          interval: 10s
+          timeout: 3s
+    web:
+      loadBalancer:
+        servers:
+          - url: "http://frontend:80"
