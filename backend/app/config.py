@@ -18,7 +18,7 @@ class Settings:
         minutes=int(os.getenv("JWT_EXPIRES_MINUTES", "60"))
     )
     APP_NAME = os.getenv("APP_NAME", "Instituto ABRAMS API")
-    ENVIRONMENT = os.getenv("FLASK_ENV", "development")
+    ENVIRONMENT = os.getenv("FLASK_ENV", os.getenv("APP_ENV", "development"))
     BACKEND_CORS_ORIGINS = os.getenv(
-        "BACKEND_CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173"
+        "BACKEND_CORS_ORIGINS", os.getenv("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
     ).split(",")
