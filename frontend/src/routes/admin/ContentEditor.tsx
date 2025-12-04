@@ -53,13 +53,19 @@ export const ContentEditor = () => {
   }, [titles.pt, slug, editingId]);
 
   const handleSubmit = async () => {
-    const payload = {
-      slug,
+    const slugToSend = slug.trim();
+    const payload: Record<string, unknown> = {
       title_translations: titles,
       content_translations: contents,
-      category,
       is_published: isPublished,
     };
+
+    if (category) {
+      payload.category = category;
+    }
+    if (slugToSend) {
+      payload.slug = slugToSend;
+    }
 
     try {
       if (editingId) {
