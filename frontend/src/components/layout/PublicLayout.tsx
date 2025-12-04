@@ -17,9 +17,10 @@ type MenuItem = {
 
 const fallbackNav: MenuItem[] = [
   { id: 1, label: "Home", slug: "home", target: "/", is_dropdown: false },
-  { id: 2, label: "Projetos", slug: "projetos", target: "/projetos", is_dropdown: false },
-  { id: 3, label: "Oportunidades", slug: "oportunidades", target: "/oportunidades", is_dropdown: false },
-  { id: 4, label: "Contato", slug: "contato", target: "/contato", is_dropdown: false },
+  { id: 2, label: "Quem Somos", slug: "quem-somos", target: "/quem-somos", is_dropdown: false },
+  { id: 3, label: "Projetos", slug: "projetos", target: "/projetos", is_dropdown: false },
+  { id: 4, label: "Oportunidades", slug: "oportunidades", target: "/oportunidades", is_dropdown: false },
+  { id: 5, label: "Contato", slug: "contato", target: "/contato", is_dropdown: false },
 ];
 
 export const PublicLayout = () => {
@@ -27,6 +28,8 @@ export const PublicLayout = () => {
   const { pathname } = useLocation();
   const { isAuthenticated } = useAuth();
   const [menus, setMenus] = useState<MenuItem[]>([]);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const currentLang = (i18n.language || "pt").slice(0, 2);
 
   useEffect(() => {
@@ -34,6 +37,13 @@ export const PublicLayout = () => {
       .get("/menus")
       .then(({ data }) => setMenus(data.items || data))
       .catch(() => setMenus([]));
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 900);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const menuTree = useMemo(() => {
@@ -99,7 +109,22 @@ export const PublicLayout = () => {
             Instituto ABRAMS
           </Link>
 
-          <nav style={{ display: "flex", gap: "1rem", alignItems: "center", position: "relative" }}>
+          <button
+            className="btn btn-ghost"
+            style={{ display: isMobile ? "inline-flex" : "none", color: "#fff" }}
+            onClick={() => setIsMenuOpen((s) => !s)}
+          >
+            ☰
+          </button>
+
+          <nav
+            style={{
+              display: isMobile ? (isMenuOpen ? "grid" : "none") : "flex",
+              gap: "1rem",
+              alignItems: "center",
+              position: "relative",
+            }}
+          >
             {menuTree.map((item) =>
               item.children && item.children.length > 0 ? (
                 <div
@@ -141,11 +166,10 @@ export const PublicLayout = () => {
                       borderRadius: 8,
                       minWidth: 180,
                       boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-                      display: "grid",
                       gap: "0.25rem",
                       padding: "0.5rem",
                       zIndex: 10,
-                      display: "none",
+                      display: isMobile ? "grid" : "none",
                     }}
                   >
                     {item.children.map((child) => (
@@ -210,7 +234,7 @@ export const PublicLayout = () => {
               </Link>
             ) : (
               <Link className="btn btn-ghost" to="/admin/login" style={{ color: "#fff" }}>
-                {t("admin")}
+                {t("common.admin")}
               </Link>
             )}
           </div>

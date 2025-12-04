@@ -15,7 +15,8 @@ page_schema = PageSchema()
 def list_pages():
     page = request.args.get("page", default=1, type=int)
     per_page = request.args.get("per_page", default=10, type=int)
-    data = page_service.list_pages(page=page, per_page=per_page)
+    category = request.args.get("category")
+    data = page_service.list_pages(page=page, per_page=per_page, category=category)
     return jsonify(
         {"items": page_schema.dump(data["items"], many=True), "meta": data["meta"]}
     )
@@ -39,6 +40,14 @@ def create_page():
 @bp.get("/<int:page_id>")
 def get_page(page_id: int):
     page = page_service.get_page(page_id)
+    if not page:
+        return jsonify({"message": "Page not found"}), 404
+    return jsonify(page_schema.dump(page))
+
+
+@bp.get("/slug/<string:slug>")
+def get_page_by_slug(slug: str):
+    page = page_service.get_page_by_slug(slug)
     if not page:
         return jsonify({"message": "Page not found"}), 404
     return jsonify(page_schema.dump(page))

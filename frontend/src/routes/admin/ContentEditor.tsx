@@ -3,27 +3,42 @@ import { useEffect, useState } from "react";
 import { RichTextEditor } from "../../components/editor/RichTextEditor";
 import { api } from "../../services/api";
 
+const languages = ["pt", "en", "es", "fr"] as const;
+
 type Page = {
   id: number;
   slug: string;
   title_translations: Record<string, string>;
   content_translations: Record<string, string>;
   is_published: boolean;
+  category?: string | null;
 };
 
+const slugify = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)+/g, "") || "pagina";
+
 export const ContentEditor = () => {
-  const [titlePt, setTitlePt] = useState("");
-  const [titleEn, setTitleEn] = useState("");
-  const [contentPt, setContentPt] = useState("");
-  const [contentEn, setContentEn] = useState("");
+  const [titles, setTitles] = useState<Record<string, string>>(
+    languages.reduce((acc, lang) => ({ ...acc, [lang]: "" }), {}),
+  );
+  const [contents, setContents] = useState<Record<string, string>>(
+    languages.reduce((acc, lang) => ({ ...acc, [lang]: "" }), {}),
+  );
+  const [category, setCategory] = useState<string | undefined>();
   const [slug, setSlug] = useState("");
   const [isPublished, setIsPublished] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
   const [pages, setPages] = useState<Page[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [activeLang, setActiveLang] = useState<(typeof languages)[number]>("pt");
 
   const fetchPages = async () => {
-    const { data } = await api.get("/pages");
+    const { data } = await api.get("/pages", { params: { per_page: 100 } });
     setPages(data.items || data);
   };
 
@@ -31,11 +46,18 @@ export const ContentEditor = () => {
     fetchPages();
   }, []);
 
+  useEffect(() => {
+    if (!editingId && titles.pt && !slug) {
+      setSlug(slugify(titles.pt));
+    }
+  }, [titles.pt, slug, editingId]);
+
   const handleSubmit = async () => {
     const payload = {
       slug,
-      title_translations: { pt: titlePt, en: titleEn },
-      content_translations: { pt: contentPt, en: contentEn },
+      title_translations: titles,
+      content_translations: contents,
+      category,
       is_published: isPublished,
     };
 
@@ -46,31 +68,66 @@ export const ContentEditor = () => {
         await api.post("/pages", payload);
       }
       setMessage("Página salva com sucesso");
-      setEditingId(null);
-      setSlug("");
-      setTitlePt("");
-      setTitleEn("");
-      setContentPt("");
-      setContentEn("");
+      resetForm();
       fetchPages();
     } catch (error) {
       setMessage("Erro ao salvar página");
     }
   };
 
+  const resetForm = () => {
+    setEditingId(null);
+    setSlug("");
+    setTitles(languages.reduce((acc, lang) => ({ ...acc, [lang]: "" }), {}));
+    setContents(languages.reduce((acc, lang) => ({ ...acc, [lang]: "" }), {}));
+    setIsPublished(true);
+    setCategory(undefined);
+  };
+
   const handleEdit = (page: Page) => {
     setEditingId(page.id);
     setSlug(page.slug);
-    setTitlePt(page.title_translations?.pt || "");
-    setTitleEn(page.title_translations?.en || "");
-    setContentPt(page.content_translations?.pt || "");
-    setContentEn(page.content_translations?.en || "");
+    setTitles({ ...languages.reduce((acc, lang) => ({ ...acc, [lang]: "" }), {}), ...page.title_translations });
+    setContents({ ...languages.reduce((acc, lang) => ({ ...acc, [lang]: "" }), {}), ...page.content_translations });
     setIsPublished(page.is_published);
+    setCategory(page.category || undefined);
   };
 
   const handleDelete = async (id: number) => {
     await api.delete(`/pages/${id}`);
     fetchPages();
+  };
+
+  const langButton = (lang: (typeof languages)[number]) => {
+    const missing = !titles[lang];
+    return (
+      <button
+        key={lang}
+        type="button"
+        onClick={() => setActiveLang(lang)}
+        className="btn btn-ghost"
+        style={{
+          borderColor: activeLang === lang ? "var(--primary)" : "var(--border)",
+          color: activeLang === lang ? "var(--primary-dark)" : "var(--text)",
+          position: "relative",
+        }}
+      >
+        {lang.toUpperCase()}
+        {missing && (
+          <span
+            style={{
+              position: "absolute",
+              top: 4,
+              right: 4,
+              width: 8,
+              height: 8,
+              borderRadius: "50%",
+              background: "var(--primary)",
+            }}
+          />
+        )}
+      </button>
+    );
   };
 
   return (
@@ -80,28 +137,42 @@ export const ContentEditor = () => {
           <input
             placeholder="Slug (ex: sobre-nos)"
             value={slug}
-            onChange={(e) => setSlug(e.target.value)}
+            onChange={(e) => setSlug(slugify(e.target.value))}
+            disabled={Boolean(editingId)}
             style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
           />
-          <input
-            placeholder="Título (pt)"
-            value={titlePt}
-            onChange={(e) => setTitlePt(e.target.value)}
+          <select
+            value={category || ""}
+            onChange={(e) => setCategory(e.target.value || undefined)}
             style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
-          />
-          <input
-            placeholder="Título (en)"
-            value={titleEn}
-            onChange={(e) => setTitleEn(e.target.value)}
-            style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
-          />
+          >
+            <option value="">Categoria (opcional)</option>
+            <option value="projeto">Projeto</option>
+            <option value="contato">Contato</option>
+            <option value="institucional">Institucional</option>
+          </select>
         </div>
-        <div style={{ display: "grid", gap: "0.5rem" }}>
-          <small>Conteúdo (pt)</small>
-          <RichTextEditor value={contentPt} onChange={setContentPt} />
-          <small>Conteúdo (en)</small>
-          <RichTextEditor value={contentEn} onChange={setContentEn} />
+
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+          {languages.map((lang) => langButton(lang))}
         </div>
+
+        <div style={{ display: "grid", gap: "0.75rem" }}>
+          <input
+            placeholder={`Título (${activeLang})`}
+            value={titles[activeLang] || ""}
+            onChange={(e) => setTitles({ ...titles, [activeLang]: e.target.value })}
+            style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
+          />
+          <div style={{ display: "grid", gap: "0.35rem" }}>
+            <small>Conteúdo ({activeLang})</small>
+            <RichTextEditor
+              value={contents[activeLang] || ""}
+              onChange={(value) => setContents({ ...contents, [activeLang]: value })}
+            />
+          </div>
+        </div>
+
         <label style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
           <input
             type="checkbox"
@@ -114,14 +185,19 @@ export const ContentEditor = () => {
           <button className="btn btn-primary" onClick={handleSubmit}>
             {editingId ? "Atualizar" : "Salvar"}
           </button>
-          {message && <span style={{ color: "#0f172a" }}>{message}</span>}
+          {editingId && (
+            <button className="btn btn-ghost" type="button" onClick={resetForm}>
+              Cancelar
+            </button>
+          )}
+          {message && <span style={{ color: "var(--text)" }}>{message}</span>}
         </div>
       </div>
 
       <div className="card">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
-            <p style={{ margin: 0, color: "#94a3b8" }}>Páginas</p>
+            <p style={{ margin: 0, color: "var(--muted)" }}>Páginas</p>
             <h3 style={{ margin: "0.25rem 0" }}>Listagem</h3>
           </div>
           <button className="btn btn-ghost" onClick={fetchPages}>
@@ -130,9 +206,10 @@ export const ContentEditor = () => {
         </div>
         <table style={{ width: "100%", marginTop: "1rem", borderCollapse: "collapse" }}>
           <thead>
-            <tr style={{ textAlign: "left", color: "#94a3b8" }}>
+            <tr style={{ textAlign: "left", color: "var(--muted)" }}>
               <th>Slug</th>
               <th>Título (pt)</th>
+              <th>Categoria</th>
               <th>Status</th>
               <th />
             </tr>
@@ -141,7 +218,10 @@ export const ContentEditor = () => {
             {pages.map((page) => (
               <tr key={page.id} style={{ borderTop: "1px solid var(--border)" }}>
                 <td style={{ padding: "0.65rem 0" }}>{page.slug}</td>
-                <td style={{ padding: "0.65rem 0" }}>{page.title_translations?.pt}</td>
+                <td style={{ padding: "0.65rem 0" }}>
+                  {page.title_translations?.pt || <span style={{ color: "tomato" }}>Sem PT</span>}
+                </td>
+                <td style={{ padding: "0.65rem 0" }}>{page.category || "—"}</td>
                 <td style={{ padding: "0.65rem 0" }}>
                   {page.is_published ? "Publicado" : "Rascunho"}
                 </td>

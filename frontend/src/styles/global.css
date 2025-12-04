@@ -139,3 +139,15 @@ h4 {
   color: var(--muted);
   margin: 0.5rem 0 0;
 }
+
+@media (max-width: 900px) {
+  .container {
+    padding: 0 1rem;
+  }
+  .card {
+    padding: 1rem;
+  }
+  .app-shell header nav {
+    width: 100%;
+  }
+}

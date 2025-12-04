@@ -5,6 +5,14 @@ import LanguageDetector from "i18next-browser-languagedetector";
 const resources = {
   pt: {
     translation: {
+      common: {
+        admin: "Admin",
+        learnMore: "Saiba mais",
+        seeAll: "Ver todos",
+        contact: "Contato",
+        loading: "Carregando...",
+        notFound: "Página não encontrada",
+      },
       heroTitle: "Instituto ABRAMS",
       heroSubtitle:
         "Um espaço para crescimento pessoal, profissional e social.",
@@ -13,7 +21,6 @@ const resources = {
       projects: "Projetos",
       opportunities: "Oportunidades",
       contact: "Contato",
-      admin: "Admin",
       heroTagline: "Instituto ABRAMS",
       highlightsTitle: "Destaques",
       highlight1: "Programas de bolsas e desenvolvimento",
@@ -23,8 +30,6 @@ const resources = {
       projectsPageTitle: "Projetos",
       projectsPageSubtitle: "Iniciativas que conectam pessoas, oportunidades e impacto direto nas comunidades.",
       projectPlaceholder: "Iniciativas que conectam pessoas, oportunidades e impacto direto na comunidade.",
-      learnMore: "Saiba mais",
-      seeAll: "Ver todos",
       opportunitiesTitle: "Oportunidades",
       opportunitiesSubtitle: "Editais, bolsas e programas abertos para você participar.",
       deadlineLabel: "Prazo {{date}}",
@@ -40,6 +45,14 @@ const resources = {
   },
   en: {
     translation: {
+      common: {
+        admin: "Admin",
+        learnMore: "Learn more",
+        seeAll: "See all",
+        contact: "Contact",
+        loading: "Loading...",
+        notFound: "Page not found",
+      },
       heroTitle: "ABRAMS Institute",
       heroSubtitle:
         "A place for personal, professional, and social growth.",
@@ -48,7 +61,6 @@ const resources = {
       projects: "Projects",
       opportunities: "Opportunities",
       contact: "Contact",
-      admin: "Admin",
       heroTagline: "ABRAMS Institute",
       highlightsTitle: "Highlights",
       highlight1: "Scholarships and development programs",
@@ -58,8 +70,6 @@ const resources = {
       projectsPageTitle: "Projects",
       projectsPageSubtitle: "Initiatives connecting people, opportunities and community impact.",
       projectPlaceholder: "Initiatives that connect people, opportunities and community impact.",
-      learnMore: "Learn more",
-      seeAll: "See all",
       opportunitiesTitle: "Opportunities",
       opportunitiesSubtitle: "Calls, scholarships and programs open for you.",
       deadlineLabel: "Deadline {{date}}",
@@ -75,6 +85,14 @@ const resources = {
   },
   es: {
     translation: {
+      common: {
+        admin: "Admin",
+        learnMore: "Saber más",
+        seeAll: "Ver todos",
+        contact: "Contacto",
+        loading: "Cargando...",
+        notFound: "Página no encontrada",
+      },
       heroTitle: "Instituto ABRAMS",
       heroSubtitle: "Un espacio para crecer personal y profesionalmente.",
       ctaPrimary: "Hable con nosotros",
@@ -82,7 +100,6 @@ const resources = {
       projects: "Proyectos",
       opportunities: "Oportunidades",
       contact: "Contacto",
-      admin: "Admin",
       heroTagline: "Instituto ABRAMS",
       highlightsTitle: "Destacados",
       highlight1: "Programas de becas y desarrollo",
@@ -92,8 +109,6 @@ const resources = {
       projectsPageTitle: "Proyectos",
       projectsPageSubtitle: "Iniciativas que conectan personas, oportunidades e impacto comunitario.",
       projectPlaceholder: "Iniciativas que conectan personas, oportunidades e impacto comunitario.",
-      learnMore: "Saber más",
-      seeAll: "Ver todos",
       opportunitiesTitle: "Oportunidades",
       opportunitiesSubtitle: "Convocatorias, becas y programas abiertos para ti.",
       deadlineLabel: "Plazo {{date}}",
@@ -109,6 +124,14 @@ const resources = {
   },
   fr: {
     translation: {
+      common: {
+        admin: "Admin",
+        learnMore: "En savoir plus",
+        seeAll: "Voir tout",
+        contact: "Contact",
+        loading: "Chargement...",
+        notFound: "Page introuvable",
+      },
       heroTitle: "Institut ABRAMS",
       heroSubtitle: "Un espace pour grandir personnellement et professionnellement.",
       ctaPrimary: "Parlez avec nous",
@@ -116,7 +139,6 @@ const resources = {
       projects: "Projets",
       opportunities: "Opportunités",
       contact: "Contact",
-      admin: "Admin",
       heroTagline: "Institut ABRAMS",
       highlightsTitle: "En évidence",
       highlight1: "Programmes de bourses et de développement",
@@ -126,8 +148,6 @@ const resources = {
       projectsPageTitle: "Projets",
       projectsPageSubtitle: "Initiatives qui relient personnes, opportunités et impact communautaire.",
       projectPlaceholder: "Initiatives reliant personnes, opportunités et impact communautaire.",
-      learnMore: "En savoir plus",
-      seeAll: "Voir tout",
       opportunitiesTitle: "Opportunités",
       opportunitiesSubtitle: "Appels, bourses et programmes ouverts pour vous.",
       deadlineLabel: "Date limite {{date}}",

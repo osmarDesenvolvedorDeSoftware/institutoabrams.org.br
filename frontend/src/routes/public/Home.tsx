@@ -52,7 +52,7 @@ export const Home = () => {
             <div className="divider" />
           </div>
           <Link to="/projetos" className="btn btn-ghost">
-            {t("seeAll", { defaultValue: "Ver todos" })}
+            {t("common.seeAll")}
           </Link>
         </div>
         <div className="grid three" style={{ marginTop: "1rem" }}>
@@ -66,7 +66,7 @@ export const Home = () => {
                 })}
               </p>
               <Link to="/projetos" className="btn btn-ghost">
-                {t("learnMore", { defaultValue: "Saiba mais" })}
+                {t("common.learnMore")}
               </Link>
             </div>
           ))}

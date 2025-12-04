@@ -12,6 +12,8 @@ import { Home } from "./routes/public/Home";
 import { Projects } from "./routes/public/Projects";
 import { Opportunities } from "./routes/public/Opportunities";
 import { Contact } from "./routes/public/Contact";
+import { PublicPage } from "./routes/public/PublicPage";
+import { QuemSomos } from "./routes/public/QuemSomos";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
         <Route path="/projetos" element={<Projects />} />
         <Route path="/oportunidades" element={<Opportunities />} />
         <Route path="/contato" element={<Contact />} />
+        <Route path="/quem-somos" element={<QuemSomos />} />
+        <Route path="/pages/:slug" element={<PublicPage />} />
       </Route>
 
       <Route path="/admin/login" element={<AdminLogin />} />

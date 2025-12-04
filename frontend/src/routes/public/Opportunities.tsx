@@ -36,7 +36,7 @@ export const Opportunities = () => {
       <div className="grid two" style={{ marginTop: "1rem" }}>
         {opportunities.map((opp) => (
           <div key={opp.id} className="card" style={{ display: "grid", gap: "0.5rem" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
               <h3 style={{ margin: 0 }}>{opp.title}</h3>
               <span className="pill">
                 {opp.deadline
@@ -62,7 +62,7 @@ export const Opportunities = () => {
                 {t("applyNow", { defaultValue: "Inscreva-se" })}
               </a>
               <a className="btn btn-ghost" href="/contato">
-                {t("contact", { defaultValue: "Contato" })}
+                {t("common.contact")}
               </a>
             </div>
           </div>

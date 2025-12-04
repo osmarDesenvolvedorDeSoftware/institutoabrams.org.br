@@ -19,8 +19,8 @@
 
 ## Tarefas - Backend (Flask)
 - [ ] Finalizar config de ambiente real em `backend/.env` e secrets seguros
-- [ ] Rodar `flask db upgrade` (0001 + 0002) e validar schema no Postgres
-- [ ] Implementar seed para usuário admin inicial
+- [ ] Rodar `flask db upgrade` (0001 + 0002 + 0003) e validar schema no Postgres
+- [x] Implementar seed para usuário admin inicial
 - [x] Validação básica (marshmallow) e paginação nas listagens
 - [ ] Adicionar filtros extras (slug/slug-like, texto) e ordenação configurável
 - [ ] Implementar upload/armazenamento de mídia (S3/Cloudflare R2) se necessário
@@ -59,3 +59,23 @@
 - [ ] Conteúdo real (textos, imagens, links oficiais)
 - [ ] Refinar responsividade e estados de carregamento
 - [ ] Ajustar identidade final (logo oficial, tipografia definida)
+
+## Fase 4 - Conteúdo Real e Ajustes Finais
+- [x] Slugs estáveis e rota pública `/pages/:slug`
+- [x] Seed de admin (dev) via `flask seed-admin`
+- [x] Editor de páginas com abas PT/EN/ES/FR e categorias (projeto, contato, institucional)
+- [x] Páginas dinâmicas (Quem Somos, Contato, Projetos via CMS)
+- [x] Menus carregados do backend e responsividade básica (hambúrguer)
+- [ ] Preencher conteúdo definitivo (textos, contatos, links oficiais)
+- [ ] Gestão de traduções completa no painel
+- [ ] Testes end-to-end e deploy (Fase 5)
+
+## Fase 5 - Deploy local simples + testes + preparação para pitch
+- [x] docker-compose.prod.yml sem Traefik (db, backend gunicorn:8000, frontend nginx)
+- [x] .env.prod.example com variáveis mínimas
+- [x] Testes básicos Pytest (health, páginas, oportunidades, leads)
+- [x] PITCH_DEMO.md para roteiro de demonstração
+- [ ] Conteúdo real preenchido no CMS para gravação
+- [ ] Automação CI para rodar pytest e build docker
+
+Próximo passo → Fase 6 (deploy real na VPS)

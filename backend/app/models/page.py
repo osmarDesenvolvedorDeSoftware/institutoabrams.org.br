@@ -12,6 +12,7 @@ class Page(db.Model):
     slug = db.Column(db.String(255), unique=True, nullable=False)
     title_translations = db.Column(JSONB, nullable=False, default=dict)
     content_translations = db.Column(JSONB, nullable=True, default=dict)
+    category = db.Column(db.String(100), nullable=True)
     is_published = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(

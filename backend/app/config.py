@@ -11,7 +11,9 @@ class Settings:
         "postgresql+psycopg2://abram_user:abram_pass@db:5432/abram_db",
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "change-this-secret")
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY") or os.getenv(
+        "JWT_SECRET", "change-this-secret"
+    )
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(
         minutes=int(os.getenv("JWT_EXPIRES_MINUTES", "60"))
     )
