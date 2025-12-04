@@ -9,6 +9,8 @@ type Opportunity = {
   deadline?: string;
   category?: string;
   institution?: string;
+  description?: string;
+  official_link?: string;
 };
 
 export const OpportunitiesAdmin = () => {
@@ -20,6 +22,7 @@ export const OpportunitiesAdmin = () => {
   const [status, setStatus] = useState("draft");
   const [deadline, setDeadline] = useState("");
   const [officialLink, setOfficialLink] = useState("");
+  const [editingId, setEditingId] = useState<number | null>(null);
 
   const fetchOpportunities = async () => {
     const { data } = await api.get("/opportunities");
@@ -32,7 +35,7 @@ export const OpportunitiesAdmin = () => {
 
   const handleCreate = async (event: FormEvent) => {
     event.preventDefault();
-    await api.post("/opportunities", {
+    const payload = {
       title,
       description,
       institution,
@@ -40,7 +43,13 @@ export const OpportunitiesAdmin = () => {
       status,
       deadline,
       official_link: officialLink,
-    });
+    };
+
+    if (editingId) {
+      await api.put(`/opportunities/${editingId}`, payload);
+    } else {
+      await api.post("/opportunities", payload);
+    }
     setTitle("");
     setDescription("");
     setInstitution("");
@@ -48,6 +57,26 @@ export const OpportunitiesAdmin = () => {
     setStatus("draft");
     setDeadline("");
     setOfficialLink("");
+    setEditingId(null);
+    fetchOpportunities();
+  };
+
+  const handleEdit = (item: Opportunity) => {
+    setEditingId(item.id);
+    setTitle(item.title || "");
+    setDescription(item.description || "");
+    setInstitution(item.institution || "");
+    setCategory(item.category || "");
+    setStatus(item.status || "draft");
+    setDeadline(item.deadline || "");
+    setOfficialLink(item.official_link || "");
+  };
+
+  const handleDelete = async (id: number) => {
+    await api.delete(`/opportunities/${id}`);
+    if (editingId === id) {
+      setEditingId(null);
+    }
     fetchOpportunities();
   };
 
@@ -70,6 +99,7 @@ export const OpportunitiesAdmin = () => {
               <th>Status</th>
               <th>Prazo</th>
               <th>Categoria</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -79,6 +109,14 @@ export const OpportunitiesAdmin = () => {
                 <td style={{ padding: "0.65rem 0", textTransform: "capitalize" }}>{item.status}</td>
                 <td style={{ padding: "0.65rem 0" }}>{item.deadline || "—"}</td>
                 <td style={{ padding: "0.65rem 0" }}>{item.category || "—"}</td>
+                <td style={{ padding: "0.65rem 0", display: "flex", gap: "0.5rem" }}>
+                  <button className="btn btn-ghost" type="button" onClick={() => handleEdit(item)}>
+                    Editar
+                  </button>
+                  <button className="btn btn-ghost" type="button" onClick={() => handleDelete(item.id)}>
+                    Excluir
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -86,7 +124,7 @@ export const OpportunitiesAdmin = () => {
       </div>
 
       <form className="card" onSubmit={handleCreate} style={{ display: "grid", gap: "0.75rem" }}>
-        <h3 style={{ marginTop: 0 }}>Nova oportunidade</h3>
+        <h3 style={{ marginTop: 0 }}>{editingId ? "Editar oportunidade" : "Nova oportunidade"}</h3>
         <input
           required
           placeholder="Título"
