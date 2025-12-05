@@ -5,7 +5,7 @@ export const Home = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="container" style={{ padding: "3rem 0", display: "grid", gap: "3rem" }}>
+    <div className="container" style={{ padding: "3.25rem 0", display: "grid", gap: "3.5rem" }}>
       <section
         className="card"
         style={{
@@ -14,11 +14,12 @@ export const Home = () => {
           gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
           alignItems: "center",
           background: "linear-gradient(135deg, #fff9ec, #fff)",
+          padding: "2rem",
         }}
       >
         <div style={{ display: "grid", gap: "1rem", textAlign: "center" }}>
           <span className="pill">{t("heroTagline", { defaultValue: "Instituto ABRAMS" })}</span>
-          <h1 className="title-centered" style={{ textAlign: "center" }}>
+          <h1 className="title-centered" style={{ textAlign: "center", marginBottom: "0.25rem" }}>
             {t("heroTitle")}
           </h1>
           <div className="divider" />
@@ -34,7 +35,10 @@ export const Home = () => {
             </Link>
           </div>
         </div>
-        <div className="card" style={{ background: "var(--surface)" }}>
+        <div
+          className="card"
+          style={{ background: "#fff", padding: "1.35rem", borderRadius: 14, display: "grid", gap: "0.75rem" }}
+        >
           <h3 style={{ marginTop: 0 }}>{t("highlightsTitle", { defaultValue: "Destaques" })}</h3>
           <div className="divider" />
           <ul style={{ margin: 0, paddingLeft: "1.25rem", lineHeight: 1.8, color: "var(--muted)" }}>
@@ -45,21 +49,41 @@ export const Home = () => {
         </div>
       </section>
 
-      <section className="section">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <section className="section" style={{ display: "grid", gap: "1.25rem" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "1rem",
+            flexWrap: "wrap",
+          }}
+        >
           <div>
-            <h2 style={{ margin: 0 }}>{t("projectsTitle", { defaultValue: "Projetos em andamento" })}</h2>
+            <h2 style={{ margin: 0, marginBottom: "0.35rem" }}>
+              {t("projectsTitle", { defaultValue: "Projetos em andamento" })}
+            </h2>
             <div className="divider" />
           </div>
           <Link to="/projetos" className="btn btn-ghost">
             {t("common.seeAll")}
           </Link>
         </div>
-        <div className="grid three" style={{ marginTop: "1rem" }}>
+        <div className="grid three" style={{ marginTop: "0.5rem", gap: "1.25rem" }}>
           {["Mentorias de carreira", "Trilhas digitais", "Programas sociais"].map((item) => (
-            <div key={item} className="card">
-              <h3 style={{ marginTop: 0 }}>{item}</h3>
-              <p style={{ marginBottom: "0.5rem", color: "var(--muted)" }}>
+            <div
+              key={item}
+              className="card"
+              style={{
+                background: "#fff",
+                padding: "1.35rem",
+                borderRadius: 14,
+                display: "grid",
+                gap: "0.65rem",
+              }}
+            >
+              <h3 style={{ marginTop: 0, marginBottom: "0.25rem" }}>{item}</h3>
+              <p style={{ margin: 0, color: "var(--muted)" }}>
                 {t("projectPlaceholder", {
                   defaultValue:
                     "Iniciativas que conectam pessoas, oportunidades e impacto direto na comunidade.",

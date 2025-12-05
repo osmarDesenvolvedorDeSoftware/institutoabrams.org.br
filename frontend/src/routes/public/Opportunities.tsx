@@ -25,17 +25,21 @@ export const Opportunities = () => {
   }, []);
 
   return (
-    <div className="container section">
-      <h2 style={{ marginTop: 0 }}>{t("opportunitiesTitle", { defaultValue: "Oportunidades" })}</h2>
-      <div className="divider" />
-      <p className="subtitle">
-        {t("opportunitiesSubtitle", {
-          defaultValue: "Editais, bolsas e programas abertos para você participar.",
-        })}
-      </p>
-      <div className="grid two" style={{ marginTop: "1rem" }}>
+    <div className="container section" style={{ display: "grid", gap: "1.25rem" }}>
+      <div>
+        <h2 style={{ margin: 0, marginBottom: "0.4rem" }}>
+          {t("opportunitiesTitle", { defaultValue: "Oportunidades" })}
+        </h2>
+        <div className="divider" />
+        <p className="subtitle" style={{ marginTop: "0.35rem" }}>
+          {t("opportunitiesSubtitle", {
+            defaultValue: "Editais, bolsas e programas abertos para você participar.",
+          })}
+        </p>
+      </div>
+      <div className="grid two" style={{ marginTop: "0.75rem", gap: "1.25rem" }}>
         {opportunities.map((opp) => (
-          <div key={opp.id} className="card" style={{ display: "grid", gap: "0.5rem" }}>
+          <div key={opp.id} className="opportunity-card" style={{ display: "grid", gap: "0.75rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
               <h3 style={{ margin: 0 }}>{opp.title}</h3>
               <span className="pill">
@@ -49,11 +53,11 @@ export const Opportunities = () => {
             </p>
             <div style={{ display: "flex", gap: "0.75rem", color: "var(--muted)", flexWrap: "wrap" }}>
               {opp.institution && <span>{opp.institution}</span>}
-              {opp.category && <span>• {opp.category}</span>}
+              {opp.category && <span>| {opp.category}</span>}
             </div>
-            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: "0.65rem", flexWrap: "wrap" }}>
               <a
-                className="btn btn-primary"
+                className="btn btn-gold"
                 href={opp.official_link || "#"}
                 target="_blank"
                 rel="noreferrer"
@@ -68,7 +72,7 @@ export const Opportunities = () => {
           </div>
         ))}
         {!opportunities.length && (
-          <div className="card">
+          <div className="opportunity-card">
             <p style={{ margin: 0 }}>{t("noOpportunities", { defaultValue: "Nenhuma oportunidade aberta no momento." })}</p>
           </div>
         )}

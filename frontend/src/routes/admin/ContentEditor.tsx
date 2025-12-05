@@ -172,10 +172,12 @@ export const ContentEditor = () => {
           />
           <div style={{ display: "grid", gap: "0.35rem" }}>
             <small>Conteúdo ({activeLang})</small>
-            <RichTextEditor
-              value={contents[activeLang] || ""}
-              onChange={(value) => setContents({ ...contents, [activeLang]: value })}
-            />
+            <div className="editor-shell">
+              <RichTextEditor
+                value={contents[activeLang] || ""}
+                onChange={(value) => setContents({ ...contents, [activeLang]: value })}
+              />
+            </div>
           </div>
         </div>
 

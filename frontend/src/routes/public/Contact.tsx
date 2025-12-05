@@ -29,19 +29,24 @@ export const Contact = () => {
       className="container section"
       style={{
         display: "grid",
-        gap: "1.5rem",
+        gap: "1.75rem",
         gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
       }}
     >
       <div>
-        <h2 style={{ marginTop: 0 }}>{title || t("contactTitle", { defaultValue: "Contato" })}</h2>
+        <h2 style={{ marginTop: 0, marginBottom: "0.35rem" }}>
+          {title || t("contactTitle", { defaultValue: "Contato" })}
+        </h2>
         <div className="divider" />
         <p className="subtitle">
           {t("contactSubtitle", {
             defaultValue: "Conte suas ideias, projetos ou dúvidas. Estamos aqui para colaborar.",
           })}
         </p>
-        <div className="card" style={{ display: "grid", gap: "0.5rem" }}>
+        <div
+          className="card"
+          style={{ display: "grid", gap: "0.65rem", background: "#fff", padding: "1.35rem", borderRadius: 14 }}
+        >
           <strong>{t("contactChannels", { defaultValue: "Canais" })}</strong>
           {content ? (
             <div style={{ color: "var(--muted)" }} dangerouslySetInnerHTML={{ __html: content }} />

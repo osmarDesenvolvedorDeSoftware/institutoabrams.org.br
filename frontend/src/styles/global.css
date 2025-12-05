@@ -128,7 +128,7 @@ h4 {
 }
 
 .section {
-  padding: 2.5rem 0;
+  padding: 3rem 0;
 }
 
 .title-centered {
@@ -138,6 +138,87 @@ h4 {
 .subtitle {
   color: var(--muted);
   margin: 0.5rem 0 0;
+}
+
+.lang-select {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  color: #1f2937;
+  border-radius: 10px;
+  min-width: 70px;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.lang-select:hover {
+  background: #f3f4f6;
+  border-color: #cbd5e1;
+}
+
+.lang-select:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(207, 175, 112, 0.25);
+  border-color: #CFAF70;
+}
+
+.editor-shell {
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
+  padding: 0.85rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.editor-shell .ql-toolbar.ql-snow {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #f9fafb;
+}
+
+.editor-shell .ql-container.ql-snow {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  min-height: 250px;
+}
+
+.editor-shell .ql-editor {
+  min-height: 220px;
+  color: #111827;
+  padding: 12px;
+}
+
+.opportunity-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 1.35rem;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 150ms ease, transform 150ms ease;
+}
+
+.opportunity-card:hover {
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.dropdown a:hover {
+  background: #f3f4f6 !important;
+  color: var(--primary-dark) !important;
+}
+
+.btn-gold {
+  background: #CFAF70;
+  border-color: #CFAF70;
+  color: #fff;
+}
+
+.btn-gold:hover {
+  background: #b99a60;
+  border-color: #b99a60;
+  color: #fff;
 }
 
 @media (max-width: 900px) {

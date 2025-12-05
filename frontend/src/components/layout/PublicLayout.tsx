@@ -66,9 +66,10 @@ export const PublicLayout = () => {
     <div className="app-shell">
       <header
         style={{
-          background: "var(--primary)",
-          color: "#fff",
-          boxShadow: "0 10px 20px rgba(0,0,0,0.08)",
+          background: "#fff",
+          color: "var(--text)",
+          boxShadow: "0 8px 20px rgba(0,0,0,0.06)",
+          borderBottom: "1px solid var(--border)",
         }}
       >
         <div
@@ -77,7 +78,7 @@ export const PublicLayout = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            padding: "0.75rem 1.5rem",
+            padding: "0.9rem 1.5rem",
             gap: "1rem",
           }}
         >
@@ -87,7 +88,7 @@ export const PublicLayout = () => {
               display: "flex",
               alignItems: "center",
               gap: "0.75rem",
-              color: "#fff",
+              color: "var(--primary-dark)",
               fontWeight: 800,
               letterSpacing: "0.5px",
             }}
@@ -97,8 +98,8 @@ export const PublicLayout = () => {
                 width: 42,
                 height: 42,
                 borderRadius: 10,
-                background: "#fff",
-                color: "var(--primary-dark)",
+                background: "#fff7eb",
+                color: "var(--primary)",
                 display: "grid",
                 placeItems: "center",
                 fontWeight: 800,
@@ -111,10 +112,15 @@ export const PublicLayout = () => {
 
           <button
             className="btn btn-ghost"
-            style={{ display: isMobile ? "inline-flex" : "none", color: "#fff" }}
+            style={{
+              display: isMobile ? "inline-flex" : "none",
+              color: "var(--primary-dark)",
+              background: "#fff",
+              borderColor: "var(--border)",
+            }}
             onClick={() => setIsMenuOpen((s) => !s)}
           >
-            ☰
+            Menu
           </button>
 
           <nav
@@ -145,11 +151,13 @@ export const PublicLayout = () => {
                       padding: "0.35rem 0.5rem",
                       borderRadius: 8,
                       background: isActive(item.target)
-                        ? "rgba(255,255,255,0.14)"
+                        ? "rgba(207,175,112,0.18)"
                         : "transparent",
                       display: "inline-flex",
                       alignItems: "center",
                       gap: "0.3rem",
+                      color: isActive(item.target) ? "var(--primary-dark)" : "var(--text)",
+                      transition: "background-color 120ms ease, color 120ms ease",
                     }}
                   >
                     {item.label}
@@ -162,6 +170,7 @@ export const PublicLayout = () => {
                       top: "110%",
                       left: 0,
                       background: "#fff",
+                      border: "1px solid #e5e7eb",
                       color: "var(--text)",
                       borderRadius: 8,
                       minWidth: 180,
@@ -196,12 +205,13 @@ export const PublicLayout = () => {
                   to={item.target}
                   style={{
                     fontWeight: 700,
-                    color: "#fff",
+                    color: isActive(item.target) ? "var(--primary-dark)" : "var(--text)",
                     padding: "0.35rem 0.5rem",
                     borderRadius: 8,
                     background: isActive(item.target)
-                      ? "rgba(255,255,255,0.14)"
+                      ? "rgba(207,175,112,0.18)"
                       : "transparent",
+                    transition: "background-color 120ms ease, color 120ms ease",
                   }}
                 >
                   {item.label}
@@ -210,18 +220,12 @@ export const PublicLayout = () => {
             )}
           </nav>
 
-          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+          <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
             <select
+              className="lang-select"
               value={currentLang}
               onChange={(e) => i18n.changeLanguage(e.target.value)}
-              style={{
-                padding: "0.35rem 0.65rem",
-                fontWeight: 600,
-                borderRadius: 10,
-                border: "1px solid rgba(255,255,255,0.6)",
-                background: "rgba(255,255,255,0.15)",
-                color: "#fff",
-              }}
+              style={{ padding: "0.4rem 0.75rem", fontWeight: 600 }}
             >
               <option value="pt">PT</option>
               <option value="en">EN</option>
@@ -229,11 +233,11 @@ export const PublicLayout = () => {
               <option value="fr">FR</option>
             </select>
             {isAuthenticated ? (
-              <Link className="btn btn-ghost" to="/admin" style={{ color: "#fff" }}>
+              <Link className="btn btn-ghost" to="/admin" style={{ color: "var(--primary-dark)" }}>
                 Painel
               </Link>
             ) : (
-              <Link className="btn btn-ghost" to="/admin/login" style={{ color: "#fff" }}>
+              <Link className="btn btn-ghost" to="/admin/login" style={{ color: "var(--primary-dark)" }}>
                 {t("common.admin")}
               </Link>
             )}

@@ -24,12 +24,12 @@ export const QuemSomos = () => {
   const content = page ? getLocalized(page.content_translations, i18n.language) : "";
 
   return (
-    <div className="container section" style={{ display: "grid", gap: "1rem" }}>
-      <h2>{title}</h2>
+    <div className="container section" style={{ display: "grid", gap: "1.25rem" }}>
+      <h2 style={{ margin: 0, marginBottom: "0.35rem" }}>{title}</h2>
       <div className="divider" />
       <div
         className="card"
-        style={{ background: "var(--surface)", lineHeight: 1.7 }}
+        style={{ background: "#fff", lineHeight: 1.7, padding: "1.35rem", borderRadius: 14 }}
         dangerouslySetInnerHTML={{
           __html:
             content ||

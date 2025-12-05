@@ -2,7 +2,7 @@
 
 ## Checklist macro
 - [ ] Definir branding, tom e vocabulário (pt/en) para o site e painel
-- [ ] Configurar `.env` locais com secrets reais (backend e frontend)
+- [x] Configurar `.env` locais com secrets reais (backend e frontend)
 - [ ] Subir stack Docker (`docker-compose up`) e validar saúde dos serviços
 - [ ] Rodar migrações (`flask db upgrade`) e criar usuário admin inicial
 - [x] Criar fluxo de login no painel e proteger rotas admin
@@ -18,7 +18,7 @@
 6) Migração de conteúdo: importar páginas/menus/opps existentes e validar URLs
 
 ## Tarefas - Backend (Flask)
-- [ ] Finalizar config de ambiente real em `backend/.env` e secrets seguros
+- [x] Finalizar config de ambiente real em `backend/.env` e secrets seguros
 - [ ] Rodar `flask db upgrade` (0001 + 0002 + 0003) e validar schema no Postgres
 - [x] Implementar seed para usuário admin inicial
 - [x] Validação básica (marshmallow) e paginação nas listagens

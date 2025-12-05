@@ -11,6 +11,11 @@ export const AdminLayout = () => {
         style={{
           padding: "1rem 1.5rem",
           borderBottom: "1px solid var(--border)",
+          background: "#fff",
+          boxShadow: "0 6px 16px rgba(0, 0, 0, 0.05)",
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
         }}
       >
         <div
