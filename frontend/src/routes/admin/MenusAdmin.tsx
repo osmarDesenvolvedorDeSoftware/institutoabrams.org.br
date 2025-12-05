@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 
+import { RouteSelector } from "../../components/menus/RouteSelector";
 import { api } from "../../services/api";
 
 type MenuItem = {
@@ -12,6 +13,12 @@ type MenuItem = {
   order?: number;
 };
 
+type Page = {
+  id: number;
+  slug: string;
+  title_translations: Record<string, string>;
+};
+
 export const MenusAdmin = () => {
   const [items, setItems] = useState<MenuItem[]>([]);
   const [label, setLabel] = useState("");
@@ -21,6 +28,7 @@ export const MenusAdmin = () => {
   const [order, setOrder] = useState<number>(0);
   const [isDropdown, setIsDropdown] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [pages, setPages] = useState<Page[]>([]);
 
   const fetchMenus = async () => {
     const { data } = await api.get("/menus", { params: { per_page: 100 } });
@@ -29,6 +37,10 @@ export const MenusAdmin = () => {
 
   useEffect(() => {
     fetchMenus();
+    api
+      .get("/api/v1/pages", { params: { is_published: true, per_page: 100 } })
+      .then(({ data }) => setPages(data.items || data))
+      .catch(() => setPages([]));
   }, []);
 
   const handleSubmit = async (event: FormEvent) => {
@@ -144,13 +156,7 @@ export const MenusAdmin = () => {
           onChange={(e) => setSlug(e.target.value)}
           style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
         />
-        <input
-          required
-          placeholder="Rota alvo (ex: /sobre)"
-          value={target}
-          onChange={(e) => setTarget(e.target.value)}
-          style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
-        />
+        <RouteSelector value={target} onChange={setTarget} pages={pages} />
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
           <input
             type="number"
