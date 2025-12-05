@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 type Page = {
   slug: string;
@@ -18,8 +18,6 @@ const fixedRoutes = [
   { label: "Contato", value: "/contato" },
 ];
 
-const CUSTOM_VALUE = "__custom__";
-
 export const RouteSelector = ({ value, onChange, pages = [] }: Props) => {
   const pageOptions = useMemo(
     () =>
@@ -30,45 +28,28 @@ export const RouteSelector = ({ value, onChange, pages = [] }: Props) => {
     [pages],
   );
 
-  const allowedValues = useMemo(
-    () => [...fixedRoutes.map((r) => r.value), ...pageOptions.map((p) => p.value)],
-    [pageOptions],
-  );
+  const allowedValues = useMemo(() => {
+    const defaults = fixedRoutes.map((r) => r.value);
+    const pagesValues = pageOptions.map((p) => p.value);
+    return [...defaults, ...pagesValues];
+  }, [pageOptions]);
 
-  const isCustom = value ? !allowedValues.includes(value) : false;
-  const [customValue, setCustomValue] = useState<string>(isCustom ? value : "");
-
-  useEffect(() => {
-    // Keep custom input in sync when parent value changes externally
-    if (!allowedValues.includes(value)) {
-      setCustomValue(value);
-    }
-  }, [value, allowedValues]);
-
-  const currentSelectValue = isCustom ? CUSTOM_VALUE : value;
-
-  const handleSelectChange = (selected: string) => {
-    if (selected === CUSTOM_VALUE) {
-      // Keep previous custom value or empty while showing the input
-      onChange(customValue || "");
-      return;
-    }
-    onChange(selected);
-  };
-
-  const handleCustomChange = (next: string) => {
-    setCustomValue(next);
-    onChange(next);
-  };
+  const currentValue =
+    value && !allowedValues.includes(value) ? "__unsupported__" : value;
 
   return (
     <div style={{ display: "grid", gap: "0.5rem" }}>
       <select
-        value={currentSelectValue}
-        onChange={(e) => handleSelectChange(e.target.value)}
+        value={currentValue}
+        onChange={(e) => onChange(e.target.value)}
         style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
       >
         <option value="">Selecione a rota</option>
+        {currentValue === "__unsupported__" && (
+          <option value="__unsupported__" disabled>
+            Rota atual (não listada): {value}
+          </option>
+        )}
         <optgroup label="Páginas principais">
           {fixedRoutes.map((route) => (
             <option key={route.value} value={route.value}>
@@ -83,19 +64,7 @@ export const RouteSelector = ({ value, onChange, pages = [] }: Props) => {
             </option>
           ))}
         </optgroup>
-        <optgroup label="Personalizado">
-          <option value={CUSTOM_VALUE}>Inserir rota manualmente</option>
-        </optgroup>
       </select>
-
-      {currentSelectValue === CUSTOM_VALUE && (
-        <input
-          placeholder="Rota personalizada (ex: /sobre)"
-          value={customValue}
-          onChange={(e) => handleCustomChange(e.target.value)}
-          style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
-        />
-      )}
     </div>
   );
 };
