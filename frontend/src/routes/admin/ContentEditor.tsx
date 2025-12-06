@@ -137,8 +137,24 @@ export const ContentEditor = () => {
   };
 
   return (
-    <div className="grid two">
+    <div className="grid two" style={{ alignItems: "start", gap: "1.25rem" }}>
       <div className="card" style={{ display: "grid", gap: "1rem" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "1rem",
+            paddingBottom: "0.5rem",
+            borderBottom: "1px solid var(--border)",
+          }}
+        >
+          <div>
+            <p style={{ margin: 0, color: "var(--muted)" }}>Conteúdo</p>
+            <h3 style={{ margin: "0.2rem 0 0" }}>{editingId ? "Editar página" : "Nova página"}</h3>
+          </div>
+        </div>
+
         <div style={{ display: "grid", gap: "0.75rem" }}>
           <input
             placeholder="Slug (ex: sobre-nos)"
@@ -202,8 +218,17 @@ export const ContentEditor = () => {
         </div>
       </div>
 
-      <div className="card">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div className="card" style={{ display: "grid", gap: "0.75rem" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "1rem",
+            paddingBottom: "0.5rem",
+            borderBottom: "1px solid var(--border)",
+          }}
+        >
           <div>
             <p style={{ margin: 0, color: "var(--muted)" }}>Páginas</p>
             <h3 style={{ margin: "0.25rem 0" }}>Listagem</h3>
@@ -212,7 +237,7 @@ export const ContentEditor = () => {
             Atualizar
           </button>
         </div>
-        <table style={{ width: "100%", marginTop: "1rem", borderCollapse: "collapse" }}>
+        <table style={{ width: "100%", marginTop: "0.25rem", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ textAlign: "left", color: "var(--muted)" }}>
               <th>Slug</th>

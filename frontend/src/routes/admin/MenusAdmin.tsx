@@ -90,9 +90,18 @@ export const MenusAdmin = () => {
   const parents = items.filter((i) => !i.parent_id);
 
   return (
-    <div className="grid two">
-      <div className="card">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    <div className="grid two" style={{ alignItems: "start", gap: "1.25rem" }}>
+      <div className="card" style={{ display: "grid", gap: "0.75rem" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "1rem",
+            paddingBottom: "0.5rem",
+            borderBottom: "1px solid var(--border)",
+          }}
+        >
           <div>
             <p style={{ margin: 0, color: "var(--muted)" }}>Menus</p>
             <h3 style={{ margin: "0.25rem 0" }}>Organize a navegação</h3>
@@ -101,7 +110,7 @@ export const MenusAdmin = () => {
             Atualizar
           </button>
         </div>
-        <table style={{ width: "100%", marginTop: "1rem", borderCollapse: "collapse" }}>
+        <table style={{ width: "100%", marginTop: "0.5rem", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ textAlign: "left", color: "var(--muted)" }}>
               <th>Rótulo</th>
@@ -139,9 +148,20 @@ export const MenusAdmin = () => {
       </div>
 
       <form className="card" onSubmit={handleSubmit} style={{ display: "grid", gap: "0.75rem" }}>
-        <h3 style={{ marginTop: 0 }}>
-          {editingId ? "Editar menu" : "Novo menu"}
-        </h3>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "1rem",
+            paddingBottom: "0.5rem",
+            borderBottom: "1px solid var(--border)",
+          }}
+        >
+          <h3 style={{ margin: 0 }}>
+            {editingId ? "Editar menu" : "Novo menu"}
+          </h3>
+        </div>
         <input
           required
           placeholder="Rótulo"

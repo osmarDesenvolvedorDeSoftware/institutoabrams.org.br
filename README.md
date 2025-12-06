@@ -58,3 +58,7 @@ pytest -vv
 2) `docker-compose -f docker-compose.prod.yml up --build`
 3) Seed admin (staging apenas se necessário) para acessar `/admin/login`.
 4) Crie páginas/menus/oportunidades e valide no site público (`/pages/:slug`, `/quem-somos`, `/contato`, `/projetos`).
+
+## Future Media Module (placeholder only)
+- Estrutura inicial criada para um futuro módulo de upload, mas ainda não está ativa.
+- Componentes de placeholder estão no frontend e um serviço stub no backend aguardando implementação real.

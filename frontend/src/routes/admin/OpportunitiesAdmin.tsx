@@ -81,20 +81,29 @@ export const OpportunitiesAdmin = () => {
   };
 
   return (
-    <div className="grid two">
-      <div className="card">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    <div className="grid two" style={{ alignItems: "start", gap: "1.25rem" }}>
+      <div className="card" style={{ display: "grid", gap: "0.75rem" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "1rem",
+            paddingBottom: "0.5rem",
+            borderBottom: "1px solid var(--border)",
+          }}
+        >
           <div>
-            <p style={{ margin: 0, color: "#94a3b8" }}>Oportunidades</p>
-            <h3 style={{ margin: "0.15rem 0" }}>Gerencie bolsas e editais</h3>
+            <p style={{ margin: 0, color: "var(--muted)" }}>Oportunidades</p>
+            <h3 style={{ margin: "0.2rem 0 0" }}>Gerencie bolsas e editais</h3>
           </div>
           <button className="btn btn-ghost" onClick={fetchOpportunities}>
             Atualizar
           </button>
         </div>
-        <table style={{ width: "100%", marginTop: "1rem", borderCollapse: "collapse" }}>
+        <table style={{ width: "100%", marginTop: "0.5rem", borderCollapse: "collapse" }}>
           <thead>
-            <tr style={{ textAlign: "left", color: "#94a3b8" }}>
+            <tr style={{ textAlign: "left", color: "var(--muted)" }}>
               <th>Título</th>
               <th>Status</th>
               <th>Prazo</th>
@@ -124,7 +133,18 @@ export const OpportunitiesAdmin = () => {
       </div>
 
       <form className="card" onSubmit={handleCreate} style={{ display: "grid", gap: "0.75rem" }}>
-        <h3 style={{ marginTop: 0 }}>{editingId ? "Editar oportunidade" : "Nova oportunidade"}</h3>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "1rem",
+            paddingBottom: "0.5rem",
+            borderBottom: "1px solid var(--border)",
+          }}
+        >
+          <h3 style={{ margin: 0 }}>{editingId ? "Editar oportunidade" : "Nova oportunidade"}</h3>
+        </div>
         <input
           required
           placeholder="Título"

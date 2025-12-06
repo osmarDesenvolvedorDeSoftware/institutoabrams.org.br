@@ -60,6 +60,12 @@
 - [ ] Refinar responsividade e estados de carregamento
 - [ ] Ajustar identidade final (logo oficial, tipografia definida)
 
+## Fase 2.1 – Refinos de Admin e Preparação para Upload
+- Ajustes de espaçamento e UI nas telas administrativas.
+- Componentes base para upload criados (placeholder).
+- Serviço de mídia preparado (stub).
+- Sem funcionalidades novas ainda.
+
 ## Fase 4 - Conteúdo Real e Ajustes Finais
 - [x] Slugs estáveis e rota pública `/pages/:slug`
 - [x] Seed de admin (dev) via `flask seed-admin`
