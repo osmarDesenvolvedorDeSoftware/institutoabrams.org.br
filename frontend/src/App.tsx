@@ -7,6 +7,8 @@ import { Dashboard } from "./routes/admin/Dashboard";
 import { ContentEditor } from "./routes/admin/ContentEditor";
 import { OpportunitiesAdmin } from "./routes/admin/OpportunitiesAdmin";
 import { MenusAdmin } from "./routes/admin/MenusAdmin";
+import { BannersAdmin } from "./routes/admin/BannersAdmin";
+import { SiteSettingsAdmin } from "./routes/admin/SiteSettingsAdmin";
 import { AdminLogin } from "./routes/admin/Login";
 import { Home } from "./routes/public/Home";
 import { Projects } from "./routes/public/Projects";
@@ -41,6 +43,8 @@ function App() {
         <Route path="paginas" element={<ContentEditor />} />
         <Route path="menus" element={<MenusAdmin />} />
         <Route path="oportunidades" element={<OpportunitiesAdmin />} />
+        <Route path="banners" element={<BannersAdmin />} />
+        <Route path="settings" element={<SiteSettingsAdmin />} />
       </Route>
 
       <Route path="*" element={<div className="container">Página não encontrada.</div>} />

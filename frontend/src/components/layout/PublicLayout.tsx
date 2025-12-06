@@ -30,6 +30,13 @@ export const PublicLayout = () => {
   const [menus, setMenus] = useState<MenuItem[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+   const [branding, setBranding] = useState<{ logo_url?: string }>({});
+   const [footerInfo, setFooterInfo] = useState<{
+     address?: string;
+     email?: string;
+     phone?: string;
+     social?: Record<string, string>;
+   }>({});
   const currentLang = (i18n.language || "pt").slice(0, 2);
 
   useEffect(() => {
@@ -37,6 +44,14 @@ export const PublicLayout = () => {
       .get("/menus")
       .then(({ data }) => setMenus(data.items || data))
       .catch(() => setMenus([]));
+    api
+      .get("/settings/site_branding")
+      .then(({ data }) => setBranding(data.value || {}))
+      .catch(() => setBranding({}));
+    api
+      .get("/settings/footer")
+      .then(({ data }) => setFooterInfo(data.value || {}))
+      .catch(() => setFooterInfo({}));
   }, []);
 
   useEffect(() => {
@@ -93,20 +108,28 @@ export const PublicLayout = () => {
               letterSpacing: "0.5px",
             }}
           >
-            <div
-              style={{
-                width: 42,
-                height: 42,
-                borderRadius: 10,
-                background: "#fff7eb",
-                color: "var(--primary)",
-                display: "grid",
-                placeItems: "center",
-                fontWeight: 800,
-              }}
-            >
-              A
-            </div>
+            {branding.logo_url ? (
+              <img
+                src={branding.logo_url}
+                alt="Instituto ABRAMS"
+                style={{ height: 42, width: "auto", objectFit: "contain" }}
+              />
+            ) : (
+              <div
+                style={{
+                  width: 42,
+                  height: 42,
+                  borderRadius: 10,
+                  background: "#fff7eb",
+                  color: "var(--primary)",
+                  display: "grid",
+                  placeItems: "center",
+                  fontWeight: 800,
+                }}
+              >
+                A
+              </div>
+            )}
             Instituto ABRAMS
           </Link>
 
@@ -257,13 +280,37 @@ export const PublicLayout = () => {
       >
         <div
           className="container"
-          style={{ display: "flex", justifyContent: "space-between", gap: "1rem" }}
+          style={{ display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}
         >
-          <div>
+          <div style={{ minWidth: 240 }}>
             <strong>Instituto ABRAMS</strong>
             <p style={{ margin: 0, color: "var(--muted)" }}>
-              Construindo futuro com oportunidades e propósito.
+              {footerInfo.address || "Construindo futuro com oportunidades e propósito."}
             </p>
+            {footerInfo.email && <p style={{ margin: "0.15rem 0", color: "var(--muted)" }}>{footerInfo.email}</p>}
+            {footerInfo.phone && <p style={{ margin: "0.15rem 0", color: "var(--muted)" }}>{footerInfo.phone}</p>}
+          </div>
+          <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", flexWrap: "wrap" }}>
+            {footerInfo.social?.youtube && (
+              <a href={footerInfo.social.youtube} target="_blank" rel="noreferrer">
+                YouTube
+              </a>
+            )}
+            {footerInfo.social?.instagram && (
+              <a href={footerInfo.social.instagram} target="_blank" rel="noreferrer">
+                Instagram
+              </a>
+            )}
+            {footerInfo.social?.facebook && (
+              <a href={footerInfo.social.facebook} target="_blank" rel="noreferrer">
+                Facebook
+              </a>
+            )}
+            {footerInfo.social?.linkedin && (
+              <a href={footerInfo.social.linkedin} target="_blank" rel="noreferrer">
+                LinkedIn
+              </a>
+            )}
           </div>
           <small style={{ color: "#777" }}>© {new Date().getFullYear()}</small>
         </div>

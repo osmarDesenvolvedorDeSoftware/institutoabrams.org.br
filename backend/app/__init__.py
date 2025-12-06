@@ -18,6 +18,7 @@ def create_app(config_object: type[Settings] | None = None) -> Flask:
         resources={
             r"/api/*": {"origins": app.config.get("BACKEND_CORS_ORIGINS")},
             r"/health": {"origins": "*"},
+            r"/uploads/*": {"origins": "*"},
         },
     )
 

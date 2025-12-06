@@ -10,6 +10,8 @@ type PageProject = {
   slug: string;
   title_translations: Record<string, string>;
   content_translations: Record<string, string>;
+  hero_image_url?: string | null;
+  video_url?: string | null;
 };
 
 const fallbackProjects = [
@@ -54,6 +56,13 @@ export const Projects = () => {
               borderRadius: 14,
             }}
           >
+            {project.hero_image_url && (
+              <img
+                src={project.hero_image_url}
+                alt={title}
+                style={{ width: "100%", height: 160, objectFit: "cover", borderRadius: 12 }}
+              />
+            )}
             <h3 style={{ marginTop: 0, marginBottom: "0.25rem" }}>{title}</h3>
             <p style={{ margin: 0, color: "var(--muted)" }} dangerouslySetInnerHTML={{ __html: summary || "" }} />
             <Link to={`/pages/${project.slug}`} className="btn btn-ghost" style={{ justifySelf: "flex-start" }}>

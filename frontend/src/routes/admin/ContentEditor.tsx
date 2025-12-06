@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 
 import { RichTextEditor } from "../../components/editor/RichTextEditor";
+import { ImagePlaceholder } from "../../components/media/ImagePlaceholder";
+import { MediaButton } from "../../components/media/MediaButton";
 import { api } from "../../services/api";
 
 const languages = ["pt", "en", "es", "fr"] as const;
@@ -13,6 +15,9 @@ type Page = {
   content_translations: Record<string, string>;
   is_published: boolean;
   category?: string | null;
+  hero_image_url?: string | null;
+  gallery_urls?: string[] | null;
+  video_url?: string | null;
 };
 
 const slugify = (value: string) =>
@@ -37,6 +42,9 @@ export const ContentEditor = () => {
   const [pages, setPages] = useState<Page[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [activeLang, setActiveLang] = useState<(typeof languages)[number]>("pt");
+  const [heroImageUrl, setHeroImageUrl] = useState<string>("");
+  const [galleryUrls, setGalleryUrls] = useState<string[]>([]);
+  const [videoUrl, setVideoUrl] = useState<string>("");
 
   const fetchPages = async () => {
     const { data } = await api.get("/pages", { params: { per_page: 100 } });
@@ -59,6 +67,9 @@ export const ContentEditor = () => {
       title_translations: titles,
       content_translations: contents,
       is_published: isPublished,
+      hero_image_url: heroImageUrl || null,
+      gallery_urls: galleryUrls.length ? galleryUrls : null,
+      video_url: videoUrl || null,
     };
 
     if (category) {
@@ -99,6 +110,9 @@ export const ContentEditor = () => {
     setContents(languages.reduce((acc, lang) => ({ ...acc, [lang]: "" }), {}));
     setIsPublished(true);
     setCategory(undefined);
+    setHeroImageUrl("");
+    setGalleryUrls([]);
+    setVideoUrl("");
   };
 
   const handleEdit = (page: Page) => {
@@ -108,6 +122,9 @@ export const ContentEditor = () => {
     setContents({ ...languages.reduce((acc, lang) => ({ ...acc, [lang]: "" }), {}), ...page.content_translations });
     setIsPublished(page.is_published);
     setCategory(page.category || undefined);
+    setHeroImageUrl((page as any).hero_image_url || "");
+    setGalleryUrls((page as any).gallery_urls || []);
+    setVideoUrl((page as any).video_url || "");
   };
 
   const handleDelete = async (id: number) => {
@@ -207,6 +224,70 @@ export const ContentEditor = () => {
             </div>
           </div>
         </div>
+
+        {(category === "projeto" || category === "institucional" || category === "quem-somos") && (
+          <div style={{ display: "grid", gap: "0.65rem" }}>
+            <p style={{ margin: 0, color: "var(--muted)", fontWeight: 600 }}>
+              {category === "projeto" ? "Imagem principal do projeto" : "Banner institucional"}
+            </p>
+            <ImagePlaceholder url={heroImageUrl} label="Nenhuma imagem selecionada" maxHeight={220} />
+            <MediaButton value={heroImageUrl} onChange={setHeroImageUrl} label="Upload imagem principal" />
+            <input
+              placeholder="ou cole a URL da imagem"
+              value={heroImageUrl}
+              onChange={(e) => setHeroImageUrl(e.target.value)}
+              style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
+            />
+          </div>
+        )}
+
+        {category === "projeto" && (
+          <div style={{ display: "grid", gap: "0.65rem" }}>
+            <p style={{ margin: 0, color: "var(--muted)", fontWeight: 600 }}>Galeria (até 5 imagens)</p>
+            <div className="grid two">
+              {galleryUrls.map((url, idx) => (
+                <div key={idx} style={{ display: "grid", gap: "0.35rem" }}>
+                  <ImagePlaceholder url={url} maxHeight={140} label="Sem imagem" />
+                  <input
+                    value={url}
+                    onChange={(e) => {
+                      const clone = [...galleryUrls];
+                      clone[idx] = e.target.value;
+                      setGalleryUrls(clone);
+                    }}
+                    style={{ padding: "0.65rem 0.75rem", borderRadius: 10, border: "1px solid var(--border)" }}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-ghost"
+                    onClick={() => setGalleryUrls(galleryUrls.filter((_, i) => i !== idx))}
+                  >
+                    Remover
+                  </button>
+                </div>
+              ))}
+            </div>
+            {galleryUrls.length < 5 && (
+              <MediaButton
+                label="Adicionar imagem à galeria"
+                onChange={(url) => setGalleryUrls([...galleryUrls, url])}
+              />
+            )}
+          </div>
+        )}
+
+        {category === "projeto" && (
+          <div style={{ display: "grid", gap: "0.35rem" }}>
+            <label style={{ fontWeight: 600 }}>Vídeo (YouTube)</label>
+            <input
+              placeholder="https://www.youtube.com/watch?v=..."
+              value={videoUrl}
+              onChange={(e) => setVideoUrl(e.target.value)}
+              style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
+            />
+            <small style={{ color: "var(--muted)" }}>Somente links do YouTube.</small>
+          </div>
+        )}
 
         <label style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
           <input

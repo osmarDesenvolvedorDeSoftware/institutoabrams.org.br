@@ -1,5 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 
+import { ImagePlaceholder } from "../../components/media/ImagePlaceholder";
+import { MediaButton } from "../../components/media/MediaButton";
 import { api } from "../../services/api";
 
 type Opportunity = {
@@ -11,6 +13,8 @@ type Opportunity = {
   institution?: string;
   description?: string;
   official_link?: string;
+  image_url?: string;
+  video_url?: string;
 };
 
 export const OpportunitiesAdmin = () => {
@@ -22,6 +26,8 @@ export const OpportunitiesAdmin = () => {
   const [status, setStatus] = useState("draft");
   const [deadline, setDeadline] = useState("");
   const [officialLink, setOfficialLink] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
 
   const fetchOpportunities = async () => {
@@ -43,6 +49,8 @@ export const OpportunitiesAdmin = () => {
       status,
       deadline,
       official_link: officialLink,
+      image_url: imageUrl || null,
+      video_url: videoUrl || null,
     };
 
     if (editingId) {
@@ -57,6 +65,8 @@ export const OpportunitiesAdmin = () => {
     setStatus("draft");
     setDeadline("");
     setOfficialLink("");
+    setImageUrl("");
+    setVideoUrl("");
     setEditingId(null);
     fetchOpportunities();
   };
@@ -70,6 +80,8 @@ export const OpportunitiesAdmin = () => {
     setStatus(item.status || "draft");
     setDeadline(item.deadline || "");
     setOfficialLink(item.official_link || "");
+    setImageUrl(item.image_url || "");
+    setVideoUrl(item.video_url || "");
   };
 
   const handleDelete = async (id: number) => {
@@ -193,6 +205,27 @@ export const OpportunitiesAdmin = () => {
           onChange={(e) => setOfficialLink(e.target.value)}
           style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
         />
+        <div style={{ display: "grid", gap: "0.5rem" }}>
+          <label style={{ fontWeight: 600 }}>Imagem da oportunidade</label>
+          <ImagePlaceholder url={imageUrl} label="Nenhuma imagem" maxHeight={180} />
+          <MediaButton value={imageUrl} onChange={setImageUrl} label="Upload imagem" />
+          <input
+            placeholder="ou cole a URL da imagem"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
+          />
+        </div>
+        <div style={{ display: "grid", gap: "0.35rem" }}>
+          <label style={{ fontWeight: 600 }}>Vídeo (YouTube, opcional)</label>
+          <input
+            placeholder="https://www.youtube.com/watch?v=..."
+            value={videoUrl}
+            onChange={(e) => setVideoUrl(e.target.value)}
+            style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
+          />
+          <small style={{ color: "var(--muted)" }}>Somente links do YouTube.</small>
+        </div>
         <button className="btn btn-primary" type="submit">
           Salvar
         </button>

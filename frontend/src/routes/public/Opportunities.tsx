@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { api } from "../../services/api";
+import { getYoutubeEmbedUrl } from "../../utils/media";
 
 type Opportunity = {
   id: number;
@@ -11,6 +12,8 @@ type Opportunity = {
   category?: string;
   institution?: string;
   official_link?: string;
+  image_url?: string;
+  video_url?: string;
 };
 
 export const Opportunities = () => {
@@ -40,6 +43,13 @@ export const Opportunities = () => {
       <div className="grid two" style={{ marginTop: "0.75rem", gap: "1.25rem" }}>
         {opportunities.map((opp) => (
           <div key={opp.id} className="opportunity-card" style={{ display: "grid", gap: "0.75rem" }}>
+            {opp.image_url && (
+              <img
+                src={opp.image_url}
+                alt={opp.title}
+                style={{ width: "100%", maxHeight: 180, objectFit: "cover", borderRadius: 12 }}
+              />
+            )}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
               <h3 style={{ margin: 0 }}>{opp.title}</h3>
               <span className="pill">
@@ -55,6 +65,25 @@ export const Opportunities = () => {
               {opp.institution && <span>{opp.institution}</span>}
               {opp.category && <span>| {opp.category}</span>}
             </div>
+            {opp.video_url && getYoutubeEmbedUrl(opp.video_url) && (
+              <div
+                style={{
+                  position: "relative",
+                  paddingBottom: "56.25%",
+                  height: 0,
+                  overflow: "hidden",
+                  borderRadius: 12,
+                }}
+              >
+                <iframe
+                  src={getYoutubeEmbedUrl(opp.video_url) || undefined}
+                  title={`Vídeo ${opp.title}`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
+                />
+              </div>
+            )}
             <div style={{ display: "flex", gap: "0.65rem", flexWrap: "wrap" }}>
               <a
                 className="btn btn-gold"

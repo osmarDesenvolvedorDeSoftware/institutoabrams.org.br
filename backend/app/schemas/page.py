@@ -24,6 +24,9 @@ class PageSchema(Schema):
         load_default={},
     )
     category = fields.Str(load_default=None, allow_none=True)
+    hero_image_url = fields.Str(load_default=None, allow_none=True)
+    gallery_urls = fields.List(fields.Str(), load_default=None, allow_none=True)
+    video_url = fields.Str(load_default=None, allow_none=True)
     is_published = fields.Bool(load_default=False)
     created_at = fields.DateTime(dump_only=True)
     updated_at = fields.DateTime(dump_only=True)

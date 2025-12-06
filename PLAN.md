@@ -85,3 +85,10 @@
 - [ ] Automação CI para rodar pytest e build docker
 
 Próximo passo → Fase 6 (deploy real na VPS)
+
+## Fase 6 – Mídia, Banners, Logo e Rodapé
+- Upload de imagens (projetos, oportunidades, quem somos)
+- Suporte a vídeo embed (YouTube) em projetos e oportunidades
+- Banners rotativos na Home
+- Configuração de logo do site
+- Rodapé configurável (contatos e redes sociais)

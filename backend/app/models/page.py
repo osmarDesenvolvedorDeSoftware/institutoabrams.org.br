@@ -13,6 +13,9 @@ class Page(db.Model):
     title_translations = db.Column(JSONB, nullable=False, default=dict)
     content_translations = db.Column(JSONB, nullable=True, default=dict)
     category = db.Column(db.String(100), nullable=True)
+    hero_image_url = db.Column(db.String(500), nullable=True)
+    gallery_urls = db.Column(JSONB, nullable=True, default=list)
+    video_url = db.Column(db.String(500), nullable=True)
     is_published = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(

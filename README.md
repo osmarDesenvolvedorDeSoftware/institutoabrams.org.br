@@ -62,3 +62,15 @@ pytest -vv
 ## Future Media Module (placeholder only)
 - Estrutura inicial criada para um futuro módulo de upload, mas ainda não está ativa.
 - Componentes de placeholder estão no frontend e um serviço stub no backend aguardando implementação real.
+
+## Media Upload & Static Files
+- Upload de imagens via `POST /api/v1/media/upload` (multipart/form-data `file`, requer JWT).
+- Arquivos ficam disponíveis em `/uploads/<arquivo>`; pasta configurável por `UPLOAD_FOLDER`/`MEDIA_BASE_URL`.
+
+## Banners
+- CRUD de banners na tela de admin `/admin/banners` consumindo `/api/v1/banners`.
+- A Home consome banners públicos ativos via `GET /api/v1/public/banners`.
+
+## Site Settings
+- Configurações de logo/identidade visual e rodapé em `/admin/settings` usando `/api/v1/settings/<key>`.
+- Chaves atuais: `site_branding` (logo, favicon) e `footer` (contatos/redes).

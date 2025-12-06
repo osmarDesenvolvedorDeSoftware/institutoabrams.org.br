@@ -7,6 +7,7 @@ import { getLocalized } from "../../utils/content";
 type Page = {
   title_translations: Record<string, string>;
   content_translations: Record<string, string>;
+  hero_image_url?: string | null;
 };
 
 export const QuemSomos = () => {
@@ -39,6 +40,13 @@ export const QuemSomos = () => {
 
   return (
     <div className="container section" style={{ display: "grid", gap: "1.25rem" }}>
+      {page?.hero_image_url && (
+        <img
+          src={page.hero_image_url}
+          alt={title}
+          style={{ width: "100%", maxHeight: 320, objectFit: "cover", borderRadius: 14 }}
+        />
+      )}
       <h2 style={{ margin: 0, marginBottom: "0.35rem" }}>{title}</h2>
       <div className="divider" />
       <div

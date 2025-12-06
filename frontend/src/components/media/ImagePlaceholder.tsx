@@ -1,4 +1,10 @@
-export const ImagePlaceholder = () => {
+type Props = {
+  url?: string;
+  label?: string;
+  maxHeight?: number;
+};
+
+export const ImagePlaceholder = ({ url, label = "Nenhuma imagem selecionada", maxHeight = 200 }: Props) => {
   return (
     <div
       style={{
@@ -11,9 +17,18 @@ export const ImagePlaceholder = () => {
         placeItems: "center",
         color: "var(--muted)",
         fontWeight: 600,
+        overflow: "hidden",
       }}
     >
-      Imagem futura aqui
+      {url ? (
+        <img
+          src={url}
+          alt="Pré-visualização"
+          style={{ width: "100%", height: "100%", objectFit: "cover", maxHeight }}
+        />
+      ) : (
+        label
+      )}
     </div>
   );
 };

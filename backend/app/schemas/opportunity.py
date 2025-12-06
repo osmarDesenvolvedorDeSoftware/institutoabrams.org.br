@@ -13,5 +13,7 @@ class OpportunitySchema(Schema):
     )
     deadline = fields.Date(allow_none=True)
     official_link = fields.Str(load_default=None, allow_none=True)
+    image_url = fields.Str(load_default=None, allow_none=True)
+    video_url = fields.Str(load_default=None, allow_none=True)
     created_at = fields.DateTime(dump_only=True)
     updated_at = fields.DateTime(dump_only=True)
