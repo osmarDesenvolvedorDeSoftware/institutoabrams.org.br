@@ -46,50 +46,56 @@ export const Home = () => {
           <div
             style={{
               position: "relative",
-              minHeight: 260,
-              background: `url(${resolveMediaUrl(banners[activeIndex]?.image_url)}) center/cover no-repeat`,
+              minHeight: "clamp(320px, 55vw, 520px)",
+              background: `linear-gradient(120deg, rgba(0,0,0,0.45), rgba(0,0,0,0.35)), url(${resolveMediaUrl(
+                banners[activeIndex]?.image_url,
+              )}) center/cover no-repeat`,
               display: "grid",
               alignItems: "center",
-              padding: "2rem",
+              padding: "2.25rem",
             }}
           >
             <div
               style={{
-                background: "rgba(0,0,0,0.45)",
                 color: "#fff",
                 borderRadius: 12,
-                padding: "1.25rem 1.5rem",
-                maxWidth: 520,
+                padding: "1.5rem 1.75rem",
+                maxWidth: 640,
                 display: "grid",
-                gap: "0.35rem",
+                gap: "0.5rem",
+                background: "rgba(0,0,0,0.35)",
+                backdropFilter: "blur(4px)",
               }}
             >
+              <p style={{ margin: 0, letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, fontSize: 12 }}>
+                Instituto ABRAMS
+              </p>
               <h2 style={{ margin: 0 }}>{banners[activeIndex]?.title}</h2>
-            {banners[activeIndex]?.subtitle && <p style={{ margin: 0 }}>{banners[activeIndex]?.subtitle}</p>}
-            {banners[activeIndex]?.link_url && (
-              banners[activeIndex].link_url.startsWith("http") ? (
-                <a
-                  href={banners[activeIndex].link_url}
-                  className="btn btn-primary"
-                  style={{ width: "fit-content" }}
-                >
-                  {t("common.learnMore", { defaultValue: "Saiba mais" })}
-                </a>
-              ) : (
-                <Link
-                  to={banners[activeIndex].link_url || "#"}
-                  className="btn btn-primary"
-                  style={{ width: "fit-content" }}
-                >
-                  {t("common.learnMore", { defaultValue: "Saiba mais" })}
-                </Link>
-              )
-            )}
+              {banners[activeIndex]?.subtitle && <p style={{ margin: 0 }}>{banners[activeIndex]?.subtitle}</p>}
+              {banners[activeIndex]?.link_url && (
+                banners[activeIndex].link_url.startsWith("http") ? (
+                  <a
+                    href={banners[activeIndex].link_url}
+                    className="btn btn-primary"
+                    style={{ width: "fit-content" }}
+                  >
+                    {t("common.learnMore", { defaultValue: "Saiba mais" })}
+                  </a>
+                ) : (
+                  <Link
+                    to={banners[activeIndex].link_url || "#"}
+                    className="btn btn-primary"
+                    style={{ width: "fit-content" }}
+                  >
+                    {t("common.learnMore", { defaultValue: "Saiba mais" })}
+                  </Link>
+                )
+              )}
             </div>
             <div
               style={{
                 position: "absolute",
-                inset: "auto 1rem 1rem 1rem",
+                inset: "auto 1.25rem 1.25rem 1.25rem",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
@@ -177,6 +183,60 @@ export const Home = () => {
         </div>
       </section>
 
+      <section className="card" style={{ background: "var(--color-bg-muted)" }}>
+        <div style={{ display: "grid", gap: "1.25rem" }}>
+          <div>
+            <p className="subtitle" style={{ marginBottom: "0.15rem" }}>Nossos Pilares</p>
+            <h2 style={{ margin: 0 }}>Impacto que guia nossas ações</h2>
+            <div className="divider" />
+          </div>
+          <div className="grid three">
+            {[
+              { title: "Educação e Cultura", text: "Leitura, arte e conhecimento para formar cidadãos conscientes.", icon: "📚" },
+              { title: "Equidade e Inclusão", text: "Projetos que promovem igualdade de gênero e oportunidades.", icon: "🤝" },
+              { title: "Carreira e Futuro", text: "Trilhas e mentorias para impulsionar trajetórias profissionais.", icon: "🚀" },
+            ].map((pillar) => (
+              <div key={pillar.title} className="card" style={{ display: "grid", gap: "0.5rem" }}>
+                <span style={{ fontSize: 26 }}>{pillar.icon}</span>
+                <h3 style={{ margin: 0 }}>{pillar.title}</h3>
+                <p style={{ margin: 0, color: "var(--muted)" }}>{pillar.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section" style={{ padding: 0 }}>
+        <div style={{ display: "grid", gap: "1.25rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+            <div>
+              <p className="subtitle" style={{ marginBottom: "0.15rem" }}>Destaques do Instituto</p>
+              <h2 style={{ margin: 0 }}>Ações em evidência</h2>
+              <div className="divider" />
+            </div>
+            <Link className="btn btn-ghost" to="/projetos">
+              {t("common.seeAll")}
+            </Link>
+          </div>
+
+          <div className="grid three">
+            {[
+              { title: "Clubinho da Leitura", slug: "clubinho-da-leitura" },
+              { title: "Igualdade de Gênero", slug: "igualdade-de-genero" },
+              { title: "Mentorias Profissionais", slug: "mentorias-profissionais" },
+            ].map((item) => (
+              <Link key={item.slug} to={`/pages/${item.slug}`} className="card" style={{ display: "grid", gap: "0.55rem" }}>
+                <p className="subtitle" style={{ margin: 0 }}>Projeto</p>
+                <h3 style={{ margin: 0 }}>{item.title}</h3>
+                <p style={{ margin: 0, color: "var(--muted)" }}>
+                  Conteúdo em construção. Saiba mais em breve.
+                </p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="section" style={{ display: "grid", gap: "1.25rem" }}>
         <div
           style={{
@@ -219,6 +279,34 @@ export const Home = () => {
               </p>
               <Link to="/projetos" className="btn btn-ghost">
                 {t("common.learnMore")}
+              </Link>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="section" style={{ paddingBottom: 0 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+          <div>
+            <p className="subtitle" style={{ marginBottom: "0.15rem" }}>Acompanhe nosso trabalho</p>
+            <h2 style={{ margin: 0 }}>Projetos e notícias</h2>
+            <div className="divider" />
+          </div>
+          <Link to="/noticias" className="btn btn-ghost">
+            Ver notícias
+          </Link>
+        </div>
+        <div className="grid two" style={{ marginTop: "0.5rem" }}>
+          {["Trilhas de Carreira", "Notícias do Instituto"].map((item, idx) => (
+            <div key={item} className="card" style={{ display: "grid", gap: "0.5rem" }}>
+              <h3 style={{ margin: 0 }}>{item}</h3>
+              <p style={{ margin: 0, color: "var(--muted)" }}>
+                {idx === 0
+                  ? "Conheça as iniciativas que conectam pessoas e oportunidades."
+                  : "Atualizações, eventos e comunicados oficiais do Instituto ABRAMS."}
+              </p>
+              <Link to={idx === 0 ? "/projetos" : "/noticias"} className="btn btn-ghost" style={{ width: "fit-content" }}>
+                {t("common.learnMore", { defaultValue: "Saiba mais" })}
               </Link>
             </div>
           ))}

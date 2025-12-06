@@ -93,8 +93,11 @@ export const PublicLayout = () => {
         style={{
           background: "#fff",
           color: "var(--text)",
-          boxShadow: "0 8px 20px rgba(0,0,0,0.06)",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
           borderBottom: "1px solid var(--border)",
+          position: "sticky",
+          top: 0,
+          zIndex: 15,
         }}
       >
         <div
@@ -103,7 +106,7 @@ export const PublicLayout = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            padding: "0.9rem 1.5rem",
+            padding: "0.75rem 1.25rem",
             gap: "1rem",
           }}
         >
@@ -150,6 +153,8 @@ export const PublicLayout = () => {
               color: "var(--primary-dark)",
               background: "#fff",
               borderColor: "var(--border)",
+              padding: "0.5rem 0.8rem",
+              fontWeight: 700,
             }}
             onClick={() => setIsMenuOpen((s) => !s)}
           >
@@ -159,9 +164,16 @@ export const PublicLayout = () => {
           <nav
             style={{
               display: isMobile ? (isMenuOpen ? "grid" : "none") : "flex",
-              gap: "1rem",
+              gap: "0.75rem",
               alignItems: "center",
-              position: "relative",
+              position: isMobile ? "absolute" : "relative",
+              top: isMobile ? "100%" : "auto",
+              left: 0,
+              right: 0,
+              background: isMobile ? "#fff" : "transparent",
+              padding: isMobile ? "0.75rem 0" : 0,
+              borderRadius: isMobile ? "0 0 12px 12px" : 0,
+              boxShadow: isMobile ? "0 12px 24px rgba(0,0,0,0.08)" : "none",
             }}
           >
             {menuTree.map((item) =>
@@ -200,17 +212,17 @@ export const PublicLayout = () => {
                   <div
                     className="dropdown"
                     style={{
-                      position: "absolute",
-                      top: "110%",
+                      position: isMobile ? "relative" : "absolute",
+                      top: isMobile ? "auto" : "110%",
                       left: 0,
                       background: "#fff",
                       border: "1px solid #e5e7eb",
                       color: "var(--text)",
-                      borderRadius: 8,
-                      minWidth: 180,
-                      boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-                      gap: "0.25rem",
-                      padding: "0.5rem",
+                      borderRadius: 10,
+                      minWidth: 200,
+                      boxShadow: "0 14px 32px rgba(0,0,0,0.08)",
+                      gap: "0.35rem",
+                      padding: "0.6rem",
                       zIndex: 10,
                       display: isMobile ? "grid" : "none",
                     }}
@@ -285,46 +297,67 @@ export const PublicLayout = () => {
       <footer
         style={{
           borderTop: "1px solid var(--border)",
-          padding: "1.5rem 0",
-          marginTop: "2rem",
-          background: "#fff",
+          padding: "2rem 0 1.25rem",
+          marginTop: "2.5rem",
+          background: "#f9fafb",
         }}
       >
         <div
           className="container"
-          style={{ display: "flex", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}
+          style={{ display: "grid", gap: "1.5rem" }}
         >
-          <div style={{ minWidth: 240 }}>
-            <strong>Instituto ABRAMS</strong>
-            <p style={{ margin: 0, color: "var(--muted)" }}>
-              {footerInfo.address || "Construindo futuro com oportunidades e propósito."}
-            </p>
-            {footerInfo.email && <p style={{ margin: "0.15rem 0", color: "var(--muted)" }}>{footerInfo.email}</p>}
-            {footerInfo.phone && <p style={{ margin: "0.15rem 0", color: "var(--muted)" }}>{footerInfo.phone}</p>}
+          <div style={{ display: "grid", gap: "1rem", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
+            <div style={{ display: "grid", gap: "0.35rem" }}>
+              <strong>Instituto ABRAMS</strong>
+              <p style={{ margin: 0, color: "var(--muted)" }}>
+                {footerInfo.address || "Construindo futuro com oportunidades e propósito."}
+              </p>
+              {footerInfo.email && <p style={{ margin: 0, color: "var(--muted)" }}>{footerInfo.email}</p>}
+              {footerInfo.phone && <p style={{ margin: 0, color: "var(--muted)" }}>{footerInfo.phone}</p>}
+            </div>
+            <div style={{ display: "grid", gap: "0.35rem" }}>
+              <strong>Links rápidos</strong>
+              {[
+                { label: "Home", href: "/" },
+                { label: "Quem Somos", href: "/quem-somos" },
+                { label: "Projetos", href: "/projetos" },
+                { label: "Doação", href: "/doacao" },
+                { label: "Contato", href: "/contato" },
+              ].map((link) => (
+                <Link key={link.href} to={link.href} style={{ color: "var(--muted)" }}>
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+            <div style={{ display: "grid", gap: "0.35rem" }}>
+              <strong>Redes sociais</strong>
+              {footerInfo.social?.youtube && (
+                <a href={footerInfo.social.youtube} target="_blank" rel="noreferrer" style={{ color: "var(--muted)" }}>
+                  YouTube
+                </a>
+              )}
+              {footerInfo.social?.instagram && (
+                <a href={footerInfo.social.instagram} target="_blank" rel="noreferrer" style={{ color: "var(--muted)" }}>
+                  Instagram
+                </a>
+              )}
+              {footerInfo.social?.facebook && (
+                <a href={footerInfo.social.facebook} target="_blank" rel="noreferrer" style={{ color: "var(--muted)" }}>
+                  Facebook
+                </a>
+              )}
+              {footerInfo.social?.linkedin && (
+                <a href={footerInfo.social.linkedin} target="_blank" rel="noreferrer" style={{ color: "var(--muted)" }}>
+                  LinkedIn
+                </a>
+              )}
+              {!footerInfo.social && <p style={{ margin: 0, color: "var(--muted)" }}>Em breve novidades.</p>}
+            </div>
           </div>
-          <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", flexWrap: "wrap" }}>
-            {footerInfo.social?.youtube && (
-              <a href={footerInfo.social.youtube} target="_blank" rel="noreferrer">
-                YouTube
-              </a>
-            )}
-            {footerInfo.social?.instagram && (
-              <a href={footerInfo.social.instagram} target="_blank" rel="noreferrer">
-                Instagram
-              </a>
-            )}
-            {footerInfo.social?.facebook && (
-              <a href={footerInfo.social.facebook} target="_blank" rel="noreferrer">
-                Facebook
-              </a>
-            )}
-            {footerInfo.social?.linkedin && (
-              <a href={footerInfo.social.linkedin} target="_blank" rel="noreferrer">
-                LinkedIn
-              </a>
-            )}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+            <small style={{ color: "#777" }}>© {new Date().getFullYear()} Instituto ABRAMS</small>
+            <small style={{ color: "var(--muted)" }}>CNPJ: 00.000.000/0000-00</small>
           </div>
-          <small style={{ color: "#777" }}>© {new Date().getFullYear()}</small>
         </div>
       </footer>
     </div>
