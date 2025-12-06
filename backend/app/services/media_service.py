@@ -16,7 +16,12 @@ def save_media(file) -> str:
     if not upload_folder:
         raise ValueError("UPLOAD_FOLDER não configurado.")
 
-    os.makedirs(upload_folder, exist_ok=True)
+    upload_folder = os.path.abspath(upload_folder)
+
+    try:
+        os.makedirs(upload_folder, exist_ok=True)
+    except OSError as exc:
+        raise ValueError(f"Não foi possível criar diretório de upload: {exc}") from exc
 
     filename = secure_filename(file.filename)
     if not filename:
@@ -27,7 +32,10 @@ def save_media(file) -> str:
     final_name = f"{name}_{unique_suffix}{ext}"
     path = os.path.join(upload_folder, final_name)
 
-    file.save(path)
+    try:
+        file.save(path)
+    except OSError as exc:
+        raise ValueError(f"Não foi possível salvar o arquivo: {exc}") from exc
 
     media_base_url = media_base_url.rstrip("/")
     return f"{media_base_url}/{final_name}"

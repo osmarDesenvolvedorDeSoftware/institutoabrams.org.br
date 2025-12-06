@@ -1,13 +1,18 @@
+import os
+
 from flask import Blueprint, current_app, jsonify, request, send_from_directory
 from flask_jwt_extended import jwt_required
 
 from ..services import media_service
 
-media_bp = Blueprint("media", __name__)
-uploads_bp = Blueprint("uploads", __name__)
+# API (upload) blueprint, mounted under /api prefix in register_routes
+media_api_bp = Blueprint("media_api", __name__)
+
+# Public serving blueprint, mounted at root (no /api prefix)
+media_bp = Blueprint("media_public", __name__)
 
 
-@media_bp.post("/upload")
+@media_api_bp.post("/upload")
 @jwt_required()
 def upload_media():
     if "file" not in request.files:
@@ -28,7 +33,10 @@ def upload_media():
     return jsonify({"url": url})
 
 
-@uploads_bp.get("/uploads/<path:filename>")
+@media_bp.get("/uploads/<path:filename>")
 def serve_upload(filename):
     upload_dir = current_app.config.get("UPLOAD_FOLDER")
+    if not upload_dir:
+        return jsonify({"message": "UPLOAD_FOLDER não configurado."}), 500
+    os.makedirs(upload_dir, exist_ok=True)
     return send_from_directory(upload_dir, filename)
