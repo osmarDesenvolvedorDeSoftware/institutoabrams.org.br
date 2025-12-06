@@ -18,6 +18,8 @@ import { PublicPage } from "./routes/public/PublicPage";
 import { QuemSomos } from "./routes/public/QuemSomos";
 
 function App() {
+  const StaticPage = ({ slug }: { slug: string }) => <PublicPage slugOverride={slug} />;
+
   return (
     <Routes>
       <Route element={<PublicLayout />}>
@@ -26,6 +28,9 @@ function App() {
         <Route path="/oportunidades" element={<Opportunities />} />
         <Route path="/contato" element={<Contact />} />
         <Route path="/quem-somos" element={<QuemSomos />} />
+        <Route path="/noticias" element={<StaticPage slug="noticias" />} />
+        <Route path="/portfolio" element={<StaticPage slug="portfolio" />} />
+        <Route path="/doacao" element={<StaticPage slug="doacao" />} />
         <Route path="/pages/:slug" element={<PublicPage />} />
       </Route>
 

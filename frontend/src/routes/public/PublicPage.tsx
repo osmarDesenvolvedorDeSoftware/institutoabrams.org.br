@@ -16,22 +16,27 @@ type Page = {
   video_url?: string | null;
 };
 
-export const PublicPage = () => {
+type Props = {
+  slugOverride?: string;
+};
+
+export const PublicPage = ({ slugOverride }: Props = {}) => {
   const { slug } = useParams();
   const { i18n, t } = useTranslation();
   const [page, setPage] = useState<Page | null>(null);
   const [notFound, setNotFound] = useState(false);
+  const currentSlug = slugOverride || slug;
 
   useEffect(() => {
-    if (!slug) return;
+    if (!currentSlug) return;
     api
-      .get(`/pages/slug/${slug}`)
+      .get(`/pages/slug/${currentSlug}`)
       .then(({ data }) => {
         setPage(data);
         setNotFound(false);
       })
       .catch(() => setNotFound(true));
-  }, [slug]);
+  }, [currentSlug]);
 
   if (notFound) {
     return (
