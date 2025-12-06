@@ -14,10 +14,24 @@ export const QuemSomos = () => {
   const [page, setPage] = useState<Page | null>(null);
 
   useEffect(() => {
-    api
-      .get("/pages/slug/quem-somos")
-      .then(({ data }) => setPage(data))
-      .catch(() => setPage(null));
+    const load = async () => {
+      try {
+        const { data } = await api.get("/pages/slug/quem-somos");
+        setPage(data);
+        return;
+      } catch {
+        // If slug not found, try first published page from category institucional
+      }
+      try {
+        const { data } = await api.get("/pages", { params: { category: "institucional", is_published: true, per_page: 1 } });
+        const items = data.items || data;
+        setPage(items?.[0] || null);
+      } catch {
+        setPage(null);
+      }
+    };
+
+    load();
   }, []);
 
   const title = page ? getLocalized(page.title_translations, i18n.language) : t("heroTitle");
