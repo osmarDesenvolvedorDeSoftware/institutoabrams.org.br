@@ -11,13 +11,6 @@ type Props = {
   pages?: Page[];
 };
 
-const fixedRoutes = [
-  { label: "Home", value: "/" },
-  { label: "Projetos", value: "/projetos" },
-  { label: "Oportunidades", value: "/oportunidades" },
-  { label: "Contato", value: "/contato" },
-];
-
 export const RouteSelector = ({ value, onChange, pages = [] }: Props) => {
   const pageOptions = useMemo(
     () =>
@@ -28,11 +21,47 @@ export const RouteSelector = ({ value, onChange, pages = [] }: Props) => {
     [pages],
   );
 
+  const groupedRoutes = useMemo(
+    () => [
+      {
+        label: "Institucional",
+        routes: [
+          { label: "Início", value: "/" },
+          { label: "Quem Somos", value: "/quem-somos" },
+          { label: "Notícias", value: "/noticias" },
+          { label: "Portfólio", value: "/portfolio" },
+          { label: "Doação", value: "/doacao" },
+          { label: "Contato", value: "/contato" },
+        ],
+      },
+      {
+        label: "Projetos e Serviços",
+        routes: [
+          { label: "Projetos", value: "/projetos" },
+          { label: "Clubinho da Leitura", value: "/pages/clubinho-da-leitura" },
+          { label: "Igualdade de Gênero", value: "/pages/igualdade-de-genero" },
+          { label: "Trilhas de Carreira", value: "/pages/trilhas-de-carreira" },
+          { label: "Mentorias Profissionais", value: "/pages/mentorias-profissionais" },
+          { label: "Cursos / Serviços", value: "/pages/cursos" },
+        ],
+      },
+      {
+        label: "Oportunidades",
+        routes: [{ label: "Oportunidades", value: "/oportunidades" }],
+      },
+      {
+        label: "Outros",
+        routes: [],
+      },
+    ],
+    [],
+  );
+
   const allowedValues = useMemo(() => {
-    const defaults = fixedRoutes.map((r) => r.value);
+    const defaults = groupedRoutes.flatMap((g) => g.routes.map((r) => r.value));
     const pagesValues = pageOptions.map((p) => p.value);
     return [...defaults, ...pagesValues];
-  }, [pageOptions]);
+  }, [groupedRoutes, pageOptions]);
 
   const currentValue =
     value && !allowedValues.includes(value) ? "__unsupported__" : value;
@@ -50,13 +79,17 @@ export const RouteSelector = ({ value, onChange, pages = [] }: Props) => {
             Rota atual (não listada): {value}
           </option>
         )}
-        <optgroup label="Páginas principais">
-          {fixedRoutes.map((route) => (
-            <option key={route.value} value={route.value}>
-              {route.label}
-            </option>
-          ))}
-        </optgroup>
+        {groupedRoutes.map((group) =>
+          group.routes.length ? (
+            <optgroup key={group.label} label={group.label}>
+              {group.routes.map((route) => (
+                <option key={route.value} value={route.value}>
+                  {route.label}
+                </option>
+              ))}
+            </optgroup>
+          ) : null,
+        )}
         <optgroup label="Páginas do site">
           {pageOptions.map((page) => (
             <option key={page.value} value={page.value}>

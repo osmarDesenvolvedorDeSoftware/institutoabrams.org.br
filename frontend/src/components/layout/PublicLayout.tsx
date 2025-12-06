@@ -17,11 +17,20 @@ type MenuItem = {
 };
 
 const fallbackNav: MenuItem[] = [
-  { id: 1, label: "Home", slug: "home", target: "/", is_dropdown: false },
-  { id: 2, label: "Quem Somos", slug: "quem-somos", target: "/quem-somos", is_dropdown: false },
-  { id: 3, label: "Projetos", slug: "projetos", target: "/projetos", is_dropdown: false },
-  { id: 4, label: "Oportunidades", slug: "oportunidades", target: "/oportunidades", is_dropdown: false },
-  { id: 5, label: "Contato", slug: "contato", target: "/contato", is_dropdown: false },
+  { id: 1, label: "Início", slug: "inicio", target: "/", is_dropdown: false, order: 1 },
+  { id: 2, label: "Quem Somos", slug: "quem-somos", target: "/quem-somos", is_dropdown: false, order: 2 },
+  { id: 3, label: "Projetos e Serviços", slug: "projetos-servicos", target: "/projetos", is_dropdown: true, order: 3 },
+  { id: 4, label: "Notícias", slug: "noticias", target: "/noticias", is_dropdown: false, order: 4 },
+  { id: 5, label: "Portfólio", slug: "portfolio", target: "/portfolio", is_dropdown: false, order: 5 },
+  { id: 6, label: "Oportunidades", slug: "oportunidades", target: "/oportunidades", is_dropdown: false, order: 6 },
+  { id: 7, label: "Doação", slug: "doacao", target: "/doacao", is_dropdown: false, order: 7 },
+  { id: 8, label: "Contato", slug: "contato", target: "/contato", is_dropdown: false, order: 8 },
+  // Children for Projetos e Serviços
+  { id: 30, label: "Clubinho da Leitura", slug: "clubinho-da-leitura", target: "/pages/clubinho-da-leitura", is_dropdown: false, parent_id: 3, order: 1 },
+  { id: 31, label: "Igualdade de Gênero", slug: "igualdade-de-genero", target: "/pages/igualdade-de-genero", is_dropdown: false, parent_id: 3, order: 2 },
+  { id: 32, label: "Trilhas de Carreira", slug: "trilhas-de-carreira", target: "/pages/trilhas-de-carreira", is_dropdown: false, parent_id: 3, order: 3 },
+  { id: 33, label: "Mentorias Profissionais", slug: "mentorias-profissionais", target: "/pages/mentorias-profissionais", is_dropdown: false, parent_id: 3, order: 4 },
+  { id: 34, label: "Cursos / Serviços", slug: "cursos", target: "/pages/cursos", is_dropdown: false, parent_id: 3, order: 5 },
 ];
 
 export const PublicLayout = () => {
@@ -69,7 +78,7 @@ export const PublicLayout = () => {
       .sort((a, b) => (a.order || 0) - (b.order || 0))
       .map((parent) => ({
         ...parent,
-        children: menus
+        children: source
           .filter((c) => c.parent_id === parent.id)
           .sort((a, b) => (a.order || 0) - (b.order || 0)),
       }));

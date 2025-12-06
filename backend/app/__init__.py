@@ -3,7 +3,7 @@ from flask import Flask, jsonify
 from .config import Settings
 from .extensions import cors, db, jwt, migrate
 from .routes import register_routes
-from .seed import seed_admin
+from .seed import seed_admin, seed_navigation
 
 
 def create_app(config_object: type[Settings] | None = None) -> Flask:
@@ -28,6 +28,12 @@ def create_app(config_object: type[Settings] | None = None) -> Flask:
     def seed_admin_cmd():
         """Seed default admin user (dev only)."""
         result = seed_admin()
+        print(result)
+
+    @app.cli.command("seed-navigation")
+    def seed_navigation_cmd():
+        """Seed default navigation/menu and placeholder pages."""
+        result = seed_navigation()
         print(result)
 
     @app.errorhandler(404)
