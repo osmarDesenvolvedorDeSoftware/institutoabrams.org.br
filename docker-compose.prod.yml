@@ -21,6 +21,8 @@ services:
       - db
     ports:
       - "8200:8000"
+    volumes:
+      - uploads_prod:/app/uploads
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
       interval: 30s
@@ -37,3 +39,4 @@ services:
 
 volumes:
   pgdata_prod:
+  uploads_prod:
