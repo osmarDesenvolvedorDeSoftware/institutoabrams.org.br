@@ -192,12 +192,11 @@ export const Home = () => {
           </div>
           <div className="grid three">
             {[
-              { title: "Educação e Cultura", text: "Leitura, arte e conhecimento para formar cidadãos conscientes.", icon: "📚" },
-              { title: "Equidade e Inclusão", text: "Projetos que promovem igualdade de gênero e oportunidades.", icon: "🤝" },
-              { title: "Carreira e Futuro", text: "Trilhas e mentorias para impulsionar trajetórias profissionais.", icon: "🚀" },
+              { title: "Educação e Cultura", text: "Leitura, arte e conhecimento para formar cidadãos conscientes." },
+              { title: "Equidade e Inclusão", text: "Projetos que promovem igualdade de gênero e oportunidades." },
+              { title: "Carreira e Futuro", text: "Trilhas e mentorias para impulsionar trajetórias profissionais." },
             ].map((pillar) => (
               <div key={pillar.title} className="card" style={{ display: "grid", gap: "0.5rem" }}>
-                <span style={{ fontSize: 26 }}>{pillar.icon}</span>
                 <h3 style={{ margin: 0 }}>{pillar.title}</h3>
                 <p style={{ margin: 0, color: "var(--muted)" }}>{pillar.text}</p>
               </div>
