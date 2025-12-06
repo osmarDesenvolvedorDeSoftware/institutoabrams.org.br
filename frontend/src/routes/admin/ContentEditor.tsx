@@ -4,6 +4,7 @@ import { RichTextEditor } from "../../components/editor/RichTextEditor";
 import { api } from "../../services/api";
 
 const languages = ["pt", "en", "es", "fr"] as const;
+const singlePageCategories = ["contato", "institucional"] as const;
 
 type Page = {
   id: number;
@@ -65,6 +66,16 @@ export const ContentEditor = () => {
     }
     if (slugToSend) {
       payload.slug = slugToSend;
+    }
+
+    const isSingleCategory = category && (singlePageCategories as readonly string[]).includes(category);
+    const hasConflict =
+      isSingleCategory &&
+      pages.some((p) => p.category === category && (!editingId || p.id !== editingId));
+
+    if (hasConflict) {
+      setMessage("Já existe uma página para essa categoria. Edite a existente em vez de criar outra.");
+      return;
     }
 
     try {
