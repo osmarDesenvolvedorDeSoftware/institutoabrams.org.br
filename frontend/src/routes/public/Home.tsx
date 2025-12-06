@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { api } from "../../services/api";
+import { resolveMediaUrl } from "../../utils/media";
 
 type Banner = {
   id: number;
@@ -46,7 +47,7 @@ export const Home = () => {
             style={{
               position: "relative",
               minHeight: 260,
-              background: `url(${banners[activeIndex]?.image_url}) center/cover no-repeat`,
+              background: `url(${resolveMediaUrl(banners[activeIndex]?.image_url)}) center/cover no-repeat`,
               display: "grid",
               alignItems: "center",
               padding: "2rem",
@@ -64,26 +65,26 @@ export const Home = () => {
               }}
             >
               <h2 style={{ margin: 0 }}>{banners[activeIndex]?.title}</h2>
-              {banners[activeIndex]?.subtitle && <p style={{ margin: 0 }}>{banners[activeIndex]?.subtitle}</p>}
-              {banners[activeIndex]?.link_url && (
-                banners[activeIndex].link_url.startsWith("http") ? (
-                  <a
-                    href={banners[activeIndex].link_url}
-                    className="btn btn-primary"
-                    style={{ width: "fit-content" }}
-                  >
-                    {t("common.learnMore", { defaultValue: "Saiba mais" })}
-                  </a>
-                ) : (
-                  <Link
-                    to={banners[activeIndex].link_url || "#"}
-                    className="btn btn-primary"
-                    style={{ width: "fit-content" }}
-                  >
-                    {t("common.learnMore", { defaultValue: "Saiba mais" })}
-                  </Link>
-                )
-              )}
+            {banners[activeIndex]?.subtitle && <p style={{ margin: 0 }}>{banners[activeIndex]?.subtitle}</p>}
+            {banners[activeIndex]?.link_url && (
+              banners[activeIndex].link_url.startsWith("http") ? (
+                <a
+                  href={banners[activeIndex].link_url}
+                  className="btn btn-primary"
+                  style={{ width: "fit-content" }}
+                >
+                  {t("common.learnMore", { defaultValue: "Saiba mais" })}
+                </a>
+              ) : (
+                <Link
+                  to={banners[activeIndex].link_url || "#"}
+                  className="btn btn-primary"
+                  style={{ width: "fit-content" }}
+                >
+                  {t("common.learnMore", { defaultValue: "Saiba mais" })}
+                </Link>
+              )
+            )}
             </div>
             <div
               style={{

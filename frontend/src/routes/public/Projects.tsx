@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { api } from "../../services/api";
 import { getLocalized } from "../../utils/content";
+import { resolveMediaUrl } from "../../utils/media";
 
 type PageProject = {
   id: number;
@@ -58,7 +59,7 @@ export const Projects = () => {
           >
             {project.hero_image_url && (
               <img
-                src={project.hero_image_url}
+                src={resolveMediaUrl(project.hero_image_url)}
                 alt={title}
                 style={{ width: "100%", height: 160, objectFit: "cover", borderRadius: 12 }}
               />

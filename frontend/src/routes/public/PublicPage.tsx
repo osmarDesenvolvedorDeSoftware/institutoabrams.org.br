@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { api } from "../../services/api";
 import { getLocalized } from "../../utils/content";
-import { getYoutubeEmbedUrl } from "../../utils/media";
+import { getYoutubeEmbedUrl, resolveMediaUrl } from "../../utils/media";
 
 type Page = {
   slug: string;
@@ -57,7 +57,7 @@ export const PublicPage = () => {
     <div className="container section" style={{ display: "grid", gap: "1rem" }}>
       {page.hero_image_url && (
         <img
-          src={page.hero_image_url}
+          src={resolveMediaUrl(page.hero_image_url)}
           alt={title}
           style={{ width: "100%", maxHeight: 320, objectFit: "cover", borderRadius: 14 }}
         />
@@ -94,7 +94,7 @@ export const PublicPage = () => {
           {page.gallery_urls.map((url, idx) => (
             <img
               key={idx}
-              src={url}
+              src={resolveMediaUrl(url)}
               alt={`Galeria ${idx + 1}`}
               style={{ width: "100%", borderRadius: 12, objectFit: "cover", maxHeight: 220 }}
             />

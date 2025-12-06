@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { api } from "../../services/api";
-import { getYoutubeEmbedUrl } from "../../utils/media";
+import { getYoutubeEmbedUrl, resolveMediaUrl } from "../../utils/media";
 
 type Opportunity = {
   id: number;
@@ -45,7 +45,7 @@ export const Opportunities = () => {
           <div key={opp.id} className="opportunity-card" style={{ display: "grid", gap: "0.75rem" }}>
             {opp.image_url && (
               <img
-                src={opp.image_url}
+                src={resolveMediaUrl(opp.image_url)}
                 alt={opp.title}
                 style={{ width: "100%", maxHeight: 180, objectFit: "cover", borderRadius: 12 }}
               />

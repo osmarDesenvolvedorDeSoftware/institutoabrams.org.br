@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { api } from "../../services/api";
 import { getLocalized } from "../../utils/content";
+import { resolveMediaUrl } from "../../utils/media";
 
 type Page = {
   title_translations: Record<string, string>;
@@ -42,7 +43,7 @@ export const QuemSomos = () => {
     <div className="container section" style={{ display: "grid", gap: "1.25rem" }}>
       {page?.hero_image_url && (
         <img
-          src={page.hero_image_url}
+          src={resolveMediaUrl(page.hero_image_url)}
           alt={title}
           style={{ width: "100%", maxHeight: 320, objectFit: "cover", borderRadius: 14 }}
         />

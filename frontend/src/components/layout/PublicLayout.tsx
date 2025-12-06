@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useMemo, useState } from "react";
 
 import { useAuth } from "../../context/AuthContext";
+import { resolveMediaUrl } from "../../utils/media";
 import { api } from "../../services/api";
 
 type MenuItem = {
@@ -110,7 +111,7 @@ export const PublicLayout = () => {
           >
             {branding.logo_url ? (
               <img
-                src={branding.logo_url}
+                src={resolveMediaUrl(branding.logo_url)}
                 alt="Instituto ABRAMS"
                 style={{ height: 42, width: "auto", objectFit: "contain" }}
               />

@@ -1,3 +1,5 @@
+import { resolveMediaUrl } from "../../utils/media";
+
 type Props = {
   url?: string;
   label?: string;
@@ -5,6 +7,7 @@ type Props = {
 };
 
 export const ImagePlaceholder = ({ url, label = "Nenhuma imagem selecionada", maxHeight = 200 }: Props) => {
+  const resolved = resolveMediaUrl(url);
   return (
     <div
       style={{
@@ -20,9 +23,9 @@ export const ImagePlaceholder = ({ url, label = "Nenhuma imagem selecionada", ma
         overflow: "hidden",
       }}
     >
-      {url ? (
+      {resolved ? (
         <img
-          src={url}
+          src={resolved}
           alt="Pré-visualização"
           style={{ width: "100%", height: "100%", objectFit: "cover", maxHeight }}
         />
