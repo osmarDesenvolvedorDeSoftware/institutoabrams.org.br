@@ -191,6 +191,7 @@ export const PublicLayout = () => {
                       gap: "0.3rem",
                       color: isActive(item.target) ? "var(--primary-dark)" : "var(--text)",
                       transition: "background-color 120ms ease, color 120ms ease",
+                      whiteSpace: "nowrap",
                     }}
                   >
                     {item.label}
@@ -245,6 +246,7 @@ export const PublicLayout = () => {
                       ? "rgba(207,175,112,0.18)"
                       : "transparent",
                     transition: "background-color 120ms ease, color 120ms ease",
+                    whiteSpace: "nowrap",
                   }}
                 >
                   {item.label}
