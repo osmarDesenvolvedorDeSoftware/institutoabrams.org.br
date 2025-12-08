@@ -265,9 +265,11 @@ def load_templates():
     return templates
 
 
-@bp.get("/page-templates")
-@jwt_required()
+@bp.route("/page-templates", methods=["GET", "OPTIONS"])
+@jwt_required(optional=True)
 def list_page_templates():
+    if request.method == "OPTIONS":
+        return "", 200
     try:
         templates = load_templates()
     except FileNotFoundError:
@@ -276,8 +278,3 @@ def list_page_templates():
         return jsonify({"message": "Invalid templates file"}), 500
 
     return jsonify({"templates": templates}), 200
-
-
-@bp.options("/page-templates")
-def options_page_templates():
-    return "", 200
