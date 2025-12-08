@@ -34,6 +34,26 @@ def delete_menu(menu_id: int):
     return jsonify({"message": "Deleted"}), 204
 
 
+@bp.patch("/<int:menu_id>")
+@jwt_required()
+def update_menu(menu_id: int):
+    menu = menu_service.get_menu(menu_id)
+    if not menu:
+        return jsonify({"message": "Menu not found"}), 404
+
+    payload = request.get_json() or {}
+    parent_id = payload.get("parent_id", menu.parent_id)
+    if parent_id is not None:
+        parent = menu_service.get_menu(parent_id)
+        if not parent:
+            return jsonify({"message": "Parent menu not found"}), 404
+    try:
+        updated = menu_service.update_menu(menu, payload)
+    except ValueError as err:
+        return jsonify({"message": str(err)}), 400
+    return jsonify(menu_schema.dump(updated)), 200
+
+
 @bp.post("/<int:menu_id>/add-submenu")
 @jwt_required()
 def add_submenu(menu_id: int):

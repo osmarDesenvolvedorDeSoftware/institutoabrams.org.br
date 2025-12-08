@@ -17,6 +17,7 @@ export const MenusAdmin = () => {
   const [items, setItems] = useState<MenuItem[]>([]);
   const [wizardOpen, setWizardOpen] = useState(false);
   const [wizardParentId, setWizardParentId] = useState<number | undefined>(undefined);
+  const [orderDrafts, setOrderDrafts] = useState<Record<number, number | undefined>>({});
 
   const fetchMenus = async () => {
     const { data } = await api.get("/menus", { params: { per_page: 200 } });
@@ -31,6 +32,34 @@ export const MenusAdmin = () => {
 
   const handleDelete = async (id: number) => {
     await api.delete(`/menus/${id}`);
+    fetchMenus();
+  };
+
+  const updateOrder = async (id: number, order: number, parent_id: number | null | undefined) => {
+    await api.patch(`/menus/${id}`, { order, parent_id });
+  };
+
+  const handleMove = async (item: MenuItem, direction: -1 | 1) => {
+    const siblings = items
+      .filter((i) => i.parent_id === item.parent_id)
+      .sort((a, b) => (a.order || 0) - (b.order || 0));
+    const idx = siblings.findIndex((m) => m.id === item.id);
+    if (idx < 0) return;
+    const targetIdx = idx + direction;
+    if (targetIdx < 0 || targetIdx >= siblings.length) return;
+    const neighbor = siblings[targetIdx];
+    const currentOrder = item.order ?? idx + 1;
+    const neighborOrder = neighbor.order ?? targetIdx + 1;
+    await updateOrder(item.id, neighborOrder, item.parent_id ?? null);
+    await updateOrder(neighbor.id, currentOrder, neighbor.parent_id ?? null);
+    fetchMenus();
+  };
+
+  const handleSaveOrder = async (item: MenuItem) => {
+    const draft = orderDrafts[item.id];
+    if (draft === undefined || draft === null) return;
+    await updateOrder(item.id, Number(draft), item.parent_id ?? null);
+    setOrderDrafts((prev) => ({ ...prev, [item.id]: undefined }));
     fetchMenus();
   };
 
@@ -124,6 +153,7 @@ export const MenusAdmin = () => {
               <th>Rota</th>
               <th>Ordem</th>
               <th>Pai</th>
+              <th>Acoes</th>
               <th />
             </tr>
           </thead>
@@ -134,9 +164,38 @@ export const MenusAdmin = () => {
                   {item.label} {item.is_dropdown ? "(dropdown)" : ""}
                 </td>
                 <td style={{ padding: "0.6rem 0" }}>{item.target}</td>
-                <td style={{ padding: "0.6rem 0" }}>{item.order ?? 0}</td>
+                <td style={{ padding: "0.6rem 0" }}>
+                  <div style={{ display: "flex", gap: "0.35rem", alignItems: "center" }}>
+                    <input
+                      type="number"
+                      value={
+                        orderDrafts[item.id] !== undefined && orderDrafts[item.id] !== null
+                          ? orderDrafts[item.id]
+                          : item.order ?? 0
+                      }
+                      onChange={(e) =>
+                        setOrderDrafts((prev) => ({
+                          ...prev,
+                          [item.id]: e.target.value ? Number(e.target.value) : undefined,
+                        }))
+                      }
+                      style={{ width: 70, padding: "0.35rem 0.45rem", borderRadius: 8, border: "1px solid var(--border)" }}
+                    />
+                    <button className="btn btn-ghost" type="button" onClick={() => handleSaveOrder(item)}>
+                      Salvar
+                    </button>
+                  </div>
+                </td>
                 <td style={{ padding: "0.6rem 0" }}>
                   {item.parent_id ? parents.find((p) => p.id === item.parent_id)?.label || "-" : "Sem pai"}
+                </td>
+                <td style={{ padding: "0.6rem 0", display: "flex", gap: "0.35rem", flexWrap: "wrap" }}>
+                  <button className="btn btn-ghost" type="button" onClick={() => handleMove(item, -1)}>
+                    ↑
+                  </button>
+                  <button className="btn btn-ghost" type="button" onClick={() => handleMove(item, 1)}>
+                    ↓
+                  </button>
                 </td>
                 <td style={{ padding: "0.6rem 0", display: "flex", gap: "0.5rem" }}>
                   <button className="btn btn-ghost" onClick={() => handleDelete(item.id)}>

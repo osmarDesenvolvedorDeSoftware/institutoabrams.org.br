@@ -32,6 +32,21 @@ export const HomeEditor = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  const createHomeContent = async () => {
+    const payload = {
+      page: {
+        title_translations: { pt: "Conteudo da Home" },
+        content_translations: { pt: "" },
+        slug: "home-content",
+        sections: [],
+        is_published: true,
+      },
+      create_menu: false,
+    };
+    const { data } = await api.post("/pages/with-menu", payload);
+    return data.page;
+  };
+
   const ensureHero = (list: Section[]) => {
     const hasHero = list.some((s) => s.type === "hero");
     if (hasHero) return list;
@@ -57,8 +72,20 @@ export const HomeEditor = () => {
         const loaded = Array.isArray(data.sections) ? data.sections : [];
         setSections(ensureHero(loaded));
       })
-      .catch(() => {
-        setError("Nao foi possivel carregar o conteudo da home.");
+      .catch(async (err) => {
+        if (err?.response?.status === 404) {
+          try {
+            const page = await createHomeContent();
+            setPageId(page.id);
+            const loaded = Array.isArray(page.sections) ? page.sections : [];
+            setSections(ensureHero(loaded));
+            setError(null);
+          } catch (createErr) {
+            setError("Nao foi possivel criar a pagina home-content automaticamente.");
+          }
+        } else {
+          setError("Nao foi possivel carregar o conteudo da home.");
+        }
       })
       .finally(() => setLoading(false));
   }, []);
