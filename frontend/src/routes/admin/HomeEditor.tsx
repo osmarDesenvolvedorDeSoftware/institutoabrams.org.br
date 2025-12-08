@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
+import { ImagePlaceholder } from "../../components/media/ImagePlaceholder";
+import { MediaButton } from "../../components/media/MediaButton";
 import { api } from "../../services/api";
 
 type Section =
@@ -203,15 +205,32 @@ export const HomeEditor = () => {
             style={{ padding: "0.75rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
           />
         </div>
-        <input
-          placeholder="Imagem URL"
-          value={(hero as any)?.image_url || ""}
-          onChange={(e) => {
-            const idx = sections.findIndex((s) => s.type === "hero");
-            if (idx >= 0) updateSection(idx, { image_url: e.target.value });
-          }}
-          style={{ padding: "0.75rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
-        />
+        <div style={{ display: "grid", gap: "0.5rem" }}>
+          <label style={{ fontWeight: 600 }}>Imagem do hero</label>
+          <ImagePlaceholder url={(hero as any)?.image_url} label="Nenhuma imagem selecionada" maxHeight={220} />
+          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+            <MediaButton
+              value={(hero as any)?.image_url}
+              onChange={(url) => {
+                const idx = sections.findIndex((s) => s.type === "hero");
+                if (idx >= 0) updateSection(idx, { image_url: url });
+              }}
+              label="Selecionar imagem"
+            />
+            {(hero as any)?.image_url ? (
+              <button
+                type="button"
+                className="btn btn-ghost"
+                onClick={() => {
+                  const idx = sections.findIndex((s) => s.type === "hero");
+                  if (idx >= 0) updateSection(idx, { image_url: "" });
+                }}
+              >
+                Remover imagem
+              </button>
+            ) : null}
+          </div>
+        </div>
       </div>
 
       <div className="card" style={{ padding: "1rem", display: "grid", gap: "0.75rem" }}>
@@ -274,12 +293,25 @@ export const HomeEditor = () => {
                     </button>
                   </div>
                 </div>
-                <input
-                  placeholder="Imagem URL"
-                  value={(section as any).image_url || ""}
-                  onChange={(e) => updateSection(index, { image_url: e.target.value })}
-                  style={{ padding: "0.75rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
-                />
+                <div style={{ display: "grid", gap: "0.5rem" }}>
+                  <ImagePlaceholder url={(section as any).image_url} label="Nenhuma imagem selecionada" maxHeight={200} />
+                  <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                    <MediaButton
+                      value={(section as any).image_url}
+                      onChange={(url) => updateSection(index, { image_url: url })}
+                      label="Selecionar imagem"
+                    />
+                    {(section as any).image_url ? (
+                      <button
+                        type="button"
+                        className="btn btn-ghost"
+                        onClick={() => updateSection(index, { image_url: "" })}
+                      >
+                        Remover imagem
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
                 <input
                   placeholder="Legenda"
                   value={(section as any).caption || ""}
