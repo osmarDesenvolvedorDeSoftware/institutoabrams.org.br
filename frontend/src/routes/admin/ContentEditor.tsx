@@ -151,8 +151,9 @@ export const ContentEditor = () => {
   };
 
   return (
-    <div className="grid two" style={{ alignItems: "start", gap: "1.25rem" }}>
-      <div className="card" style={{ display: "grid", gap: "1rem" }}>
+    <>
+      <div className="grid two" style={{ alignItems: "start", gap: "1.25rem" }}>
+        <div className="card" style={{ display: "grid", gap: "1rem" }}>
         <div
           style={{
             display: "flex",
@@ -174,14 +175,14 @@ export const ContentEditor = () => {
           </div>
         </div>
 
-        <div style={{ display: "grid", gap: "0.75rem" }}>
-          <input
-            placeholder="Slug (ex: sobre-nos)"
-            value={slug}
-            readOnly
-            disabled
-            style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
-          />
+          <div style={{ display: "grid", gap: "0.75rem" }}>
+            <input
+              placeholder="Slug (ex: sobre-nos)"
+              value={slug}
+              readOnly
+              disabled
+              style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
+            />
           <select
             value={category || ""}
             onChange={(e) => setCategory(e.target.value || undefined)}
@@ -192,169 +193,169 @@ export const ContentEditor = () => {
             <option value="contato">Contato</option>
             <option value="institucional">Institucional</option>
           </select>
-        </div>
-
-        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-          {languages.map((lang) => langButton(lang))}
-        </div>
-
-        <div style={{ display: "grid", gap: "0.75rem" }}>
-          <input
-            placeholder={`Titulo (${activeLang})`}
-            value={titles[activeLang] || ""}
-            onChange={(e) => setTitles({ ...titles, [activeLang]: e.target.value })}
-            style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
-          />
-          <div style={{ display: "grid", gap: "0.35rem" }}>
-            <small>Conteudo ({activeLang})</small>
-            <div className="editor-shell">
-              <RichTextEditor
-                value={contents[activeLang] || ""}
-                onChange={(value) => setContents({ ...contents, [activeLang]: value })}
-              />
-            </div>
           </div>
-        </div>
 
-        {(category === "projeto" || category === "institucional" || category === "quem-somos") && (
-          <div style={{ display: "grid", gap: "0.65rem" }}>
-            <p style={{ margin: 0, color: "var(--muted)", fontWeight: 600 }}>
-              {category === "projeto" ? "Imagem principal do projeto" : "Banner institucional"}
-            </p>
-            <ImagePlaceholder url={heroImageUrl} label="Nenhuma imagem selecionada" maxHeight={220} />
-            <MediaButton value={heroImageUrl} onChange={setHeroImageUrl} label="Upload imagem principal" />
+          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+            {languages.map((lang) => langButton(lang))}
+          </div>
+
+          <div style={{ display: "grid", gap: "0.75rem" }}>
             <input
-              placeholder="ou cole a URL da imagem"
-              value={heroImageUrl}
-              onChange={(e) => setHeroImageUrl(e.target.value)}
+              placeholder={`Titulo (${activeLang})`}
+              value={titles[activeLang] || ""}
+              onChange={(e) => setTitles({ ...titles, [activeLang]: e.target.value })}
               style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
             />
-          </div>
-        )}
-
-        {category === "projeto" && (
-          <div style={{ display: "grid", gap: "0.65rem" }}>
-            <p style={{ margin: 0, color: "var(--muted)", fontWeight: 600 }}>Galeria (ate 5 imagens)</p>
-            <div className="grid two">
-              {galleryUrls.map((url, idx) => (
-                <div key={idx} style={{ display: "grid", gap: "0.35rem" }}>
-                  <ImagePlaceholder url={url} maxHeight={140} label="Sem imagem" />
-                  <input
-                    value={url}
-                    onChange={(e) => {
-                      const clone = [...galleryUrls];
-                      clone[idx] = e.target.value;
-                      setGalleryUrls(clone);
-                    }}
-                    style={{ padding: "0.65rem 0.75rem", borderRadius: 10, border: "1px solid var(--border)" }}
-                  />
-                  <button
-                    type="button"
-                    className="btn btn-ghost"
-                    onClick={() => setGalleryUrls(galleryUrls.filter((_, i) => i !== idx))}
-                  >
-                    Remover
-                  </button>
-                </div>
-              ))}
+            <div style={{ display: "grid", gap: "0.35rem" }}>
+              <small>Conteudo ({activeLang})</small>
+              <div className="editor-shell">
+                <RichTextEditor
+                  value={contents[activeLang] || ""}
+                  onChange={(value) => setContents({ ...contents, [activeLang]: value })}
+                />
+              </div>
             </div>
-            {galleryUrls.length < 5 && (
-              <MediaButton
-                label="Adicionar imagem a galeria"
-                onChange={(url) => setGalleryUrls([...galleryUrls, url])}
+          </div>
+
+          {(category === "projeto" || category === "institucional" || category === "quem-somos") && (
+            <div style={{ display: "grid", gap: "0.65rem" }}>
+              <p style={{ margin: 0, color: "var(--muted)", fontWeight: 600 }}>
+                {category === "projeto" ? "Imagem principal do projeto" : "Banner institucional"}
+              </p>
+              <ImagePlaceholder url={heroImageUrl} label="Nenhuma imagem selecionada" maxHeight={220} />
+              <MediaButton value={heroImageUrl} onChange={setHeroImageUrl} label="Upload imagem principal" />
+              <input
+                placeholder="ou cole a URL da imagem"
+                value={heroImageUrl}
+                onChange={(e) => setHeroImageUrl(e.target.value)}
+                style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
               />
-            )}
-          </div>
-        )}
-
-        {category === "projeto" && (
-          <div style={{ display: "grid", gap: "0.35rem" }}>
-            <label style={{ fontWeight: 600 }}>Video (YouTube)</label>
-            <input
-              placeholder="https://www.youtube.com/watch?v=..."
-              value={videoUrl}
-              onChange={(e) => setVideoUrl(e.target.value)}
-              style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
-            />
-            <small style={{ color: "var(--muted)" }}>Somente links do YouTube.</small>
-          </div>
-        )}
-
-        <label style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-          <input
-            type="checkbox"
-            checked={isPublished}
-            onChange={(e) => setIsPublished(e.target.checked)}
-          />
-          Publicado
-        </label>
-        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-          <button className="btn btn-primary" onClick={handleSubmit} disabled={!editingId}>
-            Atualizar
-          </button>
-          {editingId && (
-            <button className="btn btn-ghost" type="button" onClick={resetForm}>
-              Cancelar
-            </button>
+            </div>
           )}
-          {message && <span style={{ color: "var(--text)" }}>{message}</span>}
-        </div>
-      </div>
 
-      <div className="card" style={{ display: "grid", gap: "0.75rem" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: "1rem",
-            paddingBottom: "0.5rem",
-            borderBottom: "1px solid var(--border)",
-          }}
-        >
-          <div>
-            <p style={{ margin: 0, color: "var(--muted)" }}>Paginas</p>
-            <h3 style={{ margin: "0.25rem 0" }}>Listagem</h3>
+          {category === "projeto" && (
+            <div style={{ display: "grid", gap: "0.65rem" }}>
+              <p style={{ margin: 0, color: "var(--muted)", fontWeight: 600 }}>Galeria (ate 5 imagens)</p>
+              <div className="grid two">
+                {galleryUrls.map((url, idx) => (
+                  <div key={idx} style={{ display: "grid", gap: "0.35rem" }}>
+                    <ImagePlaceholder url={url} maxHeight={140} label="Sem imagem" />
+                    <input
+                      value={url}
+                      onChange={(e) => {
+                        const clone = [...galleryUrls];
+                        clone[idx] = e.target.value;
+                        setGalleryUrls(clone);
+                      }}
+                      style={{ padding: "0.65rem 0.75rem", borderRadius: 10, border: "1px solid var(--border)" }}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-ghost"
+                      onClick={() => setGalleryUrls(galleryUrls.filter((_, i) => i !== idx))}
+                    >
+                      Remover
+                    </button>
+                  </div>
+                ))}
+              </div>
+              {galleryUrls.length < 5 && (
+                <MediaButton
+                  label="Adicionar imagem a galeria"
+                  onChange={(url) => setGalleryUrls([...galleryUrls, url])}
+                />
+              )}
+            </div>
+          )}
+
+          {category === "projeto" && (
+            <div style={{ display: "grid", gap: "0.35rem" }}>
+              <label style={{ fontWeight: 600 }}>Video (YouTube)</label>
+              <input
+                placeholder="https://www.youtube.com/watch?v=..."
+                value={videoUrl}
+                onChange={(e) => setVideoUrl(e.target.value)}
+                style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
+              />
+              <small style={{ color: "var(--muted)" }}>Somente links do YouTube.</small>
+            </div>
+          )}
+
+          <label style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+            <input
+              type="checkbox"
+              checked={isPublished}
+              onChange={(e) => setIsPublished(e.target.checked)}
+            />
+            Publicado
+          </label>
+          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+            <button className="btn btn-primary" onClick={handleSubmit} disabled={!editingId}>
+              Atualizar
+            </button>
+            {editingId && (
+              <button className="btn btn-ghost" type="button" onClick={resetForm}>
+                Cancelar
+              </button>
+            )}
+            {message && <span style={{ color: "var(--text)" }}>{message}</span>}
           </div>
-          <button className="btn btn-ghost" onClick={fetchPages}>
-            Atualizar
-          </button>
         </div>
-        <table style={{ width: "100%", marginTop: "0.25rem", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ textAlign: "left", color: "var(--muted)" }}>
-              <th>Slug</th>
-              <th>Titulo (pt)</th>
-              <th>Categoria</th>
-              <th>Status</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {pages.map((page) => (
-              <tr key={page.id} style={{ borderTop: "1px solid var(--border)" }}>
-                <td style={{ padding: "0.65rem 0" }}>{page.slug}</td>
-                <td style={{ padding: "0.65rem 0" }}>
-                  {page.title_translations?.pt || <span style={{ color: "tomato" }}>Sem PT</span>}
-                </td>
-                <td style={{ padding: "0.65rem 0" }}>{page.category || "-"}</td>
-                <td style={{ padding: "0.65rem 0" }}>
-                  {page.is_published ? "Publicado" : "Rascunho"}
-                </td>
-                <td style={{ padding: "0.65rem 0", display: "flex", gap: "0.5rem" }}>
-                  <button className="btn btn-ghost" onClick={() => handleEdit(page)}>
-                    Editar
-                  </button>
-                  <button className="btn btn-ghost" onClick={() => handleDelete(page.id)}>
-                    Excluir
-                  </button>
-                </td>
+
+        <div className="card" style={{ display: "grid", gap: "0.75rem" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "1rem",
+              paddingBottom: "0.5rem",
+              borderBottom: "1px solid var(--border)",
+            }}
+          >
+            <div>
+              <p style={{ margin: 0, color: "var(--muted)" }}>Paginas</p>
+              <h3 style={{ margin: "0.25rem 0" }}>Listagem</h3>
+            </div>
+            <button className="btn btn-ghost" onClick={fetchPages}>
+              Atualizar
+            </button>
+          </div>
+          <table style={{ width: "100%", marginTop: "0.25rem", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ textAlign: "left", color: "var(--muted)" }}>
+                <th>Slug</th>
+                <th>Titulo (pt)</th>
+                <th>Categoria</th>
+                <th>Status</th>
+                <th />
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {pages.map((page) => (
+                <tr key={page.id} style={{ borderTop: "1px solid var(--border)" }}>
+                  <td style={{ padding: "0.65rem 0" }}>{page.slug}</td>
+                  <td style={{ padding: "0.65rem 0" }}>
+                    {page.title_translations?.pt || <span style={{ color: "tomato" }}>Sem PT</span>}
+                  </td>
+                  <td style={{ padding: "0.65rem 0" }}>{page.category || "-"}</td>
+                  <td style={{ padding: "0.65rem 0" }}>
+                    {page.is_published ? "Publicado" : "Rascunho"}
+                  </td>
+                  <td style={{ padding: "0.65rem 0", display: "flex", gap: "0.5rem" }}>
+                    <button className="btn btn-ghost" onClick={() => handleEdit(page)}>
+                      Editar
+                    </button>
+                    <button className="btn btn-ghost" onClick={() => handleDelete(page.id)}>
+                      Excluir
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
       <ContentWizard
         isOpen={wizardOpen}
         onClose={() => setWizardOpen(false)}
@@ -363,5 +364,6 @@ export const ContentEditor = () => {
           fetchPages();
         }}
       />
+    </>
   );
 };
