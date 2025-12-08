@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import { api } from "../../services/api";
 import { getLocalized } from "../../utils/content";
 import { getYoutubeEmbedUrl, resolveMediaUrl } from "../../utils/media";
+import { SeoHelmet } from "../../components/seo/SeoHelmet";
+import { DEFAULT_DESCRIPTION, DEFAULT_TITLE } from "../../utils/seoDefaults";
 
 type Page = {
   slug: string;
@@ -57,9 +59,16 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
   const title = getLocalized(page.title_translations, i18n.language);
   const content = getLocalized(page.content_translations, i18n.language);
   const embedUrl = getYoutubeEmbedUrl(page.video_url);
+  const description = content ? content.replace(/<[^>]+>/g, "").slice(0, 180) : DEFAULT_DESCRIPTION;
 
   return (
     <div className="container section" style={{ display: "grid", gap: "1rem" }}>
+      <SeoHelmet
+        title={title || DEFAULT_TITLE}
+        description={description}
+        image={page.hero_image_url}
+        url={currentSlug ? `/pages/${currentSlug}` : undefined}
+      />
       {page.hero_image_url && (
         <img
           src={resolveMediaUrl(page.hero_image_url)}

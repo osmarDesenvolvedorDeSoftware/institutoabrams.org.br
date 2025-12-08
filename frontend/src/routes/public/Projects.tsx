@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import { api } from "../../services/api";
 import { getLocalized } from "../../utils/content";
 import { resolveMediaUrl } from "../../utils/media";
+import { SeoHelmet } from "../../components/seo/SeoHelmet";
+import { DEFAULT_DESCRIPTION, DEFAULT_TITLE } from "../../utils/seoDefaults";
 
 type PageProject = {
   id: number;
@@ -94,6 +96,14 @@ export const Projects = () => {
 
   return (
     <div className="container section" style={{ display: "grid", gap: "1.25rem" }}>
+      <SeoHelmet
+        title={t("projectsPageTitle", { defaultValue: "Projetos" }) || DEFAULT_TITLE}
+        description={
+          t("projectsPageSubtitle", {
+            defaultValue: "Iniciativas que conectam pessoas, oportunidades e impacto direto nas comunidades.",
+          }) || DEFAULT_DESCRIPTION
+        }
+      />
       <div>
         <h2 style={{ marginTop: 0, marginBottom: "0.35rem" }}>
           {t("projectsPageTitle", { defaultValue: "Projetos" })}

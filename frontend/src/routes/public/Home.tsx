@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { api } from "../../services/api";
+import { SeoHelmet } from "../../components/seo/SeoHelmet";
 import { resolveMediaUrl } from "../../utils/media";
+import { DEFAULT_DESCRIPTION, DEFAULT_TITLE } from "../../utils/seoDefaults";
 
 type Banner = {
   id: number;
@@ -17,6 +19,7 @@ export const Home = () => {
   const { t } = useTranslation();
   const [banners, setBanners] = useState<Banner[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
+  const ogImage = banners.length ? resolveMediaUrl(banners[0].image_url) : undefined;
 
   useEffect(() => {
     api
@@ -35,6 +38,7 @@ export const Home = () => {
 
   return (
     <div className="container" style={{ padding: "3.25rem 0", display: "grid", gap: "3.5rem" }}>
+      <SeoHelmet title={DEFAULT_TITLE} description={DEFAULT_DESCRIPTION} image={ogImage} />
       {banners.length > 0 && (
         <section
           className="card"

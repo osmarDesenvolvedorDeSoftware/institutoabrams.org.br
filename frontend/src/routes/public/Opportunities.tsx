@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import { api } from "../../services/api";
 import { getYoutubeEmbedUrl, resolveMediaUrl } from "../../utils/media";
+import { SeoHelmet } from "../../components/seo/SeoHelmet";
+import { DEFAULT_DESCRIPTION } from "../../utils/seoDefaults";
 
 type Opportunity = {
   id: number;
@@ -29,6 +31,14 @@ export const Opportunities = () => {
 
   return (
     <div className="container section" style={{ display: "grid", gap: "1.25rem" }}>
+      <SeoHelmet
+        title={t("opportunitiesTitle", { defaultValue: "Oportunidades" })}
+        description={
+          t("opportunitiesSubtitle", {
+            defaultValue: "Editais, bolsas e programas abertos para você participar.",
+          }) || DEFAULT_DESCRIPTION
+        }
+      />
       <div>
         <h2 style={{ margin: 0, marginBottom: "0.4rem" }}>
           {t("opportunitiesTitle", { defaultValue: "Oportunidades" })}

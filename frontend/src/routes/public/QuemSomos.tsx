@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import { api } from "../../services/api";
 import { getLocalized } from "../../utils/content";
+import { SeoHelmet } from "../../components/seo/SeoHelmet";
+import { DEFAULT_DESCRIPTION } from "../../utils/seoDefaults";
 import { resolveMediaUrl } from "../../utils/media";
 
 type Page = {
@@ -38,9 +40,12 @@ export const QuemSomos = () => {
 
   const title = page ? getLocalized(page.title_translations, i18n.language) : t("heroTitle");
   const content = page ? getLocalized(page.content_translations, i18n.language) : "";
+  const description = content ? content.replace(/<[^>]+>/g, "").slice(0, 180) : DEFAULT_DESCRIPTION;
+  const ogImage = page?.hero_image_url;
 
   return (
     <div className="container section" style={{ display: "grid", gap: "1.25rem" }}>
+      <SeoHelmet title={title} description={description} image={ogImage} url="/quem-somos" />
       {page?.hero_image_url && (
         <img
           src={resolveMediaUrl(page.hero_image_url)}

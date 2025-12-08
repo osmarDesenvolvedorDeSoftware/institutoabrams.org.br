@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import { LeadForm } from "../../components/forms/LeadForm";
 import { api } from "../../services/api";
 import { getLocalized } from "../../utils/content";
+import { SeoHelmet } from "../../components/seo/SeoHelmet";
+import { DEFAULT_DESCRIPTION } from "../../utils/seoDefaults";
 
 type Page = {
   title_translations: Record<string, string>;
@@ -37,6 +39,7 @@ export const Contact = () => {
 
   const title = page ? getLocalized(page.title_translations, i18n.language) : t("contactTitle");
   const content = page ? getLocalized(page.content_translations, i18n.language) : "";
+  const description = content ? content.replace(/<[^>]+>/g, "").slice(0, 180) : DEFAULT_DESCRIPTION;
 
   return (
     <div
@@ -47,9 +50,10 @@ export const Contact = () => {
         gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
       }}
     >
+      <SeoHelmet title={title || t("contactTitle", { defaultValue: "Contato" })} description={description} url="/contato" />
       <div>
         <h2 style={{ marginTop: 0, marginBottom: "0.35rem" }}>
-          {title || t("contactTitle", { defaultValue: "Contato" })}
+          {title || t("contactTitle", { defaultValue: "Contato" })} 
         </h2>
         <div className="divider" />
         <p className="subtitle">
