@@ -1,5 +1,7 @@
 from typing import Dict, Optional
 
+from ..utils.slugify import slugify
+
 from ..extensions import db
 from ..models import Menu
 from ..utils.pagination import paginate
@@ -15,6 +17,14 @@ def list_menus(page: int = 1, per_page: int = 20, parent_id: int | None = None) 
 
 def get_menu(menu_id: int) -> Optional[Menu]:
     return Menu.query.get(menu_id)
+
+
+def normalize_target(slug: str | None, is_root: bool = False) -> str:
+    """Force targets to the /pages/<slug> convention, except for root."""
+    if is_root:
+        return "/"
+    safe_slug = slugify(slug or "pagina")
+    return f"/pages/{safe_slug}"
 
 
 def next_order(parent_id: int | None) -> int:
@@ -36,17 +46,17 @@ def ensure_dropdown(menu_id: int) -> Menu:
 
 def create_menu_with_defaults(payload: dict) -> Menu:
     data = {**payload}
+    data["slug"] = slugify(data.get("slug") or data.get("label") or "menu")
     if data.get("order") is None:
         data["order"] = next_order(data.get("parent_id"))
+    if not data.get("target"):
+        data["target"] = normalize_target(data.get("slug"), is_root=data.get("parent_id") is None and data.get("slug") in ("", None))
+    else:
+        data["target"] = normalize_target(data.get("slug")) if data["target"] != "/" else "/"
     menu = Menu(**data)
     db.session.add(menu)
     db.session.commit()
     return menu
-
-
-def create_menu(payload: dict) -> Menu:
-    # deprecated: mantido para compatibilidade com rotas antigas; prefira create_menu_with_defaults via wizard.
-    return create_menu_with_defaults(payload)
 
 
 def update_menu(menu: Menu, payload: dict) -> Menu:

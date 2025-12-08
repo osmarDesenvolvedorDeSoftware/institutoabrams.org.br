@@ -1,0 +1,10 @@
+[
+  {
+    "id": "default",
+    "name": "Pagina padrao",
+    "sections": [
+      { "type": "hero" },
+      { "type": "text" }
+    ]
+  }
+]

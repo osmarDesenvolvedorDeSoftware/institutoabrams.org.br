@@ -32,22 +32,6 @@ def list_pages():
     )
 
 
-@bp.post("")
-@jwt_required()
-def create_page():
-    # deprecated: fluxo antigo de criacao manual. Use /pages/with-menu via ContentWizard.
-    payload = request.get_json() or {}
-    errors = page_schema.validate(payload)
-    if errors:
-        return jsonify({"message": "Invalid payload", "errors": errors}), 400
-    try:
-        page = page_service.create_page(payload)
-    except IntegrityError:
-        db.session.rollback()
-        return jsonify({"message": "Slug already exists"}), 409
-    return jsonify(page_schema.dump(page)), 201
-
-
 @bp.get("/<int:page_id>")
 def get_page(page_id: int):
     page = page_service.get_page(page_id)
@@ -120,7 +104,7 @@ def create_page_with_menu():
     menu_payload = {
         "label": (page.title_translations or {}).get("pt") or page.slug,
         "slug": page.slug,
-        "target": f"/pages/{page.slug}",
+        "target": menu_service.normalize_target(page.slug),
         "parent_id": parent_id,
         "order": payload.get("menu_order"),
     }
@@ -185,7 +169,7 @@ def create_pages_bulk_with_menus():
                 parent_menu_payload = {
                     "label": (parent_page.title_translations or {}).get("pt") or parent_page.slug,
                     "slug": parent_page.slug,
-                    "target": f"/pages/{parent_page.slug}",
+                    "target": menu_service.normalize_target(parent_page.slug),
                     "parent_id": None,
                     "order": payload.get("menu_order_parent"),
                 }
@@ -213,7 +197,7 @@ def create_pages_bulk_with_menus():
                     child_menu_payload = {
                         "label": (child_page.title_translations or {}).get("pt") or child_page.slug,
                         "slug": child_page.slug,
-                        "target": f"/pages/{child_page.slug}",
+                        "target": menu_service.normalize_target(child_page.slug),
                         "parent_id": parent_menu.id,
                         "order": order_val,
                     }
@@ -221,7 +205,6 @@ def create_pages_bulk_with_menus():
                     db.session.add(child_menu)
                     db.session.flush()
                     child_menus.append(child_menu)
-            # se create_parent_menu for False, apenas páginas são criadas
     except IntegrityError:
         db.session.rollback()
         return jsonify({"message": "Slug or menu conflict"}), 409
@@ -265,8 +248,9 @@ def load_templates():
         if not isinstance(item, dict):
             continue
         template = dict(item)
-        required = ["id", "name", "content"]
-        if any(field not in template for field in required):
+        if "id" not in template or "name" not in template:
+            continue
+        if "sections" not in template and "content" not in template:
             continue
         if template.get("format") == "md" and template.get("content"):
             template["content"] = _markdown_to_html_basic(template["content"])

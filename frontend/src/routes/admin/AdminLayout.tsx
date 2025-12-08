@@ -41,12 +41,6 @@ export const AdminLayout = () => {
               <Link to="/admin/menus" style={{ padding: "0.45rem 0.7rem", borderRadius: 8, color: "#1f2937", fontWeight: 600 }}>
                 Menus
               </Link>
-              <Link to="/admin/oportunidades" style={{ padding: "0.45rem 0.7rem", borderRadius: 8, color: "#1f2937", fontWeight: 600 }}>
-                Oportunidades
-              </Link>
-              <Link to="/admin/banners" style={{ padding: "0.45rem 0.7rem", borderRadius: 8, color: "#1f2937", fontWeight: 600 }}>
-                Banners
-              </Link>
               <Link to="/admin/settings" style={{ padding: "0.45rem 0.7rem", borderRadius: 8, color: "#1f2937", fontWeight: 600 }}>
                 Configurações
               </Link>

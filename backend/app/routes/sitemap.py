@@ -18,16 +18,7 @@ def _abs_url(path: str) -> str:
 
 @bp.get("/sitemap.xml")
 def sitemap():
-    static_paths = [
-        ("/", 1.0),
-        ("/quem-somos", 0.9),
-        ("/projetos", 0.8),
-        ("/oportunidades", 0.8),
-        ("/contato", 0.8),
-        ("/noticias", 0.7),
-        ("/portfolio", 0.7),
-        ("/doacao", 0.7),
-    ]
+    static_paths = [("/", 1.0)]
 
     urls = []
     today = datetime.utcnow().date().isoformat()

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { LeadForm } from "../../components/forms/LeadForm";
 import { api } from "../../services/api";
 import { getLocalized } from "../../utils/content";
 import { SeoHelmet } from "../../components/seo/SeoHelmet";
@@ -77,7 +76,19 @@ export const Contact = () => {
           )}
         </div>
       </div>
-      <LeadForm />
+      <div className="card" style={{ display: "grid", gap: "0.75rem" }}>
+        <h3 style={{ margin: 0 }}>{t("common.contact", { defaultValue: "Contato" })}</h3>
+        <p style={{ margin: 0, color: "var(--muted)" }}>
+          {t("contactSubtitle", {
+            defaultValue: "Envie um e-mail ou fale conosco pelos canais oficiais.",
+          })}
+        </p>
+        <div style={{ display: "grid", gap: "0.25rem" }}>
+          <span>{t("contactEmailLabel", { defaultValue: "E-mail" })}: contato@institutoabrams.org.br</span>
+          <span>{t("contactPartnershipLabel", { defaultValue: "Parcerias" })}: partners@institutoabrams.org.br</span>
+          <span>{t("contactAddress", { defaultValue: "Brasília, DF" })}</span>
+        </div>
+      </div>
     </div>
   );
 };

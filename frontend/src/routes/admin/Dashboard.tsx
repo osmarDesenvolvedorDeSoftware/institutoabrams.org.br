@@ -1,8 +1,8 @@
 export const Dashboard = () => {
   const stats = [
     { label: "Páginas publicadas", value: 6 },
-    { label: "Oportunidades ativas", value: 3 },
-    { label: "Leads capturados", value: 42 },
+    { label: "Menus ativos", value: 5 },
+    { label: "Usuários logados", value: 1 },
   ];
 
   return (

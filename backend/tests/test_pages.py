@@ -1,14 +1,17 @@
 def test_pages_crud_and_slug_immutable(client, auth_header):
     create_payload = {
-        "title_translations": {"pt": "Quem Somos ABRAMS", "en": "About us"},
-        "content_translations": {"pt": "<p>Conteudo</p>", "en": "<p>Content</p>"},
-        "is_published": True,
+        "page": {
+            "title_translations": {"pt": "Quem Somos ABRAMS", "en": "About us"},
+            "content_translations": {"pt": "<p>Conteudo</p>", "en": "<p>Content</p>"},
+            "is_published": True,
+        },
+        "create_menu": False,
     }
 
     # Create
-    resp = client.post("/api/v1/pages", json=create_payload, headers=auth_header)
+    resp = client.post("/api/v1/pages/with-menu", json=create_payload, headers=auth_header)
     assert resp.status_code == 201
-    slug = resp.json["slug"]
+    slug = resp.json["page"]["slug"]
     assert slug.startswith("quem-somos")
 
     # List
@@ -23,7 +26,7 @@ def test_pages_crud_and_slug_immutable(client, auth_header):
 
     # Update title should not change slug
     resp_update = client.put(
-        f"/api/v1/pages/{resp.json['id']}",
+        f"/api/v1/pages/{resp_slug.json['id']}",
         json={"title_translations": {"pt": "Titulo Editado"}},
         headers=auth_header,
     )

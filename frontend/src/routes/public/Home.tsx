@@ -1,141 +1,15 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { api } from "../../services/api";
 import { SeoHelmet } from "../../components/seo/SeoHelmet";
-import { resolveMediaUrl } from "../../utils/media";
 import { DEFAULT_DESCRIPTION, DEFAULT_TITLE } from "../../utils/seoDefaults";
-
-type Banner = {
-  id: number;
-  title: string;
-  subtitle?: string;
-  image_url: string;
-  link_url?: string;
-};
 
 export const Home = () => {
   const { t } = useTranslation();
-  const [banners, setBanners] = useState<Banner[]>([]);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const ogImage = banners.length ? resolveMediaUrl(banners[0].image_url) : undefined;
-
-  useEffect(() => {
-    api
-      .get("/public/banners", { params: { limit: 10 } })
-      .then(({ data }) => setBanners(data || []))
-      .catch(() => setBanners([]));
-  }, []);
-
-  useEffect(() => {
-    if (!banners.length) return;
-    const id = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % banners.length);
-    }, 6500);
-    return () => clearInterval(id);
-  }, [banners]);
 
   return (
     <div className="container" style={{ padding: "3.25rem 0", display: "grid", gap: "3.5rem" }}>
-      <SeoHelmet title={DEFAULT_TITLE} description={DEFAULT_DESCRIPTION} image={ogImage} />
-      {banners.length > 0 && (
-        <section
-          className="card"
-          style={{
-            padding: 0,
-            overflow: "hidden",
-          }}
-        >
-          <div
-            style={{
-              position: "relative",
-              minHeight: "clamp(320px, 55vw, 520px)",
-              background: `linear-gradient(120deg, rgba(0,0,0,0.45), rgba(0,0,0,0.35)), url(${resolveMediaUrl(
-                banners[activeIndex]?.image_url,
-              )}) center/cover no-repeat`,
-              display: "grid",
-              alignItems: "center",
-              padding: "2.25rem",
-            }}
-          >
-            <div
-              style={{
-                color: "#fff",
-                borderRadius: 12,
-                padding: "1.5rem 1.75rem",
-                maxWidth: 640,
-                display: "grid",
-                gap: "0.5rem",
-                background: "rgba(0,0,0,0.35)",
-                backdropFilter: "blur(4px)",
-              }}
-            >
-              <p style={{ margin: 0, letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, fontSize: 12 }}>
-                Instituto ABRAMS
-              </p>
-              <h2 style={{ margin: 0 }}>{banners[activeIndex]?.title}</h2>
-              {banners[activeIndex]?.subtitle && <p style={{ margin: 0 }}>{banners[activeIndex]?.subtitle}</p>}
-              {banners[activeIndex]?.link_url &&
-                (banners[activeIndex].link_url.startsWith("http") ? (
-                  <a href={banners[activeIndex].link_url} className="btn btn-primary" style={{ width: "fit-content" }}>
-                    {t("common.learnMore", { defaultValue: "Saiba mais" })}
-                  </a>
-                ) : (
-                  <Link to={banners[activeIndex].link_url || "#"} className="btn btn-primary" style={{ width: "fit-content" }}>
-                    {t("common.learnMore", { defaultValue: "Saiba mais" })}
-                  </Link>
-                ))}
-            </div>
-            <div
-              style={{
-                position: "absolute",
-                inset: "auto 1.25rem 1.25rem 1.25rem",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: "0.75rem",
-              }}
-            >
-              <div style={{ display: "flex", gap: "0.35rem" }}>
-                {banners.map((_, idx) => (
-                  <button
-                    key={idx}
-                    aria-label={t("home.goToSlide", { defaultValue: "Ir para banner" })}
-                    onClick={() => setActiveIndex(idx)}
-                    style={{
-                      width: 10,
-                      height: 10,
-                      borderRadius: "50%",
-                      border: "none",
-                      background: idx === activeIndex ? "#fff" : "rgba(255,255,255,0.5)",
-                      cursor: "pointer",
-                    }}
-                  />
-                ))}
-              </div>
-              <div style={{ display: "flex", gap: "0.5rem" }}>
-                <button
-                  className="btn btn-ghost"
-                  onClick={() => setActiveIndex((prev) => (prev - 1 + banners.length) % banners.length)}
-                  style={{ padding: "0.4rem 0.7rem" }}
-                  aria-label={t("common.prev", { defaultValue: "Anterior" })}
-                >
-                  ‹
-                </button>
-                <button
-                  className="btn btn-ghost"
-                  onClick={() => setActiveIndex((prev) => (prev + 1) % banners.length)}
-                  style={{ padding: "0.4rem 0.7rem" }}
-                  aria-label={t("common.next", { defaultValue: "Próximo" })}
-                >
-                  ›
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
+      <SeoHelmet title={DEFAULT_TITLE} description={DEFAULT_DESCRIPTION} />
 
       <section
         className="card"

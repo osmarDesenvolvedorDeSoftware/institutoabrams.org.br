@@ -88,7 +88,7 @@ export const MenusAdmin = () => {
                       background: "rgba(207,175,112,0.15)",
                     }}
                   >
-                    {item.label} ƒ-¬
+                    {item.label}
                   </span>
                   <div
                     style={{
@@ -131,7 +131,7 @@ export const MenusAdmin = () => {
             {items.map((item) => (
               <tr key={item.id} style={{ borderTop: "1px solid var(--border)" }}>
                 <td style={{ padding: "0.6rem 0" }}>
-                  {item.label} {item.is_dropdown ? "ƒ-¬" : ""}
+                  {item.label} {item.is_dropdown ? "(dropdown)" : ""}
                 </td>
                 <td style={{ padding: "0.6rem 0" }}>{item.target}</td>
                 <td style={{ padding: "0.6rem 0" }}>{item.order ?? 0}</td>

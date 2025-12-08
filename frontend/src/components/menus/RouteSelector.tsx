@@ -26,28 +26,24 @@ export const RouteSelector = ({ value, onChange, pages = [] }: Props) => {
       {
         label: "Institucional",
         routes: [
-          { label: "Início", value: "/" },
-          { label: "Quem Somos", value: "/quem-somos" },
-          { label: "Notícias", value: "/noticias" },
-          { label: "Portfólio", value: "/portfolio" },
-          { label: "Doação", value: "/doacao" },
-          { label: "Contato", value: "/contato" },
+          { label: "Inicio", value: "/" },
+          { label: "Quem Somos", value: "/pages/quem-somos" },
+          { label: "Noticias", value: "/pages/noticias" },
+          { label: "Portfolio", value: "/pages/portfolio" },
+          { label: "Doacao", value: "/pages/doacao" },
+          { label: "Contato", value: "/pages/contato" },
         ],
       },
       {
-        label: "Projetos e Serviços",
+        label: "Projetos e Servicos",
         routes: [
-          { label: "Projetos", value: "/projetos" },
+          { label: "Projetos", value: "/pages/projetos" },
           { label: "Clubinho da Leitura", value: "/pages/clubinho-da-leitura" },
-          { label: "Igualdade de Gênero", value: "/pages/igualdade-de-genero" },
+          { label: "Igualdade de Genero", value: "/pages/igualdade-de-genero" },
           { label: "Trilhas de Carreira", value: "/pages/trilhas-de-carreira" },
           { label: "Mentorias Profissionais", value: "/pages/mentorias-profissionais" },
-          { label: "Cursos / Serviços", value: "/pages/cursos" },
+          { label: "Cursos / Servicos", value: "/pages/cursos" },
         ],
-      },
-      {
-        label: "Oportunidades",
-        routes: [{ label: "Oportunidades", value: "/oportunidades" }],
       },
       {
         label: "Outros",
@@ -63,8 +59,7 @@ export const RouteSelector = ({ value, onChange, pages = [] }: Props) => {
     return [...defaults, ...pagesValues];
   }, [groupedRoutes, pageOptions]);
 
-  const currentValue =
-    value && !allowedValues.includes(value) ? "__unsupported__" : value;
+  const currentValue = value && !allowedValues.includes(value) ? "__unsupported__" : value;
 
   return (
     <div style={{ display: "grid", gap: "0.5rem" }}>
@@ -76,7 +71,7 @@ export const RouteSelector = ({ value, onChange, pages = [] }: Props) => {
         <option value="">Selecione a rota</option>
         {currentValue === "__unsupported__" && (
           <option value="__unsupported__" disabled>
-            Rota atual (não listada): {value}
+            Rota atual (nao listada): {value}
           </option>
         )}
         {groupedRoutes.map((group) =>
@@ -90,7 +85,7 @@ export const RouteSelector = ({ value, onChange, pages = [] }: Props) => {
             </optgroup>
           ) : null,
         )}
-        <optgroup label="Páginas do site">
+        <optgroup label="Paginas do site">
           {pageOptions.map((page) => (
             <option key={page.value} value={page.value}>
               {page.label}

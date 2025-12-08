@@ -121,27 +121,25 @@ export const PublicLayout = () => {
 
   const fallbackNav = useMemo<MenuItem[]>(
     () => [
-      { id: 1, label: t("nav.home", { defaultValue: "Início" }), slug: "inicio", target: "/", is_dropdown: false, order: 1 },
-      { id: 2, label: t("nav.about", { defaultValue: "Quem Somos" }), slug: "quem-somos", target: "/quem-somos", is_dropdown: false, order: 2 },
+      { id: 1, label: t("nav.home", { defaultValue: "Inicio" }), slug: "home", target: "/", is_dropdown: false, order: 1 },
+      { id: 2, label: t("nav.about", { defaultValue: "Quem Somos" }), slug: "quem-somos", target: "/pages/quem-somos", is_dropdown: false, order: 2 },
       {
         id: 3,
-        label: t("nav.projectsServices", { defaultValue: "Projetos e Serviços" }),
-        slug: "projetos-servicos",
-        target: "/projetos",
+        label: t("nav.projectsServices", { defaultValue: "Projetos e Servicos" }),
+        slug: "projetos",
+        target: "/pages/projetos",
         is_dropdown: true,
         order: 3,
       },
-      { id: 4, label: t("nav.news", { defaultValue: "Notícias" }), slug: "noticias", target: "/noticias", is_dropdown: false, order: 4 },
-      { id: 5, label: t("nav.portfolio", { defaultValue: "Portfólio" }), slug: "portfolio", target: "/portfolio", is_dropdown: false, order: 5 },
-      { id: 6, label: t("nav.opportunities", { defaultValue: "Oportunidades" }), slug: "oportunidades", target: "/oportunidades", is_dropdown: false, order: 6 },
-      { id: 7, label: t("nav.donation", { defaultValue: "Doação" }), slug: "doacao", target: "/doacao", is_dropdown: false, order: 7 },
-      { id: 8, label: t("nav.contact", { defaultValue: "Contato" }), slug: "contato", target: "/contato", is_dropdown: false, order: 8 },
-      // Children for Projetos e Serviços
+      { id: 4, label: t("nav.news", { defaultValue: "Noticias" }), slug: "noticias", target: "/pages/noticias", is_dropdown: false, order: 4 },
+      { id: 5, label: t("nav.portfolio", { defaultValue: "Portfolio" }), slug: "portfolio", target: "/pages/portfolio", is_dropdown: false, order: 5 },
+      { id: 7, label: t("nav.donation", { defaultValue: "Doacao" }), slug: "doacao", target: "/pages/doacao", is_dropdown: false, order: 7 },
+      { id: 8, label: t("nav.contact", { defaultValue: "Contato" }), slug: "contato", target: "/pages/contato", is_dropdown: false, order: 8 },
       { id: 30, label: "Clubinho da Leitura", slug: "clubinho-da-leitura", target: "/pages/clubinho-da-leitura", is_dropdown: false, parent_id: 3, order: 1 },
-      { id: 31, label: "Igualdade de Gênero", slug: "igualdade-de-genero", target: "/pages/igualdade-de-genero", is_dropdown: false, parent_id: 3, order: 2 },
+      { id: 31, label: "Igualdade de Genero", slug: "igualdade-de-genero", target: "/pages/igualdade-de-genero", is_dropdown: false, parent_id: 3, order: 2 },
       { id: 32, label: "Trilhas de Carreira", slug: "trilhas-de-carreira", target: "/pages/trilhas-de-carreira", is_dropdown: false, parent_id: 3, order: 3 },
       { id: 33, label: "Mentorias Profissionais", slug: "mentorias-profissionais", target: "/pages/mentorias-profissionais", is_dropdown: false, parent_id: 3, order: 4 },
-      { id: 34, label: "Cursos / Serviços", slug: "cursos", target: "/pages/cursos", is_dropdown: false, parent_id: 3, order: 5 },
+      { id: 34, label: "Cursos / Servicos", slug: "cursos", target: "/pages/cursos", is_dropdown: false, parent_id: 3, order: 5 },
     ],
     [t],
   );

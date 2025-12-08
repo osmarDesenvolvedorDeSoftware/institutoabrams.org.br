@@ -22,11 +22,6 @@ def get_page_by_slug(slug: str) -> Optional[Page]:
     return Page.query.filter_by(slug=slug).first()
 
 
-def create_page(payload: dict) -> Page:
-    # deprecated: mantido para compatibilidade; use create_page_in_session via fluxos assistidos.
-    return create_page_in_session(payload)
-
-
 def create_page_in_session(payload: dict, commit: bool = True) -> Page:
     if not payload.get("slug"):
         title_pt = payload.get("title_translations", {}).get("pt") or ""

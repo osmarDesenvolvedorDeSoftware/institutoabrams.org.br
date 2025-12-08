@@ -4,7 +4,7 @@ Backend Flask (API v1), frontend React + Vite e infraestrutura com Docker (dev e
 
 ## Backend (dev)
 1) `cd backend`
-2) Crie `.env` a partir de `backend/.env.example` (ajuste `DATABASE_URL`, `JWT_SECRET`, `CORS_ORIGINS`, `API_PREFIX`).
+2) Crie `.env` a partir de `backend/.env.example` (ajuste `DATABASE_URL`, `JWT_SECRET`, `BACKEND_CORS_ORIGINS`, `API_PREFIX`).
 3) Ambiente Python 3.12:
    ```bash
    python -m venv .venv && source .venv/bin/activate  # Windows: .venv\Scripts\activate
@@ -32,7 +32,7 @@ Backend Flask (API v1), frontend React + Vite e infraestrutura com Docker (dev e
 2) Rotas: Backend http://api.localhost (`/api/v1/health`), Frontend http://localhost
 
 ### Produção local simples (sem Traefik)
-1) Copie `.env.prod.example` → `.env.prod` e ajuste secrets/DB.
+1) Copie `.env.prod.example` para `.env.prod` e ajuste secrets/DB.
 2) `docker-compose -f docker-compose.prod.yml up --build`
 3) Acessos:
    - API: http://localhost:8000/api/v1/health
