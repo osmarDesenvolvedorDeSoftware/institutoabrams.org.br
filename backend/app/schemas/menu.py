@@ -8,7 +8,7 @@ class MenuSchema(Schema):
     target = fields.Str(required=True)
     is_dropdown = fields.Bool(load_default=False)
     parent_id = fields.Int(load_default=None, allow_none=True)
-    order = fields.Int(load_default=0)
+    order = fields.Int(load_default=None, allow_none=True)
     created_at = fields.DateTime(dump_only=True)
     updated_at = fields.DateTime(dump_only=True)
     children = fields.List(fields.Nested(lambda: MenuSchema(exclude=("children",))))

@@ -4,6 +4,7 @@ import { RichTextEditor } from "../../components/editor/RichTextEditor";
 import { ImagePlaceholder } from "../../components/media/ImagePlaceholder";
 import { MediaButton } from "../../components/media/MediaButton";
 import { api } from "../../services/api";
+import { ContentWizard } from "./components/ContentWizard";
 
 const languages = ["pt", "en", "es", "fr"] as const;
 const singlePageCategories = ["contato", "institucional"] as const;
@@ -19,14 +20,6 @@ type Page = {
   gallery_urls?: string[] | null;
   video_url?: string | null;
 };
-
-const slugify = (value: string) =>
-  value
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)+/g, "") || "pagina";
 
 export const ContentEditor = () => {
   const [titles, setTitles] = useState<Record<string, string>>(
@@ -45,6 +38,7 @@ export const ContentEditor = () => {
   const [heroImageUrl, setHeroImageUrl] = useState<string>("");
   const [galleryUrls, setGalleryUrls] = useState<string[]>([]);
   const [videoUrl, setVideoUrl] = useState<string>("");
+  const [wizardOpen, setWizardOpen] = useState(false);
 
   const fetchPages = async () => {
     const { data } = await api.get("/pages", { params: { per_page: 100 } });
@@ -55,13 +49,12 @@ export const ContentEditor = () => {
     fetchPages();
   }, []);
 
-  useEffect(() => {
-    if (!editingId && titles.pt && !slug) {
-      setSlug(slugify(titles.pt));
-    }
-  }, [titles.pt, slug, editingId]);
-
   const handleSubmit = async () => {
+    if (!editingId) {
+      setMessage("Selecione uma pagina para editar.");
+      return;
+    }
+
     const slugToSend = slug.trim();
     const payload: Record<string, unknown> = {
       title_translations: titles,
@@ -80,26 +73,19 @@ export const ContentEditor = () => {
     }
 
     const isSingleCategory = category && (singlePageCategories as readonly string[]).includes(category);
-    const hasConflict =
-      isSingleCategory &&
-      pages.some((p) => p.category === category && (!editingId || p.id !== editingId));
+    const hasConflict = isSingleCategory && pages.some((p) => p.category === category && p.id !== editingId);
 
     if (hasConflict) {
-      setMessage("Já existe uma página para essa categoria. Edite a existente em vez de criar outra.");
+      setMessage("Ja existe uma pagina para essa categoria. Edite a existente.");
       return;
     }
 
     try {
-      if (editingId) {
-        await api.put(`/pages/${editingId}`, payload);
-      } else {
-        await api.post("/pages", payload);
-      }
-      setMessage("Página salva com sucesso");
-      resetForm();
+      await api.put(`/pages/${editingId}`, payload);
+      setMessage("Pagina atualizada com sucesso");
       fetchPages();
     } catch (error) {
-      setMessage("Erro ao salvar página");
+      setMessage("Erro ao salvar pagina");
     }
   };
 
@@ -178,8 +164,13 @@ export const ContentEditor = () => {
           }}
         >
           <div>
-            <p style={{ margin: 0, color: "var(--muted)" }}>Conteúdo</p>
-            <h3 style={{ margin: "0.2rem 0 0" }}>{editingId ? "Editar página" : "Nova página"}</h3>
+            <p style={{ margin: 0, color: "var(--muted)" }}>Conteudo</p>
+            <h3 style={{ margin: "0.2rem 0 0" }}>Editar pagina</h3>
+          </div>
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+            <button className="btn btn-primary" type="button" onClick={() => setWizardOpen(true)}>
+              Criar pagina
+            </button>
           </div>
         </div>
 
@@ -187,8 +178,8 @@ export const ContentEditor = () => {
           <input
             placeholder="Slug (ex: sobre-nos)"
             value={slug}
-            onChange={(e) => setSlug(slugify(e.target.value))}
-            disabled={Boolean(editingId)}
+            readOnly
+            disabled
             style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
           />
           <select
@@ -209,13 +200,13 @@ export const ContentEditor = () => {
 
         <div style={{ display: "grid", gap: "0.75rem" }}>
           <input
-            placeholder={`Título (${activeLang})`}
+            placeholder={`Titulo (${activeLang})`}
             value={titles[activeLang] || ""}
             onChange={(e) => setTitles({ ...titles, [activeLang]: e.target.value })}
             style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
           />
           <div style={{ display: "grid", gap: "0.35rem" }}>
-            <small>Conteúdo ({activeLang})</small>
+            <small>Conteudo ({activeLang})</small>
             <div className="editor-shell">
               <RichTextEditor
                 value={contents[activeLang] || ""}
@@ -243,7 +234,7 @@ export const ContentEditor = () => {
 
         {category === "projeto" && (
           <div style={{ display: "grid", gap: "0.65rem" }}>
-            <p style={{ margin: 0, color: "var(--muted)", fontWeight: 600 }}>Galeria (até 5 imagens)</p>
+            <p style={{ margin: 0, color: "var(--muted)", fontWeight: 600 }}>Galeria (ate 5 imagens)</p>
             <div className="grid two">
               {galleryUrls.map((url, idx) => (
                 <div key={idx} style={{ display: "grid", gap: "0.35rem" }}>
@@ -269,7 +260,7 @@ export const ContentEditor = () => {
             </div>
             {galleryUrls.length < 5 && (
               <MediaButton
-                label="Adicionar imagem à galeria"
+                label="Adicionar imagem a galeria"
                 onChange={(url) => setGalleryUrls([...galleryUrls, url])}
               />
             )}
@@ -278,7 +269,7 @@ export const ContentEditor = () => {
 
         {category === "projeto" && (
           <div style={{ display: "grid", gap: "0.35rem" }}>
-            <label style={{ fontWeight: 600 }}>Vídeo (YouTube)</label>
+            <label style={{ fontWeight: 600 }}>Video (YouTube)</label>
             <input
               placeholder="https://www.youtube.com/watch?v=..."
               value={videoUrl}
@@ -298,8 +289,8 @@ export const ContentEditor = () => {
           Publicado
         </label>
         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-          <button className="btn btn-primary" onClick={handleSubmit}>
-            {editingId ? "Atualizar" : "Salvar"}
+          <button className="btn btn-primary" onClick={handleSubmit} disabled={!editingId}>
+            Atualizar
           </button>
           {editingId && (
             <button className="btn btn-ghost" type="button" onClick={resetForm}>
@@ -322,7 +313,7 @@ export const ContentEditor = () => {
           }}
         >
           <div>
-            <p style={{ margin: 0, color: "var(--muted)" }}>Páginas</p>
+            <p style={{ margin: 0, color: "var(--muted)" }}>Paginas</p>
             <h3 style={{ margin: "0.25rem 0" }}>Listagem</h3>
           </div>
           <button className="btn btn-ghost" onClick={fetchPages}>
@@ -333,7 +324,7 @@ export const ContentEditor = () => {
           <thead>
             <tr style={{ textAlign: "left", color: "var(--muted)" }}>
               <th>Slug</th>
-              <th>Título (pt)</th>
+              <th>Titulo (pt)</th>
               <th>Categoria</th>
               <th>Status</th>
               <th />
@@ -346,7 +337,7 @@ export const ContentEditor = () => {
                 <td style={{ padding: "0.65rem 0" }}>
                   {page.title_translations?.pt || <span style={{ color: "tomato" }}>Sem PT</span>}
                 </td>
-                <td style={{ padding: "0.65rem 0" }}>{page.category || "—"}</td>
+                <td style={{ padding: "0.65rem 0" }}>{page.category || "-"}</td>
                 <td style={{ padding: "0.65rem 0" }}>
                   {page.is_published ? "Publicado" : "Rascunho"}
                 </td>
@@ -364,5 +355,13 @@ export const ContentEditor = () => {
         </table>
       </div>
     </div>
+      <ContentWizard
+        isOpen={wizardOpen}
+        onClose={() => setWizardOpen(false)}
+        onSuccess={() => {
+          setWizardOpen(false);
+          fetchPages();
+        }}
+      />
   );
 };
