@@ -19,9 +19,14 @@ class Settings:
     )
     APP_NAME = os.getenv("APP_NAME", "Instituto ABRAMS API")
     ENVIRONMENT = os.getenv("FLASK_ENV", os.getenv("APP_ENV", "development"))
-    BACKEND_CORS_ORIGINS = os.getenv(
-        "BACKEND_CORS_ORIGINS", os.getenv("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
-    ).split(",")
+    _cors_origins = os.getenv(
+        "BACKEND_CORS_ORIGINS",
+        os.getenv(
+            "CORS_ORIGINS",
+            "http://localhost:5173,http://127.0.0.1:5173,http://localhost:8080,http://145.223.31.151:8100,*",
+        ),
+    )
+    BACKEND_CORS_ORIGINS = _cors_origins.split(",") if _cors_origins else ["*"]
     BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
     UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER", os.path.join(BASE_DIR, "uploads"))
     MEDIA_BASE_URL = os.getenv("MEDIA_BASE_URL", "/uploads")
