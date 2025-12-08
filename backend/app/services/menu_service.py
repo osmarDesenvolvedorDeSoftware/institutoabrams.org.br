@@ -32,5 +32,8 @@ def update_menu(menu: Menu, payload: dict) -> Menu:
 
 
 def delete_menu(menu: Menu) -> None:
+    # Remove filhos antes para evitar erro de integridade
+    for child in list(menu.children):
+        db.session.delete(child)
     db.session.delete(menu)
     db.session.commit()
