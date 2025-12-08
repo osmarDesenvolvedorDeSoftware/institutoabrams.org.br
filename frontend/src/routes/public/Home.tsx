@@ -1,11 +1,85 @@
 import { Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { SeoHelmet } from "../../components/seo/SeoHelmet";
 import { DEFAULT_DESCRIPTION, DEFAULT_TITLE } from "../../utils/seoDefaults";
+import { api } from "../../services/api";
+import { SectionRenderer } from "../../components/SectionRenderer";
+
+type Page = {
+  id: number;
+  slug: string;
+  title_translations: Record<string, string>;
+  content_translations?: Record<string, string>;
+  hero_image_url?: string | null;
+};
+
+type MenuItem = {
+  id: number;
+  label: string;
+  target: string;
+  parent_id?: number | null;
+  order?: number;
+};
 
 export const Home = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [homeContent, setHomeContent] = useState<any | null>(null);
+  const [pages, setPages] = useState<Page[]>([]);
+  const [menus, setMenus] = useState<MenuItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    setLoading(true);
+    Promise.all([
+      api.get("/pages/slug/home-content").catch(() => null),
+      api.get("/pages").catch(() => null),
+      api.get("/menus").catch(() => null),
+    ])
+      .then(([homeResp, pagesResp, menusResp]) => {
+        if (!mounted) return;
+        setHomeContent(homeResp?.data || null);
+        setPages((pagesResp?.data?.items as Page[]) || (pagesResp?.data as Page[]) || []);
+        setMenus((menusResp?.data?.items as MenuItem[]) || (menusResp?.data as MenuItem[]) || []);
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const sections = homeContent?.sections || [];
+  const heroSection = sections.find((s: any) => s?.type === "hero") || null;
+  const textSection = sections.find((s: any) => s?.type === "text") || null;
+  const extraSections = sections.filter((s: any) => s?.type !== "hero" && s?.type !== "text");
+
+  const highlightPages = useMemo(() => {
+    const menuList = menus.length && (menus as any)[0]?.items ? (menus as any)[0].items : menus;
+    const parents = (menuList as MenuItem[]).filter((m) => !m.parent_id);
+    const sorted = parents.sort((a, b) => (a.order || 0) - (b.order || 0));
+    const mapped = sorted
+      .map((m) => {
+        const slug = m.target?.startsWith("/pages/") ? m.target.replace("/pages/", "") : null;
+        if (!slug || slug === "home-content") return null;
+        const page = pages.find((p) => p.slug === slug);
+        return page ? { page, order: m.order || 0 } : null;
+      })
+      .filter(Boolean) as { page: Page; order: number }[];
+    return mapped.slice(0, 3).map((item) => item.page);
+  }, [menus, pages]);
+
+  const getLocalized = (translations: Record<string, string> | undefined, lang: string) =>
+    translations?.[lang] || translations?.[lang?.slice(0, 2)] || translations?.["pt"];
+
+  const heroTitle = heroSection?.title || t("heroTitle");
+  const heroSubtitle = heroSection?.subtitle || t("heroSubtitle");
+  const heroCtaLabel = heroSection?.cta_label || t("ctaPrimary");
+  const heroCtaLink = heroSection?.cta_link || "/contato";
+  const introText = textSection?.content;
 
   return (
     <div className="container" style={{ padding: "3.25rem 0", display: "grid", gap: "3.5rem" }}>
@@ -25,29 +99,40 @@ export const Home = () => {
         <div style={{ display: "grid", gap: "1rem", textAlign: "center" }}>
           <span className="pill">{t("heroTagline", { defaultValue: "Instituto ABRAMS" })}</span>
           <h1 className="title-centered" style={{ textAlign: "center", marginBottom: "0.25rem" }}>
-            {t("heroTitle")}
+            {heroTitle}
           </h1>
           <div className="divider" />
           <p style={{ margin: 0, fontSize: "1.08rem", color: "var(--muted)" }}>
-            {t("heroSubtitle")}
+            {heroSubtitle}
           </p>
           <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", justifyContent: "center" }}>
-            <Link className="btn btn-primary" to="/contato">
-              {t("ctaPrimary")}
+            <Link className="btn btn-primary" to={heroCtaLink}>
+              {heroCtaLabel}
             </Link>
             <Link className="btn btn-ghost" to="/projetos">
               {t("ctaSecondary")}
             </Link>
           </div>
+        {heroSection?.image && (
+            <img
+              src={heroSection.image}
+              alt={heroSection.title || "Hero"}
+              style={{ width: "100%", maxHeight: 280, objectFit: "cover", borderRadius: 12 }}
+            />
+          )}
         </div>
         <div className="card" style={{ background: "#fff", padding: "1.35rem", borderRadius: 14, display: "grid", gap: "0.75rem" }}>
           <h3 style={{ marginTop: 0 }}>{t("highlightsTitle", { defaultValue: "Destaques" })}</h3>
           <div className="divider" />
-          <ul style={{ margin: 0, paddingLeft: "1.25rem", lineHeight: 1.8, color: "var(--muted)" }}>
+          {introText ? (
+            <p style={{ margin: 0, color: "var(--muted)", lineHeight: 1.6 }}>{introText}</p>
+          ) : (
+            <ul style={{ margin: 0, paddingLeft: "1.25rem", lineHeight: 1.8, color: "var(--muted)" }}>
             <li>{t("highlight1", { defaultValue: "Programas de bolsas e desenvolvimento" })}</li>
             <li>{t("highlight2", { defaultValue: "Parcerias com empresas e universidades" })}</li>
             <li>{t("highlight3", { defaultValue: "Conteúdos formativos e mentorias" })}</li>
           </ul>
+          )}
         </div>
       </section>
 
@@ -78,7 +163,7 @@ export const Home = () => {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
             <div>
               <p className="subtitle" style={{ marginBottom: "0.15rem" }}>{t("home.instituteHighlightsTitle", { defaultValue: "Destaques do Instituto" })}</p>
-              <h2 style={{ margin: 0 }}>{t("home.instituteHighlightsSubtitle", { defaultValue: "Ações em evidência" })}</h2>
+              <h2 style={{ margin: 0 }}>{t("home.instituteHighlightsSubtitle", { defaultValue: "Acoes em evidencia" })}</h2>
               <div className="divider" />
             </div>
             <Link className="btn btn-ghost" to="/projetos">
@@ -87,16 +172,23 @@ export const Home = () => {
           </div>
 
           <div className="grid three">
-            {[
-              { title: "Clubinho da Leitura", slug: "clubinho-da-leitura" },
-              { title: "Igualdade de Gênero", slug: "igualdade-de-genero" },
-              { title: "Mentorias Profissionais", slug: "mentorias-profissionais" },
-            ].map((item) => (
+            {(highlightPages.length
+              ? highlightPages.map((page) => ({
+                  title: getLocalized(page.title_translations, i18n.language) || page.slug,
+                  slug: page.slug,
+                  desc: getLocalized(page.content_translations, i18n.language),
+                }))
+              : [
+                  { title: "Clubinho da Leitura", slug: "clubinho-da-leitura", desc: t("home.projectPlaceholder", { defaultValue: "Conteudo em construcao. Saiba mais em breve." }) },
+                  { title: "Igualdade de Genero", slug: "igualdade-de-genero", desc: t("home.projectPlaceholder", { defaultValue: "Conteudo em construcao. Saiba mais em breve." }) },
+                  { title: "Mentorias Profissionais", slug: "mentorias-profissionais", desc: t("home.projectPlaceholder", { defaultValue: "Conteudo em construcao. Saiba mais em breve." }) },
+                ]
+            ).map((item) => (
               <Link key={item.slug} to={`/pages/${item.slug}`} className="card" style={{ display: "grid", gap: "0.55rem" }}>
                 <p className="subtitle" style={{ margin: 0 }}>{t("home.projectLabel", { defaultValue: "Projeto" })}</p>
                 <h3 style={{ margin: 0 }}>{item.title}</h3>
                 <p style={{ margin: 0, color: "var(--muted)" }}>
-                  {t("home.projectPlaceholder", { defaultValue: "Conteúdo em construção. Saiba mais em breve." })}
+                  {item.desc || t("home.projectPlaceholder", { defaultValue: "Conteudo em construcao. Saiba mais em breve." })}
                 </p>
               </Link>
             ))}
@@ -174,6 +266,12 @@ export const Home = () => {
           ))}
         </div>
       </section>
+
+      {extraSections?.length ? (
+        <section className="section" style={{ paddingTop: 0 }}>
+          <SectionRenderer sections={extraSections} />
+        </section>
+      ) : null}
     </div>
   );
 };
