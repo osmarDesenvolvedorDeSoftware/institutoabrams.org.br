@@ -35,14 +35,17 @@ export const AdminLayout = () => {
               <Link to="/admin" style={{ padding: "0.45rem 0.7rem", borderRadius: 8, color: "#1f2937", fontWeight: 600 }}>
                 Dashboard
               </Link>
+              <Link to="/admin/home" style={{ padding: "0.45rem 0.7rem", borderRadius: 8, color: "#1f2937", fontWeight: 600 }}>
+                Editar Home
+              </Link>
               <Link to="/admin/paginas" style={{ padding: "0.45rem 0.7rem", borderRadius: 8, color: "#1f2937", fontWeight: 600 }}>
-                Páginas
+                Paginas
               </Link>
               <Link to="/admin/menus" style={{ padding: "0.45rem 0.7rem", borderRadius: 8, color: "#1f2937", fontWeight: 600 }}>
                 Menus
               </Link>
               <Link to="/admin/settings" style={{ padding: "0.45rem 0.7rem", borderRadius: 8, color: "#1f2937", fontWeight: 600 }}>
-                Configurações
+                Configuracoes
               </Link>
             </nav>
           </div>

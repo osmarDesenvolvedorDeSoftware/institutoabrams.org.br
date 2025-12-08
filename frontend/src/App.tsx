@@ -7,6 +7,7 @@ import { Dashboard } from "./routes/admin/Dashboard";
 import { ContentEditor } from "./routes/admin/ContentEditor";
 import { MenusAdmin } from "./routes/admin/MenusAdmin";
 import { SiteSettingsAdmin } from "./routes/admin/SiteSettingsAdmin";
+import { HomeEditor } from "./routes/admin/HomeEditor";
 import { AdminLogin } from "./routes/admin/Login";
 import { Home } from "./routes/public/Home";
 import { Projects } from "./routes/public/Projects";
@@ -41,6 +42,7 @@ function App() {
         }
       >
         <Route index element={<Dashboard />} />
+        <Route path="home" element={<HomeEditor />} />
         <Route path="paginas" element={<ContentEditor />} />
         <Route path="menus" element={<MenusAdmin />} />
         <Route path="settings" element={<SiteSettingsAdmin />} />
