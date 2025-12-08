@@ -27,3 +27,5 @@ export const SeoHelmet = ({ title, description, image, url }: Props) => {
     </Helmet>
   );
 };
+
+export default SeoHelmet;

@@ -1,5 +1,5 @@
 // Compat layer for JSX/JS imports
-import { SeoHelmet } from "./SeoHelmet";
+import SeoHelmet, { SeoHelmet as NamedSeoHelmet } from "./SeoHelmet";
 
-export { SeoHelmet };
+export { NamedSeoHelmet as SeoHelmet };
 export default SeoHelmet;
