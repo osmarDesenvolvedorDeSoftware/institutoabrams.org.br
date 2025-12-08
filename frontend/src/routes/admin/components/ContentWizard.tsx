@@ -353,10 +353,8 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, parentMenuId }: Prop
             <p style={{ margin: 0, color: "var(--muted)" }}>Selecione o tipo de criacao</p>
             <div className="grid two">
               {[
-                { key: "simple", label: "Pagina Simples" },
                 { key: "page_menu", label: "Pagina + Item no Menu" },
                 { key: "parent_children", label: "Pagina Pai com Submenus" },
-                { key: "submenu_existing", label: "Submenu para um Menu Existente" },
               ].map((opt) => (
                 <label
                   key={opt.key}
