@@ -15,11 +15,10 @@ def create_app(config_object: type[Settings] | None = None) -> Flask:
     jwt.init_app(app)
     cors.init_app(
         app,
-        resources={
-            r"/api/*": {"origins": app.config.get("BACKEND_CORS_ORIGINS")},
-            r"/health": {"origins": "*"},
-            r"/uploads/*": {"origins": "*"},
-        },
+        resources={r"/api/*": {"origins": "*"}, r"/health": {"origins": "*"}, r"/uploads/*": {"origins": "*"}},
+        supports_credentials=True,
+        allow_headers="*",
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     )
 
     register_routes(app)

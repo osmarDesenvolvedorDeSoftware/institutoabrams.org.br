@@ -276,3 +276,8 @@ def list_page_templates():
         return jsonify({"message": "Invalid templates file"}), 500
 
     return jsonify({"templates": templates}), 200
+
+
+@bp.options("/page-templates")
+def options_page_templates():
+    return "", 200
