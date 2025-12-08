@@ -64,6 +64,33 @@ def update_page(page_id: int):
     return jsonify(page_schema.dump(updated))
 
 
+@bp.patch("/<int:page_id>")
+@jwt_required()
+def patch_page(page_id: int):
+    page = page_service.get_page(page_id)
+    if not page:
+        return jsonify({"message": "Page not found"}), 404
+
+    payload = request.get_json() or {}
+    allowed_fields = {
+        "title_translations",
+        "content_translations",
+        "is_published",
+        "category",
+        "hero_image_url",
+        "gallery_urls",
+        "video_url",
+        "sections",
+    }
+    partial_payload = {k: v for k, v in payload.items() if k in allowed_fields}
+    errors = page_schema.validate(partial_payload, partial=True)
+    if errors:
+        return jsonify({"message": "Invalid payload", "errors": errors}), 400
+
+    updated = page_service.update_page(page, partial_payload)
+    return jsonify(page_schema.dump(updated)), 200
+
+
 @bp.delete("/<int:page_id>")
 @jwt_required()
 def delete_page(page_id: int):
