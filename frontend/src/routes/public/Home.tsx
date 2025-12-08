@@ -11,8 +11,9 @@ type Page = {
   id: number;
   slug: string;
   title_translations: Record<string, string>;
-  content_translations?: Record<string, string>;
+  content_translations?: Record<string, any>;
   hero_image_url?: string | null;
+  is_published?: boolean;
 };
 
 type MenuItem = {
@@ -52,10 +53,22 @@ export const Home = () => {
     };
   }, []);
 
-  const sections = homeContent?.sections || [];
+  const sections =
+    homeContent?.sections ||
+    homeContent?.content_translations?.sections ||
+    homeContent?.content_translations?.[i18n.language]?.sections ||
+    homeContent?.content_translations?.[i18n.language?.slice(0, 2)]?.sections ||
+    [];
   const heroSection = sections.find((s: any) => s?.type === "hero") || null;
   const textSection = sections.find((s: any) => s?.type === "text") || null;
   const extraSections = sections.filter((s: any) => s?.type !== "hero" && s?.type !== "text");
+  const heroImage =
+    heroSection?.image || heroSection?.image_url || heroSection?.hero_image_url || homeContent?.hero_image_url;
+
+  const visiblePages = useMemo(
+    () => pages.filter((p) => p.slug !== "home-content" && p.is_published !== false),
+    [pages],
+  );
 
   const highlightPages = useMemo(() => {
     const menuList = menus.length && (menus as any)[0]?.items ? (menus as any)[0].items : menus;
@@ -65,12 +78,12 @@ export const Home = () => {
       .map((m) => {
         const slug = m.target?.startsWith("/pages/") ? m.target.replace("/pages/", "") : null;
         if (!slug || slug === "home-content") return null;
-        const page = pages.find((p) => p.slug === slug);
+        const page = visiblePages.find((p) => p.slug === slug);
         return page ? { page, order: m.order || 0 } : null;
       })
       .filter(Boolean) as { page: Page; order: number }[];
     return mapped.slice(0, 3).map((item) => item.page);
-  }, [menus, pages]);
+  }, [menus, visiblePages]);
 
   const getLocalized = (translations: Record<string, string> | undefined, lang: string) =>
     translations?.[lang] || translations?.[lang?.slice(0, 2)] || translations?.["pt"];
@@ -113,10 +126,10 @@ export const Home = () => {
               {t("ctaSecondary")}
             </Link>
           </div>
-        {heroSection?.image && (
+        {heroImage && (
             <img
-              src={heroSection.image}
-              alt={heroSection.title || "Hero"}
+              src={heroImage}
+              alt={heroSection?.title || "Hero"}
               style={{ width: "100%", maxHeight: 280, objectFit: "cover", borderRadius: 12 }}
             />
           )}
@@ -130,7 +143,7 @@ export const Home = () => {
             <ul style={{ margin: 0, paddingLeft: "1.25rem", lineHeight: 1.8, color: "var(--muted)" }}>
             <li>{t("highlight1", { defaultValue: "Programas de bolsas e desenvolvimento" })}</li>
             <li>{t("highlight2", { defaultValue: "Parcerias com empresas e universidades" })}</li>
-            <li>{t("highlight3", { defaultValue: "Conteúdos formativos e mentorias" })}</li>
+            <li>{t("highlight3", { defaultValue: "Conteudos formativos e mentorias" })}</li>
           </ul>
           )}
         </div>
@@ -140,14 +153,14 @@ export const Home = () => {
         <div style={{ display: "grid", gap: "1.25rem" }}>
           <div>
             <p className="subtitle" style={{ marginBottom: "0.15rem" }}>{t("home.pillarsTitle", { defaultValue: "Nossos Pilares" })}</p>
-            <h2 style={{ margin: 0 }}>{t("home.pillarsSubtitle", { defaultValue: "Impacto que guia nossas ações" })}</h2>
+            <h2 style={{ margin: 0 }}>{t("home.pillarsSubtitle", { defaultValue: "Impacto que guia nossas acoes" })}</h2>
             <div className="divider" />
           </div>
           <div className="grid three">
             {[
-              { title: t("home.pillarEducationTitle", { defaultValue: "Educação e Cultura" }), text: t("home.pillarEducationText", { defaultValue: "Leitura, arte e conhecimento para formar cidadãos conscientes." }) },
-              { title: t("home.pillarEquityTitle", { defaultValue: "Equidade e Inclusão" }), text: t("home.pillarEquityText", { defaultValue: "Projetos que promovem igualdade de gênero e oportunidades." }) },
-              { title: t("home.pillarCareerTitle", { defaultValue: "Carreira e Futuro" }), text: t("home.pillarCareerText", { defaultValue: "Trilhas e mentorias para impulsionar trajetórias profissionais." }) },
+              { title: t("home.pillarEducationTitle", { defaultValue: "Educacao e Cultura" }), text: t("home.pillarEducationText", { defaultValue: "Leitura, arte e conhecimento para formar cidadaos conscientes." }) },
+              { title: t("home.pillarEquityTitle", { defaultValue: "Equidade e Inclusao" }), text: t("home.pillarEquityText", { defaultValue: "Projetos que promovem igualdade de genero e oportunidades." }) },
+              { title: t("home.pillarCareerTitle", { defaultValue: "Carreira e Futuro" }), text: t("home.pillarCareerText", { defaultValue: "Trilhas e mentorias para impulsionar trajetorias profissionais." }) },
             ].map((pillar) => (
               <div key={pillar.title} className="card" style={{ display: "grid", gap: "0.5rem" }}>
                 <h3 style={{ margin: 0 }}>{pillar.title}</h3>
@@ -247,15 +260,15 @@ export const Home = () => {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
           <div>
             <p className="subtitle" style={{ marginBottom: "0.15rem" }}>{t("home.followWorkTitle", { defaultValue: "Acompanhe nosso trabalho" })}</p>
-            <h2 style={{ margin: 0 }}>{t("home.followWorkSubtitle", { defaultValue: "Projetos e notícias" })}</h2>
+            <h2 style={{ margin: 0 }}>{t("home.followWorkSubtitle", { defaultValue: "Projetos e noticias" })}</h2>
             <div className="divider" />
           </div>
           <Link to="/noticias" className="btn btn-ghost">
-            {t("home.followWorkNewsCta", { defaultValue: "Ver notícias" })}
+            {t("home.followWorkNewsCta", { defaultValue: "Ver noticias" })}
           </Link>
         </div>
         <div className="grid two" style={{ marginTop: "0.5rem" }}>
-          {[{ title: t("projectsTitle", { defaultValue: "Projetos" }), desc: t("projectPlaceholder", { defaultValue: "Conheça as iniciativas que conectam pessoas e oportunidades." }), href: "/projetos" }, { title: t("footer.news", { defaultValue: "Notícias" }), desc: t("projectPlaceholder", { defaultValue: "Atualizações, eventos e comunicados oficiais do Instituto ABRAMS." }), href: "/noticias" }].map((item) => (
+          {[{ title: t("projectsTitle", { defaultValue: "Projetos" }), desc: t("projectPlaceholder", { defaultValue: "Conheca as iniciativas que conectam pessoas e oportunidades." }), href: "/projetos" }, { title: t("footer.news", { defaultValue: "Noticias" }), desc: t("projectPlaceholder", { defaultValue: "Atualizacoes, eventos e comunicados oficiais do Instituto ABRAMS." }), href: "/noticias" }].map((item) => (
             <div key={item.title} className="card" style={{ display: "grid", gap: "0.5rem" }}>
               <h3 style={{ margin: 0 }}>{item.title}</h3>
               <p style={{ margin: 0, color: "var(--muted)" }}>{item.desc}</p>

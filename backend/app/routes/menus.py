@@ -50,6 +50,8 @@ def add_submenu(menu_id: int):
         page = page_service.get_page(use_existing_page_id)
         if not page:
             return jsonify({"message": "Page not found"}), 404
+        if page.slug == "home-content":
+            return jsonify({"message": "home-content cannot be added to menus"}), 400
     elif page_data:
         try:
             loaded_page = page_schema.load(page_data)
@@ -60,6 +62,12 @@ def add_submenu(menu_id: int):
         except IntegrityError:
             db.session.rollback()
             return jsonify({"message": "Slug conflict creating page"}), 409
+        except ValueError as err:
+            db.session.rollback()
+            return jsonify({"message": str(err)}), 400
+        if page.slug == "home-content":
+            db.session.rollback()
+            return jsonify({"message": "home-content cannot be added to menus"}), 400
     else:
         return jsonify({"message": "Invalid payload"}), 400
 
@@ -76,6 +84,9 @@ def add_submenu(menu_id: int):
     except IntegrityError:
         db.session.rollback()
         return jsonify({"message": "Slug conflict creating menu"}), 409
+    except ValueError as err:
+        db.session.rollback()
+        return jsonify({"message": str(err)}), 400
 
     if not parent.is_dropdown:
         parent.is_dropdown = True

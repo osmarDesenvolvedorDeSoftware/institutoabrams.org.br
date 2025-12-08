@@ -45,6 +45,8 @@ def get_page_by_slug(slug: str):
     page = page_service.get_page_by_slug(slug)
     if not page:
         return jsonify({"message": "Page not found"}), 404
+    if slug == "home-content":
+        return jsonify(page_schema.dump(page)), 200
     return jsonify(page_schema.dump(page))
 
 
@@ -91,9 +93,15 @@ def create_page_with_menu():
     except IntegrityError:
         db.session.rollback()
         return jsonify({"message": "Slug already exists"}), 409
+    except ValueError as err:
+        db.session.rollback()
+        return jsonify({"message": str(err)}), 400
 
     if not payload.get("create_menu"):
         return jsonify({"page": page_schema.dump(page)}), 201
+
+    if page.slug == "home-content":
+        return jsonify({"message": "home-content cannot be added to menus"}), 400
 
     parent_id = payload.get("menu_parent_id")
     if parent_id is not None:
@@ -114,6 +122,9 @@ def create_page_with_menu():
     except IntegrityError:
         db.session.rollback()
         return jsonify({"message": "Menu creation failed"}), 409
+    except ValueError as err:
+        db.session.rollback()
+        return jsonify({"message": str(err)}), 400
 
     if parent_id is not None:
         menu_service.ensure_dropdown(parent_id)
@@ -140,6 +151,11 @@ def create_pages_bulk_with_menus():
         children_data = [page_schema.load(child) for child in children_payloads]
     except ValidationError as err:
         return jsonify({"message": "Invalid payload", "errors": err.messages}), 400
+
+    if payload.get("create_parent_menu") and parent_data.get("slug") == "home-content":
+        return jsonify({"message": "home-content cannot be added to menus"}), 400
+    if any((child.get("slug") == "home-content") for child in children_data):
+        return jsonify({"message": "home-content cannot be added to menus"}), 400
 
     orders_map: dict[str, int] = {}
     if children_menu_orders is not None:
@@ -208,6 +224,9 @@ def create_pages_bulk_with_menus():
     except IntegrityError:
         db.session.rollback()
         return jsonify({"message": "Slug or menu conflict"}), 409
+    except ValueError as err:
+        db.session.rollback()
+        return jsonify({"message": str(err)}), 400
 
     response_body = {
         "parent_page": page_schema.dump(parent_page),

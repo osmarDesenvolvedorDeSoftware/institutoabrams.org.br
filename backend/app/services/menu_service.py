@@ -24,6 +24,8 @@ def normalize_target(slug: str | None, is_root: bool = False) -> str:
     if is_root:
         return "/"
     safe_slug = slugify(slug or "pagina")
+    if safe_slug == "home-content":
+        raise ValueError("home-content cannot be added to menus")
     return f"/pages/{safe_slug}"
 
 
@@ -47,10 +49,15 @@ def ensure_dropdown(menu_id: int) -> Menu:
 def create_menu_with_defaults(payload: dict) -> Menu:
     data = {**payload}
     data["slug"] = slugify(data.get("slug") or data.get("label") or "menu")
+    if data["slug"] == "home-content":
+        raise ValueError("home-content cannot be added to menus")
     if data.get("order") is None:
         data["order"] = next_order(data.get("parent_id"))
     if not data.get("target"):
-        data["target"] = normalize_target(data.get("slug"), is_root=data.get("parent_id") is None and data.get("slug") in ("", None))
+        data["target"] = normalize_target(
+            data.get("slug"),
+            is_root=data.get("parent_id") is None and data.get("slug") in ("", None),
+        )
     else:
         data["target"] = normalize_target(data.get("slug")) if data["target"] != "/" else "/"
     menu = Menu(**data)

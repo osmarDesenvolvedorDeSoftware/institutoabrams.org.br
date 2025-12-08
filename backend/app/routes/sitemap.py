@@ -32,6 +32,8 @@ def sitemap():
 
     pages = Page.query.filter_by(is_published=True).all()
     for page in pages:
+        if page.slug == "home-content":
+            continue
         lastmod = (page.updated_at or page.created_at or datetime.utcnow()).date().isoformat()
         urls.append(f"""
   <url>

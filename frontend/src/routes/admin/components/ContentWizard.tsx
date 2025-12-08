@@ -27,6 +27,7 @@ type PageDraft = {
   slug?: string;
   content?: string;
   templateId?: string;
+  sections?: any[];
 };
 
 type SubPageDraft = PageDraft & {
@@ -59,25 +60,18 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, parentMenuId }: Prop
   const [submenuNewPage, setSubmenuNewPage] = useState<PageDraft>({ title: "", slug: "", content: "" });
 
   // Menu config
-  const [menuConfig, setMenuConfig] = useState<{
-    createMenu: boolean;
-    menuParentId: number | null;
-    menuOrder: number | null;
-    createParentMenu: boolean;
-    markParentDropdown: boolean;
-    menuOrderParent: number | null;
-    childrenOrders: Record<string, number | undefined>;
-    submenuOrder: number | null;
-  }>({
-    createMenu: true,
+  const menuDefaults = (type?: WizardType | null) => ({
+    createMenu: type === "simple" ? false : type === "submenu_existing" ? false : true,
     menuParentId: null,
     menuOrder: null,
-    createParentMenu: true,
-    markParentDropdown: true,
+    createParentMenu: type === "parent_children" ? true : false,
+    markParentDropdown: type === "parent_children" ? true : false,
     menuOrderParent: null,
-    childrenOrders: {},
-    submenuOrder: null,
+    childrenOrders: {} as Record<string, number | undefined>,
+    submenuOrder: null as number | null,
   });
+
+  const [menuConfig, setMenuConfig] = useState(menuDefaults());
 
   const resetState = () => {
     const isSubmenuFlow = Boolean(parentMenuId);
@@ -88,16 +82,7 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, parentMenuId }: Prop
     setSubmenuPageMode("existing");
     setSubmenuExistingPageId(null);
     setSubmenuNewPage({ title: "", slug: "", content: "" });
-    setMenuConfig({
-      createMenu: true,
-      menuParentId: null,
-      menuOrder: null,
-      createParentMenu: true,
-      markParentDropdown: true,
-      menuOrderParent: null,
-      childrenOrders: {},
-      submenuOrder: null,
-    });
+    setMenuConfig(menuDefaults(isSubmenuFlow ? "submenu_existing" : null));
     setError(null);
   };
 
@@ -113,16 +98,7 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, parentMenuId }: Prop
     setSubmenuPageMode("existing");
     setSubmenuExistingPageId(null);
     setSubmenuNewPage({ title: "", slug: "", content: "" });
-    setMenuConfig({
-      createMenu: true,
-      menuParentId: null,
-      menuOrder: null,
-      createParentMenu: true,
-      markParentDropdown: true,
-      menuOrderParent: null,
-      childrenOrders: {},
-      submenuOrder: null,
-    });
+    setMenuConfig(menuDefaults(type));
     setError(null);
     setCurrentStep(type === "submenu_existing" && parentMenuId ? 2 : 1);
   };
@@ -148,6 +124,12 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, parentMenuId }: Prop
       .then(({ data }) => setPages(data.items || data))
       .catch(() => setPages([]));
   }, [isOpen]);
+
+  useEffect(() => {
+    if (selectedType === "simple") {
+      setMenuConfig(menuDefaults("simple"));
+    }
+  }, [selectedType]);
 
   const applyTemplate = (templateId?: string) => {
     const tpl = templates.find((t) => t.id === templateId);
@@ -178,11 +160,19 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, parentMenuId }: Prop
 
   const goNext = () => {
     if (!canGoNext) return;
+    if (selectedType === "simple" && currentStep === 2) {
+      setCurrentStep(4);
+      return;
+    }
     if (currentStep < 4) setCurrentStep((prev) => (prev + 1) as any);
   };
 
   const goBack = () => {
     if (parentMenuId && currentStep === 2) return;
+    if (selectedType === "simple" && currentStep === 4) {
+      setCurrentStep(2);
+      return;
+    }
     if (currentStep > 1) setCurrentStep((prev) => (prev - 1) as any);
   };
 
@@ -235,7 +225,9 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, parentMenuId }: Prop
           page: {
             title_translations: { pt: parentPage.title },
             content_translations: { pt: parentPage.content || "" },
+            sections: parentPage.sections,
             slug: parentPage.slug || undefined,
+            is_published: true,
           },
           create_menu: false,
         };
@@ -247,7 +239,9 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, parentMenuId }: Prop
           page: {
             title_translations: { pt: parentPage.title },
             content_translations: { pt: parentPage.content || "" },
+            sections: parentPage.sections,
             slug: parentPage.slug || undefined,
+            is_published: true,
           },
           create_menu: menuConfig.createMenu,
           menu_parent_id: menuConfig.menuParentId || null,
@@ -262,7 +256,9 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, parentMenuId }: Prop
           .map((c) => ({
             title_translations: { pt: c.title },
             content_translations: { pt: c.content || "" },
+            sections: c.sections,
             slug: c.slug || undefined,
+            is_published: true,
           }));
         const children_menu_orders = subPages
           .map((c) => ({
@@ -275,7 +271,9 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, parentMenuId }: Prop
           parent_page: {
             title_translations: { pt: parentPage.title },
             content_translations: { pt: parentPage.content || "" },
+            sections: parentPage.sections,
             slug: parentPage.slug || undefined,
+            is_published: true,
           },
           children,
           create_parent_menu: menuConfig.createParentMenu,
@@ -300,7 +298,9 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, parentMenuId }: Prop
                 page: {
                   title_translations: { pt: submenuNewPage.title },
                   content_translations: { pt: submenuNewPage.content || "" },
+                  sections: submenuNewPage.sections,
                   slug: submenuNewPage.slug || undefined,
+                  is_published: true,
                 },
                 order: menuConfig.submenuOrder ?? null,
               };
@@ -546,7 +546,7 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, parentMenuId }: Prop
           </div>
         )}
 
-        {currentStep === 3 && (
+        {currentStep === 3 && selectedType !== "simple" && (
           <div style={{ display: "grid", gap: "0.75rem" }}>
             <p style={{ margin: 0, color: "var(--muted)" }}>Configuracao de menu</p>
 

@@ -31,6 +31,10 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
 
   useEffect(() => {
     if (!currentSlug) return;
+    if (currentSlug === "home-content") {
+      setNotFound(true);
+      return;
+    }
     api
       .get(`/pages/slug/${currentSlug}`)
       .then(({ data }) => {

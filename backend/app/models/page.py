@@ -16,6 +16,7 @@ class Page(db.Model):
     hero_image_url = db.Column(db.String(500), nullable=True)
     gallery_urls = db.Column(JSONB, nullable=True, default=list)
     video_url = db.Column(db.String(500), nullable=True)
+    sections = db.Column(JSONB, nullable=True)
     is_published = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(

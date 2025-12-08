@@ -26,15 +26,34 @@ def seed_navigation():
     pages_to_seed = [
         {"title": "Quem Somos", "slug": "quem-somos", "category": "institucional"},
         {"title": "Projetos", "slug": "projetos", "category": "institucional"},
-        {"title": "Notícias", "slug": "noticias", "category": "institucional"},
-        {"title": "Portfólio", "slug": "portfolio", "category": "institucional"},
-        {"title": "Doação", "slug": "doacao", "category": "institucional"},
+        {"title": "Noticias", "slug": "noticias", "category": "institucional"},
+        {"title": "Portfolio", "slug": "portfolio", "category": "institucional"},
+        {"title": "Doacao", "slug": "doacao", "category": "institucional"},
         {"title": "Contato", "slug": "contato", "category": "contato"},
         {"title": "Clubinho da Leitura", "slug": "clubinho-da-leitura", "category": "projeto"},
-        {"title": "Igualdade de Gênero", "slug": "igualdade-de-genero", "category": "projeto"},
+        {"title": "Igualdade de Genero", "slug": "igualdade-de-genero", "category": "projeto"},
         {"title": "Trilhas de Carreira", "slug": "trilhas-de-carreira", "category": "projeto"},
         {"title": "Mentorias Profissionais", "slug": "mentorias-profissionais", "category": "projeto"},
-        {"title": "Cursos / Serviços", "slug": "cursos", "category": "projeto"},
+        {"title": "Cursos / Servicos", "slug": "cursos", "category": "projeto"},
+        {
+            "title": "Conteudo da Home",
+            "slug": "home-content",
+            "category": "especial",
+            "sections": [
+                {
+                    "type": "hero",
+                    "title": "Bem-vindo ao Instituto",
+                    "subtitle": "Transformando vidas",
+                    "button_text": "Saiba mais",
+                    "button_url": "/contato",
+                    "image_url": "/static/hero.jpg",
+                },
+                {
+                    "type": "text",
+                    "content": "Este conteudo e totalmente gerenciavel pelo CMS.",
+                },
+            ],
+        },
     ]
 
     for p in pages_to_seed:
@@ -44,34 +63,35 @@ def seed_navigation():
         page_service.create_page_in_session(
             {
                 "title_translations": {"pt": p["title"]},
-                "content_translations": {"pt": "Conteúdo em construção."},
+                "content_translations": {"pt": "Conteudo em construcao."},
                 "slug": p["slug"],
                 "category": p.get("category"),
+                "sections": p.get("sections"),
                 "is_published": True,
             },
             commit=True,
         )
 
     menu_structure = [
-        {"label": "Início", "slug": "home", "target": "/", "order": 1, "is_dropdown": False, "children": []},
+        {"label": "Inicio", "slug": "home", "target": "/", "order": 1, "is_dropdown": False, "children": []},
         {"label": "Quem Somos", "slug": "quem-somos", "target": "/pages/quem-somos", "order": 2, "is_dropdown": False, "children": []},
         {
-            "label": "Projetos e Serviços",
+            "label": "Projetos e Servicos",
             "slug": "projetos",
             "target": "/pages/projetos",
             "order": 3,
             "is_dropdown": True,
             "children": [
                 {"label": "Clubinho da Leitura", "slug": "clubinho-da-leitura"},
-                {"label": "Igualdade de Gênero", "slug": "igualdade-de-genero"},
+                {"label": "Igualdade de Genero", "slug": "igualdade-de-genero"},
                 {"label": "Trilhas de Carreira", "slug": "trilhas-de-carreira"},
                 {"label": "Mentorias Profissionais", "slug": "mentorias-profissionais"},
-                {"label": "Cursos / Serviços", "slug": "cursos"},
+                {"label": "Cursos / Servicos", "slug": "cursos"},
             ],
         },
-        {"label": "Notícias", "slug": "noticias", "target": "/pages/noticias", "order": 4, "is_dropdown": False, "children": []},
-        {"label": "Portfólio", "slug": "portfolio", "target": "/pages/portfolio", "order": 5, "is_dropdown": False, "children": []},
-        {"label": "Doação", "slug": "doacao", "target": "/pages/doacao", "order": 6, "is_dropdown": False, "children": []},
+        {"label": "Noticias", "slug": "noticias", "target": "/pages/noticias", "order": 4, "is_dropdown": False, "children": []},
+        {"label": "Portfolio", "slug": "portfolio", "target": "/pages/portfolio", "order": 5, "is_dropdown": False, "children": []},
+        {"label": "Doacao", "slug": "doacao", "target": "/pages/doacao", "order": 6, "is_dropdown": False, "children": []},
         {"label": "Contato", "slug": "contato", "target": "/pages/contato", "order": 7, "is_dropdown": False, "children": []},
     ]
 
@@ -120,4 +140,4 @@ def seed_navigation():
             )
 
     db.session.commit()
-    return f"Menus/Páginas semeados: {created_or_updated}"
+    return f"Menus/Paginas semeados: {created_or_updated}"
