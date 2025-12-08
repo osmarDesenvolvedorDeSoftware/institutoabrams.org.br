@@ -119,33 +119,8 @@ export const PublicLayout = () => {
     }
   }, [pathname, tracking.ga_id, tracking.gtm_id]);
 
-  const fallbackNav = useMemo<MenuItem[]>(
-    () => [
-      { id: 1, label: t("nav.home", { defaultValue: "Inicio" }), slug: "home", target: "/", is_dropdown: false, order: 1 },
-      { id: 2, label: t("nav.about", { defaultValue: "Quem Somos" }), slug: "quem-somos", target: "/pages/quem-somos", is_dropdown: false, order: 2 },
-      {
-        id: 3,
-        label: t("nav.projectsServices", { defaultValue: "Projetos e Servicos" }),
-        slug: "projetos",
-        target: "/pages/projetos",
-        is_dropdown: true,
-        order: 3,
-      },
-      { id: 4, label: t("nav.news", { defaultValue: "Noticias" }), slug: "noticias", target: "/pages/noticias", is_dropdown: false, order: 4 },
-      { id: 5, label: t("nav.portfolio", { defaultValue: "Portfolio" }), slug: "portfolio", target: "/pages/portfolio", is_dropdown: false, order: 5 },
-      { id: 7, label: t("nav.donation", { defaultValue: "Doacao" }), slug: "doacao", target: "/pages/doacao", is_dropdown: false, order: 7 },
-      { id: 8, label: t("nav.contact", { defaultValue: "Contato" }), slug: "contato", target: "/pages/contato", is_dropdown: false, order: 8 },
-      { id: 30, label: "Clubinho da Leitura", slug: "clubinho-da-leitura", target: "/pages/clubinho-da-leitura", is_dropdown: false, parent_id: 3, order: 1 },
-      { id: 31, label: "Igualdade de Genero", slug: "igualdade-de-genero", target: "/pages/igualdade-de-genero", is_dropdown: false, parent_id: 3, order: 2 },
-      { id: 32, label: "Trilhas de Carreira", slug: "trilhas-de-carreira", target: "/pages/trilhas-de-carreira", is_dropdown: false, parent_id: 3, order: 3 },
-      { id: 33, label: "Mentorias Profissionais", slug: "mentorias-profissionais", target: "/pages/mentorias-profissionais", is_dropdown: false, parent_id: 3, order: 4 },
-      { id: 34, label: "Cursos / Servicos", slug: "cursos", target: "/pages/cursos", is_dropdown: false, parent_id: 3, order: 5 },
-    ],
-    [t],
-  );
-
   const menuTree = useMemo(() => {
-    const source = menus.length ? menus : fallbackNav;
+    const source = menus;
     const parents = source.filter((m) => !m.parent_id);
     return parents
       .sort((a, b) => (a.order || 0) - (b.order || 0))
@@ -155,7 +130,22 @@ export const PublicLayout = () => {
           .filter((c) => c.parent_id === parent.id)
           .sort((a, b) => (a.order || 0) - (b.order || 0)),
       }));
-  }, [menus, fallbackNav]);
+  }, [menus]);
+
+  const footerLinks = useMemo(() => {
+    const links: { label: string; target: string }[] = [];
+    menuTree.forEach((parent) => {
+      if (parent.target && parent.target !== "/") {
+        links.push({ label: parent.label, target: parent.target });
+      }
+      (parent.children || []).forEach((child) => {
+        if (child.target && child.target !== "/") {
+          links.push({ label: child.label, target: child.target });
+        }
+      });
+    });
+    return links;
+  }, [menuTree]);
 
   const isActive = (target: string) => pathname === target || pathname.startsWith(target + "/");
 
@@ -375,26 +365,23 @@ export const PublicLayout = () => {
               <p style={{ margin: 0, color: "var(--muted)" }}>
                 {footerInfo.address ||
                   t("footer.defaultDescription", {
-                    defaultValue: "Construindo futuro com oportunidades e propósito.",
+                    defaultValue: "Construindo futuro com oportunidades e proposito.",
                   })}
               </p>
               {footerInfo.email && <p style={{ margin: 0, color: "var(--muted)" }}>{footerInfo.email}</p>}
               {footerInfo.phone && <p style={{ margin: 0, color: "var(--muted)" }}>{footerInfo.phone}</p>}
             </div>
             <div style={{ display: "grid", gap: "0.35rem" }}>
-              <strong>{t("footer.quickLinks", { defaultValue: "Links rápidos" })}</strong>
-              {[
-                { label: t("nav.home", { defaultValue: "Home" }), href: "/" },
-                { label: t("nav.about", { defaultValue: "Quem Somos" }), href: "/quem-somos" },
-                { label: t("nav.projectsServices", { defaultValue: "Projetos" }), href: "/projetos" },
-                { label: t("nav.donation", { defaultValue: "Doação" }), href: "/doacao" },
-                { label: t("nav.contact", { defaultValue: "Contato" }), href: "/contato" },
-                { label: t("footer.news", { defaultValue: "Notícias" }), href: "/noticias" },
-              ].map((link) => (
-                <Link key={link.href} to={link.href} style={{ color: "var(--muted)" }}>
-                  {link.label}
-                </Link>
-              ))}
+              <strong>{t("footer.quickLinks", { defaultValue: "Links" })}</strong>
+              {footerLinks.length ? (
+                footerLinks.map((link) => (
+                  <Link key={link.target} to={link.target} style={{ color: "var(--muted)" }}>
+                    {link.label}
+                  </Link>
+                ))
+              ) : (
+                <p style={{ margin: 0, color: "var(--muted)" }}>Nenhum link de menu configurado.</p>
+              )}
             </div>
             <div style={{ display: "grid", gap: "0.35rem" }}>
               <strong>{t("footer.social", { defaultValue: "Redes sociais" })}</strong>
