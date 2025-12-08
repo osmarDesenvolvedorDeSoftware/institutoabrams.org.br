@@ -10,6 +10,7 @@ from ..extensions import db
 from ..models import Menu
 from ..schemas import MenuSchema, PageSchema
 from ..services import menu_service, page_service
+from ..utils.slugify import slugify
 
 bp = Blueprint("pages", __name__)
 
@@ -92,6 +93,9 @@ def delete_page(page_id: int):
 def create_page_with_menu():
     payload = request.get_json() or {}
     page_payload = payload.get("page") or {}
+    # normaliza slug recebido (kebab-case) ou deixa vazio para auto-gerar
+    if isinstance(page_payload, dict) and page_payload.get("slug"):
+        page_payload["slug"] = slugify(page_payload["slug"])
 
     try:
         page_data = page_schema.load(page_payload)
@@ -139,6 +143,12 @@ def create_pages_bulk_with_menus():
     payload = request.get_json() or {}
     parent_payload = payload.get("parent_page") or {}
     children_payloads = payload.get("children") or []
+    if isinstance(parent_payload, dict) and parent_payload.get("slug"):
+        parent_payload["slug"] = slugify(parent_payload["slug"])
+    if isinstance(children_payloads, list):
+        for child in children_payloads:
+            if isinstance(child, dict) and child.get("slug"):
+                child["slug"] = slugify(child["slug"])
     children_menu_orders = payload.get("children_menu_orders")
 
     try:
