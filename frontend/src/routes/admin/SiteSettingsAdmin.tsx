@@ -22,22 +22,33 @@ type Footer = {
   };
 };
 
+type Tracking = {
+  ga_id?: string;
+  gtm_id?: string;
+};
+
 export const SiteSettingsAdmin = () => {
   const [branding, setBranding] = useState<Branding>({});
   const [footer, setFooter] = useState<Footer>({ social: {} });
+  const [tracking, setTracking] = useState<Tracking>({});
   const [isSavingBranding, setIsSavingBranding] = useState(false);
   const [isSavingFooter, setIsSavingFooter] = useState(false);
+  const [isSavingTracking, setIsSavingTracking] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   const fetchSettings = async () => {
     try {
-      const [{ data: brandResp }, { data: footerResp }] = await Promise.all([
+      const [{ data: brandResp }, { data: footerResp }, { data: trackingResp }] = await Promise.all([
         api.get("/settings/site_branding"),
         api.get("/settings/footer"),
+        api.get("/settings/site_tracking"),
       ]);
       setBranding(brandResp.value || {});
       setFooter(footerResp.value || { social: {} });
+      setTracking(trackingResp.value || {});
     } catch (error) {
       console.error("Erro ao carregar configurações", error);
+      setStatusMessage("Erro ao carregar configurações.");
     }
   };
 
@@ -49,9 +60,9 @@ export const SiteSettingsAdmin = () => {
     setIsSavingBranding(true);
     try {
       await api.put("/settings/site_branding", { value: branding });
-      alert("Identidade visual salva.");
+      setStatusMessage("Identidade visual salva com sucesso.");
     } catch (error) {
-      alert("Erro ao salvar identidade visual.");
+      setStatusMessage("Erro ao salvar identidade visual.");
     } finally {
       setIsSavingBranding(false);
     }
@@ -61,11 +72,23 @@ export const SiteSettingsAdmin = () => {
     setIsSavingFooter(true);
     try {
       await api.put("/settings/footer", { value: footer });
-      alert("Rodapé salvo.");
+      setStatusMessage("Rodapé salvo com sucesso.");
     } catch (error) {
-      alert("Erro ao salvar rodapé.");
+      setStatusMessage("Erro ao salvar rodapé.");
     } finally {
       setIsSavingFooter(false);
+    }
+  };
+
+  const saveTracking = async () => {
+    setIsSavingTracking(true);
+    try {
+      await api.put("/settings/site_tracking", { value: tracking });
+      setStatusMessage("Configurações de Analytics salvas com sucesso.");
+    } catch (error) {
+      setStatusMessage("Erro ao salvar configurações de Analytics.");
+    } finally {
+      setIsSavingTracking(false);
     }
   };
 
@@ -199,6 +222,48 @@ export const SiteSettingsAdmin = () => {
           {isSavingFooter ? "Salvando..." : "Salvar rodapé"}
         </button>
       </div>
+
+      <div className="card" style={{ display: "grid", gap: "0.75rem" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "1rem",
+            paddingBottom: "0.5rem",
+            borderBottom: "1px solid var(--border)",
+          }}
+        >
+          <div>
+            <p style={{ margin: 0, color: "var(--muted)" }}>Configurações do site</p>
+            <h3 style={{ margin: "0.2rem 0 0" }}>Analytics e Tag Manager</h3>
+          </div>
+        </div>
+
+        <input
+          placeholder="Google Analytics Measurement ID (ex: G-XXXX)"
+          value={tracking.ga_id || ""}
+          onChange={(e) => setTracking((prev) => ({ ...prev, ga_id: e.target.value }))}
+          style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
+        />
+        <input
+          placeholder="Google Tag Manager ID (ex: GTM-XXXX)"
+          value={tracking.gtm_id || ""}
+          onChange={(e) => setTracking((prev) => ({ ...prev, gtm_id: e.target.value }))}
+          style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
+        />
+
+        <button className="btn btn-primary" type="button" onClick={saveTracking} disabled={isSavingTracking}>
+          {isSavingTracking ? "Salvando..." : "Salvar Analytics"}
+        </button>
+      </div>
+
+      {statusMessage && (
+        <div className="card" style={{ display: "grid", gap: "0.25rem", background: "#f9fafb" }}>
+          <strong>Status</strong>
+          <p style={{ margin: 0, color: "var(--muted)" }}>{statusMessage}</p>
+        </div>
+      )}
     </div>
   );
 };

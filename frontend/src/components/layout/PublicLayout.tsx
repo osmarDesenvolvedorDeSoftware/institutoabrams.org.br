@@ -40,13 +40,14 @@ export const PublicLayout = () => {
   const [menus, setMenus] = useState<MenuItem[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-   const [branding, setBranding] = useState<{ logo_url?: string }>({});
-   const [footerInfo, setFooterInfo] = useState<{
-     address?: string;
-     email?: string;
-     phone?: string;
-     social?: Record<string, string>;
-   }>({});
+  const [branding, setBranding] = useState<{ logo_url?: string }>({});
+  const [footerInfo, setFooterInfo] = useState<{
+    address?: string;
+    email?: string;
+    phone?: string;
+    social?: Record<string, string>;
+  }>({});
+  const [tracking, setTracking] = useState<{ ga_id?: string; gtm_id?: string }>({});
   const currentLang = (i18n.language || "pt").slice(0, 2);
 
   useEffect(() => {
@@ -62,6 +63,10 @@ export const PublicLayout = () => {
       .get("/settings/footer")
       .then(({ data }) => setFooterInfo(data.value || {}))
       .catch(() => setFooterInfo({}));
+    api
+      .get("/settings/site_tracking")
+      .then(({ data }) => setTracking(data.value || {}))
+      .catch(() => setTracking({}));
   }, []);
 
   useEffect(() => {
@@ -70,6 +75,65 @@ export const PublicLayout = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  useEffect(() => {
+    const injectGTM = (id: string) => {
+      if (!id) return;
+      if (document.getElementById("gtm-script")) return;
+      const script = document.createElement("script");
+      script.id = "gtm-script";
+      script.innerHTML = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','${id}');`;
+      document.head.appendChild(script);
+
+      if (!document.getElementById("gtm-noscript")) {
+        const noscript = document.createElement("noscript");
+        noscript.id = "gtm-noscript";
+        noscript.innerHTML = `<iframe src="https://www.googletagmanager.com/ns.html?id=${id}" height="0" width="0" style="display:none;visibility:hidden"></iframe>`;
+        document.body.insertBefore(noscript, document.body.firstChild);
+      }
+    };
+
+    const injectGA = (id: string) => {
+      if (!id) return;
+      if (document.getElementById("ga-script")) return;
+      const script = document.createElement("script");
+      script.id = "ga-script";
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${id}`;
+      document.head.appendChild(script);
+
+      const inline = document.createElement("script");
+      inline.id = "ga-inline";
+      inline.innerHTML = `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '${id}', { send_page_view: false });
+      `;
+      document.head.appendChild(inline);
+    };
+
+    if (tracking.gtm_id) {
+      injectGTM(tracking.gtm_id);
+    } else if (tracking.ga_id) {
+      injectGA(tracking.ga_id);
+    }
+  }, [tracking]);
+
+  useEffect(() => {
+    const path = pathname;
+    const w = window as any;
+    if ((tracking.ga_id || tracking.gtm_id) && w.dataLayer) {
+      w.dataLayer.push({ event: "pageview", page_path: path });
+    }
+    if (tracking.ga_id && w.gtag) {
+      w.gtag("event", "page_view", { page_path: path });
+    }
+  }, [pathname, tracking.ga_id, tracking.gtm_id]);
 
   const menuTree = useMemo(() => {
     const source = menus.length ? menus : fallbackNav;
