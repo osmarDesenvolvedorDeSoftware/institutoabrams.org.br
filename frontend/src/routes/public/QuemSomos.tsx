@@ -24,7 +24,7 @@ export const QuemSomos = () => {
         setPage(data);
         return;
       } catch {
-        // If slug not found, try first published page from category institucional
+        // fallback
       }
       try {
         const { data } = await api.get("/pages", { params: { category: "institucional", is_published: true, per_page: 1 } });
@@ -62,8 +62,7 @@ export const QuemSomos = () => {
           __html:
             content ||
             t("projectPlaceholder", {
-              defaultValue:
-                "Conteúdo institucional do Instituto ABRAMS. Edite esta página no CMS para atualizar.",
+              defaultValue: "Conteúdo institucional do Instituto ABRAMS. Edite esta página no CMS para atualizar.",
             }),
         }}
       />

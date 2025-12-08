@@ -17,18 +17,24 @@ type PageProject = {
   video_url?: string | null;
 };
 
-const fallbackProjects = [
+const fallbackProjects = (t: (key: string, opts?: any) => string) => [
   {
-    title: "Residências Criativas",
-    summary: "Experiências imersivas com artistas e mentores convidados.",
+    title: t("home.placeholderProject1", { defaultValue: "Mentorias de carreira" }),
+    summary: t("projectPlaceholder", {
+      defaultValue: "Iniciativas que conectam pessoas, oportunidades e impacto direto na comunidade.",
+    }),
   },
   {
-    title: "Trilhas Tech",
-    summary: "Capacitação em tecnologia e inovação com parceiros do mercado.",
+    title: t("home.placeholderProject2", { defaultValue: "Trilhas digitais" }),
+    summary: t("projectPlaceholder", {
+      defaultValue: "Iniciativas que conectam pessoas, oportunidades e impacto direto na comunidade.",
+    }),
   },
   {
-    title: "Formação de Lideranças",
-    summary: "Workshops e encontros para fortalecer lideranças comunitárias.",
+    title: t("home.placeholderProject3", { defaultValue: "Programas sociais" }),
+    summary: t("projectPlaceholder", {
+      defaultValue: "Iniciativas que conectam pessoas, oportunidades e impacto direto na comunidade.",
+    }),
   },
 ];
 
@@ -74,7 +80,7 @@ export const Projects = () => {
           </div>
         );
       })
-    : fallbackProjects.map((project) => (
+    : fallbackProjects(t).map((project) => (
         <div
           key={project.title}
           className="card"
@@ -111,8 +117,7 @@ export const Projects = () => {
         <div className="divider" />
         <p className="subtitle">
           {t("projectsPageSubtitle", {
-            defaultValue:
-              "Iniciativas que conectam pessoas, oportunidades e impacto direto nas comunidades.",
+            defaultValue: "Iniciativas que conectam pessoas, oportunidades e impacto direto nas comunidades.",
           })}
         </p>
       </div>

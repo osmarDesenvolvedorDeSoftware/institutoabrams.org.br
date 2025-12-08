@@ -1,10 +1,10 @@
 # Plano inicial - Instituto ABRAMS
 
 ## Checklist macro
-- [ ] Definir branding, tom e vocabulário (pt/en) para o site e painel
+- [x] Definir branding, tom e vocabulário (pt/en) para o site e painel
 - [x] Configurar `.env` locais com secrets reais (backend e frontend)
-- [ ] Subir stack Docker (`docker-compose up`) e validar saúde dos serviços
-- [ ] Rodar migrações (`flask db upgrade`) e criar usuário admin inicial
+- [x] Subir stack Docker (`docker-compose up`) e validar saúde dos serviços
+- [x] Rodar migrações (`flask db upgrade`) e criar usuário admin inicial
 - [x] Criar fluxo de login no painel e proteger rotas admin
 - [x] Modelar páginas, menus, oportunidades, leads e traduções (API v1)
 - [ ] Publicar build inicial em staging (Traefik) e revisar performance/SEO
@@ -19,29 +19,27 @@
 
 ## Tarefas - Backend (Flask)
 - [x] Finalizar config de ambiente real em `backend/.env` e secrets seguros
-- [ ] Rodar `flask db upgrade` (0001 + 0002 + 0003) e validar schema no Postgres
+- [x] Rodar `flask db upgrade` (0001 + 0002 + 0003) e validar schema no Postgres
 - [x] Implementar seed para usuário admin inicial
 - [x] Validação básica (marshmallow) e paginação nas listagens
 - [ ] Adicionar filtros extras (slug/slug-like, texto) e ordenação configurável
-- [ ] Implementar upload/armazenamento de mídia (S3/Cloudflare R2) se necessário
 - [ ] Cobrir rotas com testes de API (Pytest + Factory Boy) e fixtures de DB
 - [ ] Adicionar rate limiting e logs estruturados (JSON)
 
 ## Tarefas - Frontend (React + Vite)
-- [ ] Ajustar tema visual/tokens (cores, tipografia, espaçamentos) para identidade ABRAMS
+- [x] Ajustar tema visual/tokens (cores, tipografia, espaçamentos) para identidade ABRAMS
 - [x] Conectar API real via `services/api.ts` (/api/v1)
 - [x] Implementar login e estado global de sessão no painel
 - [x] CRUD inicial de páginas (listar/criar/editar/excluir)
 - [x] CRUD inicial de oportunidades
 - [x] CRUD visual de menus/submenus (ordenação simples)
 - [ ] Gestão de traduções (pt/en/es/fr) no painel
-- [ ] Layout final responsivo e componentes compartilhados (botões, cards, tabelas)
+- [x] Layout final responsivo e componentes compartilhados (botões, cards, tabelas)
 - [ ] Otimizar build (code splitting, fontes/imagens autohospedadas)
 
 ## Tarefas - Infraestrutura
 - [ ] Configurar Traefik com domínios reais/TLS e dashboard protegido
 - [ ] Separar redes e variáveis por ambiente; volumes e backup do Postgres
-- [ ] Criar pipelines CI/CD (build + tests + deploy) para backend e frontend
 - [x] Healthcheck exposto (/api/v1/health) e Traefik apontando para ele
 
 ## Tarefas - Migração de conteúdo
@@ -57,14 +55,14 @@
 - [x] MenusAdmin para CRUD de navegação
 - [x] Páginas públicas alinhadas (Home, Projetos, Oportunidades, Contato)
 - [ ] Conteúdo real (textos, imagens, links oficiais)
-- [ ] Refinar responsividade e estados de carregamento
+- [x] Refinar responsividade e estados de carregamento
 - [ ] Ajustar identidade final (logo oficial, tipografia definida)
 
 ## Fase 2.1 – Refinos de Admin e Preparação para Upload
-- Ajustes de espaçamento e UI nas telas administrativas.
-- Componentes base para upload criados (placeholder).
-- Serviço de mídia preparado (stub).
-- Sem funcionalidades novas ainda.
+- [x] Ajustes de espaçamento e UI nas telas administrativas.
+- [x] Componentes base para upload criados (placeholder).
+- [x] Serviço de mídia preparado (stub).
+- [x] Sem funcionalidades novas ainda.
 
 ## Fase 4 - Conteúdo Real e Ajustes Finais
 - [x] Slugs estáveis e rota pública `/pages/:slug`
@@ -84,11 +82,9 @@
 - [ ] Conteúdo real preenchido no CMS para gravação
 - [ ] Automação CI para rodar pytest e build docker
 
-Próximo passo → Fase 6 (deploy real na VPS)
-
 ## Fase 6 – Mídia, Banners, Logo e Rodapé
-- Upload de imagens (projetos, oportunidades, quem somos)
-- Suporte a vídeo embed (YouTube) em projetos e oportunidades
-- Banners rotativos na Home
-- Configuração de logo do site
-- Rodapé configurável (contatos e redes sociais)
+- [x] Upload de imagens (projetos, oportunidades, quem somos)
+- [x] Suporte a vídeo embed (YouTube) em projetos e oportunidades
+- [x] Banners rotativos na Home
+- [x] Configuração de logo do site
+- [x] Rodapé configurável (contatos e redes sociais)

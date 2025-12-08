@@ -16,23 +16,6 @@ type MenuItem = {
   order?: number;
 };
 
-const fallbackNav: MenuItem[] = [
-  { id: 1, label: "Início", slug: "inicio", target: "/", is_dropdown: false, order: 1 },
-  { id: 2, label: "Quem Somos", slug: "quem-somos", target: "/quem-somos", is_dropdown: false, order: 2 },
-  { id: 3, label: "Projetos e Serviços", slug: "projetos-servicos", target: "/projetos", is_dropdown: true, order: 3 },
-  { id: 4, label: "Notícias", slug: "noticias", target: "/noticias", is_dropdown: false, order: 4 },
-  { id: 5, label: "Portfólio", slug: "portfolio", target: "/portfolio", is_dropdown: false, order: 5 },
-  { id: 6, label: "Oportunidades", slug: "oportunidades", target: "/oportunidades", is_dropdown: false, order: 6 },
-  { id: 7, label: "Doação", slug: "doacao", target: "/doacao", is_dropdown: false, order: 7 },
-  { id: 8, label: "Contato", slug: "contato", target: "/contato", is_dropdown: false, order: 8 },
-  // Children for Projetos e Serviços
-  { id: 30, label: "Clubinho da Leitura", slug: "clubinho-da-leitura", target: "/pages/clubinho-da-leitura", is_dropdown: false, parent_id: 3, order: 1 },
-  { id: 31, label: "Igualdade de Gênero", slug: "igualdade-de-genero", target: "/pages/igualdade-de-genero", is_dropdown: false, parent_id: 3, order: 2 },
-  { id: 32, label: "Trilhas de Carreira", slug: "trilhas-de-carreira", target: "/pages/trilhas-de-carreira", is_dropdown: false, parent_id: 3, order: 3 },
-  { id: 33, label: "Mentorias Profissionais", slug: "mentorias-profissionais", target: "/pages/mentorias-profissionais", is_dropdown: false, parent_id: 3, order: 4 },
-  { id: 34, label: "Cursos / Serviços", slug: "cursos", target: "/pages/cursos", is_dropdown: false, parent_id: 3, order: 5 },
-];
-
 export const PublicLayout = () => {
   const { t, i18n } = useTranslation();
   const { pathname } = useLocation();
@@ -136,6 +119,33 @@ export const PublicLayout = () => {
     }
   }, [pathname, tracking.ga_id, tracking.gtm_id]);
 
+  const fallbackNav = useMemo<MenuItem[]>(
+    () => [
+      { id: 1, label: t("nav.home", { defaultValue: "Início" }), slug: "inicio", target: "/", is_dropdown: false, order: 1 },
+      { id: 2, label: t("nav.about", { defaultValue: "Quem Somos" }), slug: "quem-somos", target: "/quem-somos", is_dropdown: false, order: 2 },
+      {
+        id: 3,
+        label: t("nav.projectsServices", { defaultValue: "Projetos e Serviços" }),
+        slug: "projetos-servicos",
+        target: "/projetos",
+        is_dropdown: true,
+        order: 3,
+      },
+      { id: 4, label: t("nav.news", { defaultValue: "Notícias" }), slug: "noticias", target: "/noticias", is_dropdown: false, order: 4 },
+      { id: 5, label: t("nav.portfolio", { defaultValue: "Portfólio" }), slug: "portfolio", target: "/portfolio", is_dropdown: false, order: 5 },
+      { id: 6, label: t("nav.opportunities", { defaultValue: "Oportunidades" }), slug: "oportunidades", target: "/oportunidades", is_dropdown: false, order: 6 },
+      { id: 7, label: t("nav.donation", { defaultValue: "Doação" }), slug: "doacao", target: "/doacao", is_dropdown: false, order: 7 },
+      { id: 8, label: t("nav.contact", { defaultValue: "Contato" }), slug: "contato", target: "/contato", is_dropdown: false, order: 8 },
+      // Children for Projetos e Serviços
+      { id: 30, label: "Clubinho da Leitura", slug: "clubinho-da-leitura", target: "/pages/clubinho-da-leitura", is_dropdown: false, parent_id: 3, order: 1 },
+      { id: 31, label: "Igualdade de Gênero", slug: "igualdade-de-genero", target: "/pages/igualdade-de-genero", is_dropdown: false, parent_id: 3, order: 2 },
+      { id: 32, label: "Trilhas de Carreira", slug: "trilhas-de-carreira", target: "/pages/trilhas-de-carreira", is_dropdown: false, parent_id: 3, order: 3 },
+      { id: 33, label: "Mentorias Profissionais", slug: "mentorias-profissionais", target: "/pages/mentorias-profissionais", is_dropdown: false, parent_id: 3, order: 4 },
+      { id: 34, label: "Cursos / Serviços", slug: "cursos", target: "/pages/cursos", is_dropdown: false, parent_id: 3, order: 5 },
+    ],
+    [t],
+  );
+
   const menuTree = useMemo(() => {
     const source = menus.length ? menus : fallbackNav;
     const parents = source.filter((m) => !m.parent_id);
@@ -147,10 +157,9 @@ export const PublicLayout = () => {
           .filter((c) => c.parent_id === parent.id)
           .sort((a, b) => (a.order || 0) - (b.order || 0)),
       }));
-  }, [menus]);
+  }, [menus, fallbackNav]);
 
-  const isActive = (target: string) =>
-    pathname === target || pathname.startsWith(target + "/");
+  const isActive = (target: string) => pathname === target || pathname.startsWith(target + "/");
 
   return (
     <div className="app-shell">
@@ -223,7 +232,7 @@ export const PublicLayout = () => {
             }}
             onClick={() => setIsMenuOpen((s) => !s)}
           >
-            Menu
+            {t("common.menu", { defaultValue: "Menu" })}
           </button>
 
           <nav
@@ -260,9 +269,7 @@ export const PublicLayout = () => {
                       fontWeight: 700,
                       padding: "0.35rem 0.5rem",
                       borderRadius: 8,
-                      background: isActive(item.target)
-                        ? "rgba(207,175,112,0.18)"
-                        : "transparent",
+                      background: isActive(item.target) ? "rgba(207,175,112,0.18)" : "transparent",
                       display: "inline-flex",
                       alignItems: "center",
                       gap: "0.3rem",
@@ -299,9 +306,7 @@ export const PublicLayout = () => {
                         style={{
                           padding: "0.5rem 0.6rem",
                           borderRadius: 6,
-                          background: isActive(child.target)
-                            ? "rgba(196,153,23,0.15)"
-                            : "transparent",
+                          background: isActive(child.target) ? "rgba(196,153,23,0.15)" : "transparent",
                           fontWeight: 600,
                         }}
                       >
@@ -319,9 +324,7 @@ export const PublicLayout = () => {
                     color: isActive(item.target) ? "var(--primary-dark)" : "var(--text)",
                     padding: "0.35rem 0.5rem",
                     borderRadius: 8,
-                    background: isActive(item.target)
-                      ? "rgba(207,175,112,0.18)"
-                      : "transparent",
+                    background: isActive(item.target) ? "rgba(207,175,112,0.18)" : "transparent",
                     transition: "background-color 120ms ease, color 120ms ease",
                     whiteSpace: "nowrap",
                   }}
@@ -346,7 +349,7 @@ export const PublicLayout = () => {
             </select>
             {isAuthenticated ? (
               <Link className="btn btn-ghost" to="/admin" style={{ color: "var(--primary-dark)" }}>
-                Painel
+                {t("common.adminPanel", { defaultValue: "Painel" })}
               </Link>
             ) : (
               <Link className="btn btn-ghost" to="/admin/login" style={{ color: "var(--primary-dark)" }}>
@@ -367,27 +370,28 @@ export const PublicLayout = () => {
           background: "#f9fafb",
         }}
       >
-        <div
-          className="container"
-          style={{ display: "grid", gap: "1.5rem" }}
-        >
+        <div className="container" style={{ display: "grid", gap: "1.5rem" }}>
           <div style={{ display: "grid", gap: "1rem", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
             <div style={{ display: "grid", gap: "0.35rem" }}>
               <strong>Instituto ABRAMS</strong>
               <p style={{ margin: 0, color: "var(--muted)" }}>
-                {footerInfo.address || "Construindo futuro com oportunidades e propósito."}
+                {footerInfo.address ||
+                  t("footer.defaultDescription", {
+                    defaultValue: "Construindo futuro com oportunidades e propósito.",
+                  })}
               </p>
               {footerInfo.email && <p style={{ margin: 0, color: "var(--muted)" }}>{footerInfo.email}</p>}
               {footerInfo.phone && <p style={{ margin: 0, color: "var(--muted)" }}>{footerInfo.phone}</p>}
             </div>
             <div style={{ display: "grid", gap: "0.35rem" }}>
-              <strong>Links rápidos</strong>
+              <strong>{t("footer.quickLinks", { defaultValue: "Links rápidos" })}</strong>
               {[
-                { label: "Home", href: "/" },
-                { label: "Quem Somos", href: "/quem-somos" },
-                { label: "Projetos", href: "/projetos" },
-                { label: "Doação", href: "/doacao" },
-                { label: "Contato", href: "/contato" },
+                { label: t("nav.home", { defaultValue: "Home" }), href: "/" },
+                { label: t("nav.about", { defaultValue: "Quem Somos" }), href: "/quem-somos" },
+                { label: t("nav.projectsServices", { defaultValue: "Projetos" }), href: "/projetos" },
+                { label: t("nav.donation", { defaultValue: "Doação" }), href: "/doacao" },
+                { label: t("nav.contact", { defaultValue: "Contato" }), href: "/contato" },
+                { label: t("footer.news", { defaultValue: "Notícias" }), href: "/noticias" },
               ].map((link) => (
                 <Link key={link.href} to={link.href} style={{ color: "var(--muted)" }}>
                   {link.label}
@@ -395,7 +399,7 @@ export const PublicLayout = () => {
               ))}
             </div>
             <div style={{ display: "grid", gap: "0.35rem" }}>
-              <strong>Redes sociais</strong>
+              <strong>{t("footer.social", { defaultValue: "Redes sociais" })}</strong>
               {footerInfo.social?.youtube && (
                 <a href={footerInfo.social.youtube} target="_blank" rel="noreferrer" style={{ color: "var(--muted)" }}>
                   YouTube
@@ -416,12 +420,28 @@ export const PublicLayout = () => {
                   LinkedIn
                 </a>
               )}
-              {!footerInfo.social && <p style={{ margin: 0, color: "var(--muted)" }}>Em breve novidades.</p>}
+              {!footerInfo.social && (
+                <p style={{ margin: 0, color: "var(--muted)" }}>
+                  {t("footer.comingSoon", { defaultValue: "Em breve novidades." })}
+                </p>
+              )}
             </div>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "1rem",
+              flexWrap: "wrap",
+            }}
+          >
             <small style={{ color: "#777" }}>© {new Date().getFullYear()} Instituto ABRAMS</small>
-            {footerInfo.cnpj && <small style={{ color: "var(--muted)" }}>CNPJ: {footerInfo.cnpj}</small>}
+            {footerInfo.cnpj && (
+              <small style={{ color: "var(--muted)" }}>
+                {t("footer.cnpjLabel", { defaultValue: "CNPJ" })}: {footerInfo.cnpj}
+              </small>
+            )}
           </div>
         </div>
       </footer>

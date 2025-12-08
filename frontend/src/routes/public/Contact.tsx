@@ -23,7 +23,7 @@ export const Contact = () => {
         setPage(data);
         return;
       } catch {
-        // If slug not found, try first published page from category contato as fallback
+        // fallback
       }
       try {
         const { data } = await api.get("/pages", { params: { category: "contato", is_published: true, per_page: 1 } });
@@ -53,7 +53,7 @@ export const Contact = () => {
       <SeoHelmet title={title || t("contactTitle", { defaultValue: "Contato" })} description={description} url="/contato" />
       <div>
         <h2 style={{ marginTop: 0, marginBottom: "0.35rem" }}>
-          {title || t("contactTitle", { defaultValue: "Contato" })} 
+          {title || t("contactTitle", { defaultValue: "Contato" })}
         </h2>
         <div className="divider" />
         <p className="subtitle">
@@ -70,8 +70,8 @@ export const Contact = () => {
             <div style={{ color: "var(--muted)" }} dangerouslySetInnerHTML={{ __html: content }} />
           ) : (
             <>
-              <span>Email: contato@institutoabrams.org.br</span>
-              <span>Parcerias: partners@institutoabrams.org.br</span>
+              <span>{t("contactEmailLabel", { defaultValue: "E-mail" })}: contato@institutoabrams.org.br</span>
+              <span>{t("contactPartnershipLabel", { defaultValue: "Parcerias" })}: partners@institutoabrams.org.br</span>
               <span>{t("contactAddress", { defaultValue: "Brasília, DF" })}</span>
             </>
           )}

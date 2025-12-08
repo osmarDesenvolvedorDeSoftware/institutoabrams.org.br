@@ -78,10 +78,7 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
       )}
       <h2>{title}</h2>
       <div className="divider" />
-      <div
-        style={{ color: "var(--muted)", lineHeight: 1.7 }}
-        dangerouslySetInnerHTML={{ __html: content || "" }}
-      />
+      <div style={{ color: "var(--muted)", lineHeight: 1.7 }} dangerouslySetInnerHTML={{ __html: content || "" }} />
       {embedUrl && (
         <div style={{ marginTop: "0.5rem" }}>
           <div
@@ -95,7 +92,7 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
           >
             <iframe
               src={embedUrl}
-              title="Vídeo do projeto"
+              title={t("publicPage.videoTitle", { defaultValue: "Vídeo do projeto" })}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
@@ -109,7 +106,7 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
             <img
               key={idx}
               src={resolveMediaUrl(url)}
-              alt={`Galeria ${idx + 1}`}
+              alt={t("publicPage.galleryAlt", { defaultValue: `Galeria ${idx + 1}`, index: idx + 1 })}
               style={{ width: "100%", borderRadius: 12, objectFit: "cover", maxHeight: 220 }}
             />
           ))}

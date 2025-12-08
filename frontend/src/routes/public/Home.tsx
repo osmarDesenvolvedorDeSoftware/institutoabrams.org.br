@@ -76,25 +76,16 @@ export const Home = () => {
               </p>
               <h2 style={{ margin: 0 }}>{banners[activeIndex]?.title}</h2>
               {banners[activeIndex]?.subtitle && <p style={{ margin: 0 }}>{banners[activeIndex]?.subtitle}</p>}
-              {banners[activeIndex]?.link_url && (
-                banners[activeIndex].link_url.startsWith("http") ? (
-                  <a
-                    href={banners[activeIndex].link_url}
-                    className="btn btn-primary"
-                    style={{ width: "fit-content" }}
-                  >
+              {banners[activeIndex]?.link_url &&
+                (banners[activeIndex].link_url.startsWith("http") ? (
+                  <a href={banners[activeIndex].link_url} className="btn btn-primary" style={{ width: "fit-content" }}>
                     {t("common.learnMore", { defaultValue: "Saiba mais" })}
                   </a>
                 ) : (
-                  <Link
-                    to={banners[activeIndex].link_url || "#"}
-                    className="btn btn-primary"
-                    style={{ width: "fit-content" }}
-                  >
+                  <Link to={banners[activeIndex].link_url || "#"} className="btn btn-primary" style={{ width: "fit-content" }}>
                     {t("common.learnMore", { defaultValue: "Saiba mais" })}
                   </Link>
-                )
-              )}
+                ))}
             </div>
             <div
               style={{
@@ -110,7 +101,7 @@ export const Home = () => {
                 {banners.map((_, idx) => (
                   <button
                     key={idx}
-                    aria-label={`Ir para banner ${idx + 1}`}
+                    aria-label={t("home.goToSlide", { defaultValue: "Ir para banner" })}
                     onClick={() => setActiveIndex(idx)}
                     style={{
                       width: 10,
@@ -128,6 +119,7 @@ export const Home = () => {
                   className="btn btn-ghost"
                   onClick={() => setActiveIndex((prev) => (prev - 1 + banners.length) % banners.length)}
                   style={{ padding: "0.4rem 0.7rem" }}
+                  aria-label={t("common.prev", { defaultValue: "Anterior" })}
                 >
                   ‹
                 </button>
@@ -135,6 +127,7 @@ export const Home = () => {
                   className="btn btn-ghost"
                   onClick={() => setActiveIndex((prev) => (prev + 1) % banners.length)}
                   style={{ padding: "0.4rem 0.7rem" }}
+                  aria-label={t("common.next", { defaultValue: "Próximo" })}
                 >
                   ›
                 </button>
@@ -173,10 +166,7 @@ export const Home = () => {
             </Link>
           </div>
         </div>
-        <div
-          className="card"
-          style={{ background: "#fff", padding: "1.35rem", borderRadius: 14, display: "grid", gap: "0.75rem" }}
-        >
+        <div className="card" style={{ background: "#fff", padding: "1.35rem", borderRadius: 14, display: "grid", gap: "0.75rem" }}>
           <h3 style={{ marginTop: 0 }}>{t("highlightsTitle", { defaultValue: "Destaques" })}</h3>
           <div className="divider" />
           <ul style={{ margin: 0, paddingLeft: "1.25rem", lineHeight: 1.8, color: "var(--muted)" }}>
@@ -190,15 +180,15 @@ export const Home = () => {
       <section className="card" style={{ background: "var(--color-bg-muted)" }}>
         <div style={{ display: "grid", gap: "1.25rem" }}>
           <div>
-            <p className="subtitle" style={{ marginBottom: "0.15rem" }}>Nossos Pilares</p>
-            <h2 style={{ margin: 0 }}>Impacto que guia nossas ações</h2>
+            <p className="subtitle" style={{ marginBottom: "0.15rem" }}>{t("home.pillarsTitle", { defaultValue: "Nossos Pilares" })}</p>
+            <h2 style={{ margin: 0 }}>{t("home.pillarsSubtitle", { defaultValue: "Impacto que guia nossas ações" })}</h2>
             <div className="divider" />
           </div>
           <div className="grid three">
             {[
-              { title: "Educação e Cultura", text: "Leitura, arte e conhecimento para formar cidadãos conscientes." },
-              { title: "Equidade e Inclusão", text: "Projetos que promovem igualdade de gênero e oportunidades." },
-              { title: "Carreira e Futuro", text: "Trilhas e mentorias para impulsionar trajetórias profissionais." },
+              { title: t("home.pillarEducationTitle", { defaultValue: "Educação e Cultura" }), text: t("home.pillarEducationText", { defaultValue: "Leitura, arte e conhecimento para formar cidadãos conscientes." }) },
+              { title: t("home.pillarEquityTitle", { defaultValue: "Equidade e Inclusão" }), text: t("home.pillarEquityText", { defaultValue: "Projetos que promovem igualdade de gênero e oportunidades." }) },
+              { title: t("home.pillarCareerTitle", { defaultValue: "Carreira e Futuro" }), text: t("home.pillarCareerText", { defaultValue: "Trilhas e mentorias para impulsionar trajetórias profissionais." }) },
             ].map((pillar) => (
               <div key={pillar.title} className="card" style={{ display: "grid", gap: "0.5rem" }}>
                 <h3 style={{ margin: 0 }}>{pillar.title}</h3>
@@ -213,8 +203,8 @@ export const Home = () => {
         <div style={{ display: "grid", gap: "1.25rem" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
             <div>
-              <p className="subtitle" style={{ marginBottom: "0.15rem" }}>Destaques do Instituto</p>
-              <h2 style={{ margin: 0 }}>Ações em evidência</h2>
+              <p className="subtitle" style={{ marginBottom: "0.15rem" }}>{t("home.instituteHighlightsTitle", { defaultValue: "Destaques do Instituto" })}</p>
+              <h2 style={{ margin: 0 }}>{t("home.instituteHighlightsSubtitle", { defaultValue: "Ações em evidência" })}</h2>
               <div className="divider" />
             </div>
             <Link className="btn btn-ghost" to="/projetos">
@@ -229,10 +219,10 @@ export const Home = () => {
               { title: "Mentorias Profissionais", slug: "mentorias-profissionais" },
             ].map((item) => (
               <Link key={item.slug} to={`/pages/${item.slug}`} className="card" style={{ display: "grid", gap: "0.55rem" }}>
-                <p className="subtitle" style={{ margin: 0 }}>Projeto</p>
+                <p className="subtitle" style={{ margin: 0 }}>{t("home.projectLabel", { defaultValue: "Projeto" })}</p>
                 <h3 style={{ margin: 0 }}>{item.title}</h3>
                 <p style={{ margin: 0, color: "var(--muted)" }}>
-                  Conteúdo em construção. Saiba mais em breve.
+                  {t("home.projectPlaceholder", { defaultValue: "Conteúdo em construção. Saiba mais em breve." })}
                 </p>
               </Link>
             ))}
@@ -261,7 +251,7 @@ export const Home = () => {
           </Link>
         </div>
         <div className="grid three" style={{ marginTop: "0.5rem", gap: "1.25rem" }}>
-          {["Mentorias de carreira", "Trilhas digitais", "Programas sociais"].map((item) => (
+          {[t("home.placeholderProject1", { defaultValue: "Mentorias de carreira" }), t("home.placeholderProject2", { defaultValue: "Trilhas digitais" }), t("home.placeholderProject3", { defaultValue: "Programas sociais" })].map((item) => (
             <div
               key={item}
               className="card"
@@ -276,8 +266,7 @@ export const Home = () => {
               <h3 style={{ marginTop: 0, marginBottom: "0.25rem" }}>{item}</h3>
               <p style={{ margin: 0, color: "var(--muted)" }}>
                 {t("projectPlaceholder", {
-                  defaultValue:
-                    "Iniciativas que conectam pessoas, oportunidades e impacto direto na comunidade.",
+                  defaultValue: "Iniciativas que conectam pessoas, oportunidades e impacto direto na comunidade.",
                 })}
               </p>
               <Link to="/projetos" className="btn btn-ghost">
@@ -291,24 +280,20 @@ export const Home = () => {
       <section className="section" style={{ paddingBottom: 0 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
           <div>
-            <p className="subtitle" style={{ marginBottom: "0.15rem" }}>Acompanhe nosso trabalho</p>
-            <h2 style={{ margin: 0 }}>Projetos e notícias</h2>
+            <p className="subtitle" style={{ marginBottom: "0.15rem" }}>{t("home.followWorkTitle", { defaultValue: "Acompanhe nosso trabalho" })}</p>
+            <h2 style={{ margin: 0 }}>{t("home.followWorkSubtitle", { defaultValue: "Projetos e notícias" })}</h2>
             <div className="divider" />
           </div>
           <Link to="/noticias" className="btn btn-ghost">
-            Ver notícias
+            {t("home.followWorkNewsCta", { defaultValue: "Ver notícias" })}
           </Link>
         </div>
         <div className="grid two" style={{ marginTop: "0.5rem" }}>
-          {["Trilhas de Carreira", "Notícias do Instituto"].map((item, idx) => (
-            <div key={item} className="card" style={{ display: "grid", gap: "0.5rem" }}>
-              <h3 style={{ margin: 0 }}>{item}</h3>
-              <p style={{ margin: 0, color: "var(--muted)" }}>
-                {idx === 0
-                  ? "Conheça as iniciativas que conectam pessoas e oportunidades."
-                  : "Atualizações, eventos e comunicados oficiais do Instituto ABRAMS."}
-              </p>
-              <Link to={idx === 0 ? "/projetos" : "/noticias"} className="btn btn-ghost" style={{ width: "fit-content" }}>
+          {[{ title: t("projectsTitle", { defaultValue: "Projetos" }), desc: t("projectPlaceholder", { defaultValue: "Conheça as iniciativas que conectam pessoas e oportunidades." }), href: "/projetos" }, { title: t("footer.news", { defaultValue: "Notícias" }), desc: t("projectPlaceholder", { defaultValue: "Atualizações, eventos e comunicados oficiais do Instituto ABRAMS." }), href: "/noticias" }].map((item) => (
+            <div key={item.title} className="card" style={{ display: "grid", gap: "0.5rem" }}>
+              <h3 style={{ margin: 0 }}>{item.title}</h3>
+              <p style={{ margin: 0, color: "var(--muted)" }}>{item.desc}</p>
+              <Link to={item.href} className="btn btn-ghost" style={{ width: "fit-content" }}>
                 {t("common.learnMore", { defaultValue: "Saiba mais" })}
               </Link>
             </div>
