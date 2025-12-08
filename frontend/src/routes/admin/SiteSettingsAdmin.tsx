@@ -14,6 +14,7 @@ type Footer = {
   address?: string;
   email?: string;
   phone?: string;
+  cnpj?: string;
   social?: {
     youtube?: string;
     instagram?: string;
@@ -179,6 +180,12 @@ export const SiteSettingsAdmin = () => {
           placeholder="Telefone"
           value={footer.phone || ""}
           onChange={(e) => setFooter((prev) => ({ ...prev, phone: e.target.value }))}
+          style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
+        />
+        <input
+          placeholder="CNPJ"
+          value={footer.cnpj || ""}
+          onChange={(e) => setFooter((prev) => ({ ...prev, cnpj: e.target.value }))}
           style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
         />
 

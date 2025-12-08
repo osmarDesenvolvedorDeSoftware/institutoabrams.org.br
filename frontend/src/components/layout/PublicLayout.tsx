@@ -45,6 +45,7 @@ export const PublicLayout = () => {
     address?: string;
     email?: string;
     phone?: string;
+    cnpj?: string;
     social?: Record<string, string>;
   }>({});
   const [tracking, setTracking] = useState<{ ga_id?: string; gtm_id?: string }>({});
@@ -420,7 +421,7 @@ export const PublicLayout = () => {
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
             <small style={{ color: "#777" }}>© {new Date().getFullYear()} Instituto ABRAMS</small>
-            <small style={{ color: "var(--muted)" }}>CNPJ: 00.000.000/0000-00</small>
+            {footerInfo.cnpj && <small style={{ color: "var(--muted)" }}>CNPJ: {footerInfo.cnpj}</small>}
           </div>
         </div>
       </footer>
