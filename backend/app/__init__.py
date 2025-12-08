@@ -18,7 +18,7 @@ def create_app(config_object: type[Settings] | None = None) -> Flask:
         origins=app.config.get("BACKEND_CORS_ORIGINS", []),
         supports_credentials=True,
         allow_headers=["Content-Type", "Authorization"],
-        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        methods=["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
     )
 
     register_routes(app)
