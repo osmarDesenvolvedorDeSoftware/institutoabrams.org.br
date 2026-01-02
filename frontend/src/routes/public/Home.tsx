@@ -35,6 +35,7 @@ export const Home = () => {
   const [pages, setPages] = useState<Page[]>([]);
   const [menus, setMenus] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [featuredIndex, setFeaturedIndex] = useState(0);
 
   useEffect(() => {
     let mounted = true;
@@ -82,6 +83,24 @@ export const Home = () => {
     });
     return sorted.slice(0, 8);
   }, [visiblePages]);
+
+  const featuredCount = Math.min(4, latestPages.length);
+  const featuredPages = latestPages.slice(0, featuredCount);
+  const remainingPages = latestPages.slice(featuredCount);
+
+  useEffect(() => {
+    if (featuredPages.length <= 1) return;
+    const interval = window.setInterval(() => {
+      setFeaturedIndex((prev) => (prev + 1) % featuredPages.length);
+    }, 4500);
+    return () => window.clearInterval(interval);
+  }, [featuredPages.length]);
+
+  useEffect(() => {
+    if (featuredIndex >= featuredPages.length) {
+      setFeaturedIndex(0);
+    }
+  }, [featuredIndex, featuredPages.length]);
 
   const getLocalized = (translations: Record<string, string> | undefined, lang: string) =>
     translations?.[lang] || translations?.[lang?.slice(0, 2)] || translations?.["pt"];
@@ -144,16 +163,6 @@ export const Home = () => {
     return null;
   };
 
-  const getCategoryLabel = (value?: string | null) => {
-    if (!value) return null;
-    const map: Record<string, string> = {
-      projeto: "Projeto",
-      institucional: "Institucional",
-      contato: "Contato",
-    };
-    return map[value] || value;
-  };
-
   const getInitials = (text: string) => {
     const clean = text.trim().split(/\s+/).slice(0, 2);
     return clean.map((part) => part[0]).join("").toUpperCase();
@@ -164,7 +173,7 @@ export const Home = () => {
     const descRaw = getLocalized(item.content_translations as any, i18n.language) || "";
     const desc = descRaw ? descRaw.replace(/<[^>]+>/g, "").slice(0, featured ? 200 : 120) : "";
     const imageUrl = item.hero_image_url ? resolveMediaUrl(item.hero_image_url) : null;
-    const categoryLabel = getCategoryLabel(item.category);
+    const badgeLabel = title;
     return (
       <Link
         key={item.slug}
@@ -176,7 +185,7 @@ export const Home = () => {
           style={imageUrl ? { backgroundImage: `url(${imageUrl})` } : undefined}
         >
           {!imageUrl && <span>{getInitials(title)}</span>}
-          {categoryLabel && <span className="latest-card__badge">{categoryLabel}</span>}
+          <span className="latest-card__badge">{badgeLabel}</span>
         </div>
         <div className="latest-card__body">
           <h3>{title}</h3>
@@ -206,8 +215,44 @@ export const Home = () => {
               </div>
             </div>
 
+            <div className="latest-featured">
+              {featuredPages.length ? (
+                <div className="latest-carousel">
+                  <div className="latest-carousel__slide" key={featuredPages[featuredIndex]?.id}>
+                    {featuredPages[featuredIndex]
+                      ? renderHighlightCard(featuredPages[featuredIndex], true)
+                      : null}
+                  </div>
+                  {featuredPages.length > 1 && (
+                    <div className="latest-carousel__controls">
+                      <button
+                        className="carousel-btn"
+                        type="button"
+                        aria-label="Anterior"
+                        onClick={() =>
+                          setFeaturedIndex((prev) =>
+                            (prev - 1 + featuredPages.length) % featuredPages.length,
+                          )
+                        }
+                      >
+                        ‹
+                      </button>
+                      <button
+                        className="carousel-btn"
+                        type="button"
+                        aria-label="Proximo"
+                        onClick={() => setFeaturedIndex((prev) => (prev + 1) % featuredPages.length)}
+                      >
+                        ›
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : null}
+            </div>
+
             <div className="latest-grid">
-              {latestPages.map((page, index) => renderHighlightCard(page, index === 0))}
+              {remainingPages.map((page) => renderHighlightCard(page))}
             </div>
           </div>
         </section>

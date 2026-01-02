@@ -515,6 +515,47 @@ p {
   gap: 1.5rem;
 }
 
+.latest-featured {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.latest-carousel {
+  position: relative;
+}
+
+.latest-carousel__slide {
+  animation: fadeSlide 240ms ease;
+}
+
+.latest-carousel__controls {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  display: flex;
+  gap: 0.5rem;
+  z-index: 2;
+}
+
+.carousel-btn {
+  border: none;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--primary-dark);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.carousel-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 18px rgba(0, 0, 0, 0.16);
+}
+
 .latest-card {
   display: grid;
   gap: 0.85rem;
@@ -536,6 +577,7 @@ p {
 .latest-card.featured {
   grid-column: span 2;
   padding: 1.25rem;
+  width: 100%;
 }
 
 .latest-card__media {
