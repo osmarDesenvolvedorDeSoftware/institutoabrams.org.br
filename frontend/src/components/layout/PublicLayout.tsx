@@ -138,14 +138,54 @@ export const PublicLayout = () => {
       if (parent.target && parent.target !== "/") {
         links.push({ label: parent.label, target: parent.target });
       }
-      (parent.children || []).forEach((child) => {
-        if (child.target && child.target !== "/") {
-          links.push({ label: child.label, target: child.target });
-        }
-      });
     });
     return links;
   }, [menuTree]);
+
+  const socialLinks = useMemo(
+    () => [
+      { key: "youtube", label: "YouTube", href: footerInfo.social?.youtube },
+      { key: "instagram", label: "Instagram", href: footerInfo.social?.instagram },
+      { key: "facebook", label: "Facebook", href: footerInfo.social?.facebook },
+      { key: "linkedin", label: "LinkedIn", href: footerInfo.social?.linkedin },
+    ],
+    [footerInfo.social],
+  );
+
+  const hasSocialLinks = socialLinks.some((link) => Boolean(link.href));
+
+  const renderSocialIcon = (key: string) => {
+    const common = { width: 16, height: 16, viewBox: "0 0 24 24", fill: "currentColor", "aria-hidden": true };
+    if (key === "youtube") {
+      return (
+        <svg {...common}>
+          <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.6 3.6 12 3.6 12 3.6s-7.6 0-9.4.5A3 3 0 0 0 .5 6.2 31.7 31.7 0 0 0 0 12a31.7 31.7 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.8.5 9.4.5 9.4.5s7.6 0 9.4-.5a3 3 0 0 0 2.1-2.1A31.7 31.7 0 0 0 24 12a31.7 31.7 0 0 0-.5-5.8zM9.6 15.5V8.5l6.2 3.5-6.2 3.5z" />
+        </svg>
+      );
+    }
+    if (key === "instagram") {
+      return (
+        <svg {...common}>
+          <path d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4zm0 2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H7zm10 1.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4z" />
+        </svg>
+      );
+    }
+    if (key === "facebook") {
+      return (
+        <svg {...common}>
+          <path d="M13 3h4v4h-2c-.6 0-1 .4-1 1v3h3l-.5 4H14v6h-4v-6H8v-4h2V8a5 5 0 0 1 5-5z" />
+        </svg>
+      );
+    }
+    if (key === "linkedin") {
+      return (
+        <svg {...common}>
+          <path d="M4 3a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zm-2 7h4v11H2V10zm7 0h4v1.6c.6-1 1.8-2 3.6-2 3 0 5.4 2 5.4 6.3V21h-4v-4.7c0-2-1-3.3-2.7-3.3-1.5 0-2.3 1-2.7 1.9-.1.3-.2.7-.2 1.2V21H9V10z" />
+        </svg>
+      );
+    }
+    return null;
+  };
 
   const isActive = (target: string) => pathname === target || pathname.startsWith(target + "/");
 
@@ -385,27 +425,21 @@ export const PublicLayout = () => {
             </div>
             <div style={{ display: "grid", gap: "0.35rem" }}>
               <strong>{t("footer.social", { defaultValue: "Redes sociais" })}</strong>
-              {footerInfo.social?.youtube && (
-                <a href={footerInfo.social.youtube} target="_blank" rel="noreferrer" style={{ color: "var(--muted)" }}>
-                  YouTube
-                </a>
+              {socialLinks.map((link) =>
+                link.href ? (
+                  <a
+                    key={link.key}
+                    href={link.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ color: "var(--muted)", display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
+                  >
+                    {renderSocialIcon(link.key)}
+                    {link.label}
+                  </a>
+                ) : null,
               )}
-              {footerInfo.social?.instagram && (
-                <a href={footerInfo.social.instagram} target="_blank" rel="noreferrer" style={{ color: "var(--muted)" }}>
-                  Instagram
-                </a>
-              )}
-              {footerInfo.social?.facebook && (
-                <a href={footerInfo.social.facebook} target="_blank" rel="noreferrer" style={{ color: "var(--muted)" }}>
-                  Facebook
-                </a>
-              )}
-              {footerInfo.social?.linkedin && (
-                <a href={footerInfo.social.linkedin} target="_blank" rel="noreferrer" style={{ color: "var(--muted)" }}>
-                  LinkedIn
-                </a>
-              )}
-              {!footerInfo.social && (
+              {!hasSocialLinks && (
                 <p style={{ margin: 0, color: "var(--muted)" }}>
                   {t("footer.comingSoon", { defaultValue: "Em breve novidades." })}
                 </p>
