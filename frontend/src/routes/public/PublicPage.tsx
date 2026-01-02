@@ -173,21 +173,6 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
         style={{ color: "var(--muted)", lineHeight: 1.7 }}
         dangerouslySetInnerHTML={{ __html: content || "" }}
       />
-      <div className="page-actions">
-        <div className="page-actions__group">
-          <span className="page-actions__label">Curta e compartilhe</span>
-          <div className="page-actions__buttons">
-            <button className={`like-btn${liked ? " liked" : ""}`} type="button" onClick={handleLike}>
-              {liked ? "Curtido" : "Curtir"} ({likesCount})
-            </button>
-            {shareItems.map((item) => (
-              <a key={item.key} href={item.href} target="_blank" rel="noreferrer" className="share-btn">
-                {item.label}
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
       {embedUrl && (
         <div style={{ marginTop: "0.5rem" }}>
           <div
@@ -221,6 +206,21 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
           ))}
         </div>
       )}
+      <div className="page-actions">
+        <div className="page-actions__group">
+          <span className="page-actions__label">Curta e compartilhe</span>
+          <div className="page-actions__buttons">
+            <button className={`like-btn${liked ? " liked" : ""}`} type="button" onClick={handleLike}>
+              {liked ? "Curtido" : "Curtir"} ({likesCount})
+            </button>
+            {shareItems.map((item) => (
+              <a key={item.key} href={item.href} target="_blank" rel="noreferrer" className="share-btn">
+                {item.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
       <div className="page-comments">
         <h3>Comentarios</h3>
         {comments.length ? (
