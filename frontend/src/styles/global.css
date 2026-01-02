@@ -474,6 +474,15 @@ p {
   padding: 12px;
 }
 
+.editor-shell .ql-editor .ql-video,
+.rich-content iframe {
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  border-radius: 12px;
+}
+
 .opportunity-card {
   background: #fff;
   border: 1px solid #e5e7eb;

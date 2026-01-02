@@ -82,7 +82,11 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
       )}
       <h2>{title}</h2>
       <div className="divider" />
-      <div style={{ color: "var(--muted)", lineHeight: 1.7 }} dangerouslySetInnerHTML={{ __html: content || "" }} />
+      <div
+        className="rich-content"
+        style={{ color: "var(--muted)", lineHeight: 1.7 }}
+        dangerouslySetInnerHTML={{ __html: content || "" }}
+      />
       {embedUrl && (
         <div style={{ marginTop: "0.5rem" }}>
           <div
