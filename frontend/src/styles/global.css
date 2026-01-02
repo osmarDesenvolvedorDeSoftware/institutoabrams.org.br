@@ -123,6 +123,10 @@ h3 {
   transform: scaleX(1);
 }
 
+.nav-pill:hover {
+  box-shadow: 0 10px 18px rgba(207, 175, 112, 0.18);
+}
+
 .footer-icon {
   width: 18px;
   height: 18px;

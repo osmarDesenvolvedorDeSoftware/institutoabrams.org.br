@@ -7,6 +7,8 @@ import { resolveMediaUrl } from "../../utils/media";
 import { api } from "../../services/api";
 import facebookIcon from "../../assets/paidin/footer/facebook.svg";
 import instagramIcon from "../../assets/paidin/footer/instagram.svg";
+import youtubeIcon from "../../assets/paidin/footer/youtube.svg";
+import linkedinIcon from "../../assets/paidin/footer/linkedin.svg";
 
 type MenuItem = {
   id: number;
@@ -157,8 +159,10 @@ export const PublicLayout = () => {
   const hasSocialLinks = socialLinks.some((link) => Boolean(link.href));
 
   const socialIconMap: Record<string, string> = {
+    youtube: youtubeIcon,
     facebook: facebookIcon,
     instagram: instagramIcon,
+    linkedin: linkedinIcon,
   };
 
   const renderSocialIcon = (key: string) => {
