@@ -79,7 +79,7 @@ export const Home = () => {
       const bTime = b.created_at ? new Date(b.created_at).getTime() : 0;
       return bTime - aTime;
     });
-    return sorted.slice(0, 6);
+    return sorted.slice(0, 8);
   }, [visiblePages]);
 
   const getLocalized = (translations: Record<string, string> | undefined, lang: string) =>

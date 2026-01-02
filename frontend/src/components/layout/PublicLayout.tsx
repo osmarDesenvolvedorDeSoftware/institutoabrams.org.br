@@ -419,9 +419,9 @@ export const PublicLayout = () => {
         <Outlet />
       </main>
       <footer className="site-footer">
-        <div className="container" style={{ display: "grid", gap: "1.5rem" }}>
-          <div style={{ display: "grid", gap: "1rem", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))" }}>
-            <div className="footer-card" style={{ display: "grid", gap: "0.35rem" }}>
+        <div className="container" style={{ display: "grid", gap: "1.1rem" }}>
+          <div style={{ display: "grid", gap: "0.75rem", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))" }}>
+            <div className="footer-card" style={{ display: "grid", gap: "0.25rem" }}>
               <strong className="footer-title">Instituto ABRAMS</strong>
               <p style={{ margin: 0, color: "var(--muted)" }}>
                 {footerInfo.address ||
@@ -432,7 +432,7 @@ export const PublicLayout = () => {
               {footerInfo.email && <p style={{ margin: 0, color: "var(--muted)" }}>{footerInfo.email}</p>}
               {footerInfo.phone && <p style={{ margin: 0, color: "var(--muted)" }}>{footerInfo.phone}</p>}
             </div>
-            <div className="footer-card" style={{ display: "grid", gap: "0.35rem" }}>
+            <div className="footer-card" style={{ display: "grid", gap: "0.25rem" }}>
               <strong className="footer-title">{t("footer.quickLinks", { defaultValue: "Links" })}</strong>
               {footerLinks.length ? (
                 footerLinks.map((link) => (
@@ -444,7 +444,7 @@ export const PublicLayout = () => {
                 <p style={{ margin: 0, color: "var(--muted)" }}>Nenhum link de menu configurado.</p>
               )}
             </div>
-            <div className="footer-card" style={{ display: "grid", gap: "0.35rem" }}>
+            <div className="footer-card" style={{ display: "grid", gap: "0.25rem" }}>
               <strong className="footer-title">{t("footer.social", { defaultValue: "Redes sociais" })}</strong>
               {socialLinks.map((link) =>
                 link.href ? (
