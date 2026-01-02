@@ -520,6 +520,10 @@ p {
   animation: fadeSlide 240ms ease;
 }
 
+.latest-carousel-slot--featured {
+  grid-column: span 2;
+}
+
 .latest-carousel__controls {
   position: absolute;
   right: 16px;
@@ -669,6 +673,9 @@ p {
   .latest-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .latest-carousel-slot--featured {
+    grid-column: span 2;
+  }
   h1 {
     font-size: 1.9rem;
   }
@@ -717,6 +724,9 @@ p {
 @media (max-width: 640px) {
   .latest-grid {
     grid-template-columns: 1fr;
+  }
+  .latest-carousel-slot--featured {
+    grid-column: span 1;
   }
 }
 

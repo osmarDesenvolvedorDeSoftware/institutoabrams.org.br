@@ -217,7 +217,7 @@ export const Home = () => {
 
             <div className="latest-grid">
               {featuredPages[featuredIndex] ? (
-                <div className="latest-carousel-slot">
+                <div className="latest-carousel-slot latest-carousel-slot--featured">
                   {renderHighlightCard(featuredPages[featuredIndex], true)}
                   {featuredPages.length > 1 && (
                     <div className="latest-carousel__controls">
