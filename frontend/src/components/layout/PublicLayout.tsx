@@ -27,6 +27,7 @@ export const PublicLayout = () => {
   const [menus, setMenus] = useState<MenuItem[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [maxVisible, setMaxVisible] = useState(8);
   const [branding, setBranding] = useState<{ logo_url?: string }>({});
   const [footerInfo, setFooterInfo] = useState<{
     address?: string;
@@ -69,7 +70,11 @@ export const PublicLayout = () => {
   }, [branding.logo_url]);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 900);
+    const handleResize = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < 900);
+      setMaxVisible(width < 1200 ? 4 : width < 1400 ? 6 : 8);
+    };
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -210,6 +215,9 @@ export const PublicLayout = () => {
   };
 
   const isActive = (target: string) => pathname === target || pathname.startsWith(target + "/");
+  const shouldCompact = !isMobile && menuTree.length > maxVisible;
+  const visibleMenu = shouldCompact ? menuTree.slice(0, maxVisible) : menuTree;
+  const overflowMenu = shouldCompact ? menuTree.slice(maxVisible) : [];
 
   return (
     <div className="app-shell">
@@ -259,7 +267,7 @@ export const PublicLayout = () => {
               justifyContent: isMobile ? "center" : undefined,
             }}
           >
-            {menuTree.map((item) =>
+            {visibleMenu.map((item) =>
               item.children && item.children.length > 0 ? (
                 <div
                   key={item.id}
@@ -316,6 +324,70 @@ export const PublicLayout = () => {
                   {item.label}
                 </Link>
               ),
+            )}
+            {overflowMenu.length > 0 && (
+              <div
+                style={{ position: "relative" }}
+                onMouseEnter={(e) => {
+                  const menu = e.currentTarget.querySelector(".dropdown");
+                  if (menu) (menu as HTMLElement).style.display = "grid";
+                }}
+                onMouseLeave={(e) => {
+                  const menu = e.currentTarget.querySelector(".dropdown");
+                  if (menu) (menu as HTMLElement).style.display = "none";
+                }}
+              >
+                <span className="nav-pill">
+                  Mais <span style={{ fontSize: 10 }}>v</span>
+                </span>
+                <div
+                  className="dropdown"
+                  style={{
+                    position: isMobile ? "relative" : "absolute",
+                    top: isMobile ? "auto" : "110%",
+                    left: 0,
+                    background: "#fff",
+                    border: "1px solid #e5e7eb",
+                    color: "var(--text)",
+                    borderRadius: 10,
+                    minWidth: 220,
+                    boxShadow: "0 14px 32px rgba(0,0,0,0.08)",
+                    gap: "0.35rem",
+                    padding: "0.6rem",
+                    zIndex: 10,
+                    display: isMobile ? "grid" : "none",
+                  }}
+                >
+                  {overflowMenu.map((item) => (
+                    <div key={`more-${item.id}`} style={{ display: "grid", gap: "0.25rem" }}>
+                      <Link
+                        to={item.target}
+                        style={{
+                          padding: "0.5rem 0.6rem",
+                          borderRadius: 6,
+                          fontWeight: 700,
+                        }}
+                      >
+                        {item.label}
+                      </Link>
+                      {item.children?.map((child) => (
+                        <Link
+                          key={`more-${item.id}-${child.id}`}
+                          to={child.target}
+                          style={{
+                            padding: "0.4rem 0.6rem 0.4rem 1.15rem",
+                            borderRadius: 6,
+                            fontWeight: 600,
+                            color: "var(--muted)",
+                          }}
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
             )}
           </nav>
 
