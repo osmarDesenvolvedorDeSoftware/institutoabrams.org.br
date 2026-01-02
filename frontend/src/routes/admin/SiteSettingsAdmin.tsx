@@ -36,6 +36,15 @@ export const SiteSettingsAdmin = () => {
   const [isSavingTracking, setIsSavingTracking] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [trackingStatus, setTrackingStatus] = useState<string | null>(null);
+  const formatError = tracking.gtm_id
+    ? /^GTM-[A-Z0-9]+$/i.test(tracking.gtm_id.trim())
+      ? null
+      : "Formato inválido. Use o GTM-XXXX."
+    : tracking.ga_id
+      ? /^G-[A-Z0-9]+$/i.test(tracking.ga_id.trim())
+        ? null
+        : "Formato inválido. Use o Measurement ID (G-XXXX)."
+      : null;
 
   const fetchSettings = async () => {
     try {
@@ -84,6 +93,10 @@ export const SiteSettingsAdmin = () => {
   const saveTracking = async () => {
     setIsSavingTracking(true);
     try {
+      const isValid = await validateTracking();
+      if (!isValid) {
+        return;
+      }
       const payload: Tracking = tracking.gtm_id
         ? { gtm_id: tracking.gtm_id, ga_id: "" }
         : { ga_id: tracking.ga_id, gtm_id: "" };
@@ -101,13 +114,13 @@ export const SiteSettingsAdmin = () => {
     }
   };
 
-  const validateTracking = async () => {
+  const validateTracking = async (): Promise<boolean> => {
     setTrackingStatus(null);
     if (tracking.gtm_id) {
       const gtmId = tracking.gtm_id.trim();
       if (!/^GTM-[A-Z0-9]+$/i.test(gtmId)) {
         setTrackingStatus("Formato inválido. Use o GTM-XXXX.");
-        return;
+        return false;
       }
       try {
         const existing = document.getElementById("gtm-validate-script");
@@ -130,19 +143,20 @@ export const SiteSettingsAdmin = () => {
           }, 150);
         });
         setTrackingStatus("GTM carregado com sucesso (validação silenciosa).");
+        return true;
       } catch (error) {
         setTrackingStatus("Não foi possível validar o GTM. Verifique o ID e a conexão.");
+        return false;
       }
-      return;
     }
     const gaId = tracking.ga_id?.trim();
     if (!gaId) {
       setTrackingStatus("Preencha o Measurement ID (G-XXXX).");
-      return;
+      return false;
     }
     if (!/^G-[A-Z0-9]+$/i.test(gaId)) {
       setTrackingStatus("Formato inválido. Use o Measurement ID (G-XXXX).");
-      return;
+      return false;
     }
     try {
       const existing = document.getElementById("ga-validate-script");
@@ -155,18 +169,20 @@ export const SiteSettingsAdmin = () => {
       }
       await new Promise<void>((resolve, reject) => {
         const timer = window.setTimeout(() => reject(new Error("timeout")), 3000);
-        const poll = window.setInterval(() => {
-          const w = window as any;
-          if (w.gtag) {
-            window.clearTimeout(timer);
-            window.clearInterval(poll);
-            resolve();
-          }
-        }, 150);
-      });
+          const poll = window.setInterval(() => {
+            const w = window as any;
+            if (w.gtag) {
+              window.clearTimeout(timer);
+              window.clearInterval(poll);
+              resolve();
+            }
+          }, 150);
+        });
       setTrackingStatus("GA carregado com sucesso (validação silenciosa).");
+      return true;
     } catch (error) {
       setTrackingStatus("Não foi possível validar o GA. Verifique o ID e a conexão.");
+      return false;
     }
   };
 
@@ -334,13 +350,14 @@ export const SiteSettingsAdmin = () => {
 
         <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
           <button className="btn btn-ghost" type="button" onClick={validateTracking}>
-            Validar GA
+            Validar
           </button>
           <button className="btn btn-primary" type="button" onClick={saveTracking} disabled={isSavingTracking}>
             {isSavingTracking ? "Salvando..." : "Salvar Analytics"}
           </button>
         </div>
-        {trackingStatus && <small style={{ color: "var(--muted)" }}>{trackingStatus}</small>}
+        {formatError && <small style={{ color: "tomato" }}>{formatError}</small>}
+        {!formatError && trackingStatus && <small style={{ color: "var(--muted)" }}>{trackingStatus}</small>}
       </div>
 
       {statusMessage && (
