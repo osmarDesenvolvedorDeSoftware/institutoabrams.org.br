@@ -4,6 +4,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 import { api } from "../../services/api";
+import { resolveMediaUrl } from "../../utils/media";
 
 type Props = {
   value: string;
@@ -29,10 +30,11 @@ export const RichTextEditor = ({ value, onChange }: Props) => {
       });
       const url = data?.url as string | undefined;
       if (!url || !quillRef.current) return;
+      const displayUrl = resolveMediaUrl(url);
       const editor = quillRef.current.getEditor();
       const range = editor.getSelection(true);
       const insertAt = range?.index ?? editor.getLength();
-      editor.insertEmbed(insertAt, "image", url, "user");
+      editor.insertEmbed(insertAt, "image", displayUrl, "user");
       editor.setSelection(insertAt + 1);
     } catch (error) {
       alert("Falha no upload. Envie apenas imagens PNG/JPEG/WEBP.");

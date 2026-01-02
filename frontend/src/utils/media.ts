@@ -2,8 +2,18 @@ export function resolveMediaUrl(path: string | null | undefined): string {
   if (!path) return "";
   if (path.startsWith("http")) return path;
 
-  const base = import.meta.env.VITE_MEDIA_BASE_URL || "";
-  return `${base}${path}`;
+  const mediaBase = import.meta.env.VITE_MEDIA_BASE_URL || "";
+  if (mediaBase) {
+    return `${mediaBase}${path}`;
+  }
+
+  const apiBase = import.meta.env.VITE_API_BASE_URL || "";
+  try {
+    const baseUrl = new URL(apiBase);
+    return `${baseUrl.origin}${path}`;
+  } catch (error) {
+    return path;
+  }
 }
 
 export const getYoutubeEmbedUrl = (url?: string | null): string | null => {
