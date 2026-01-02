@@ -101,7 +101,7 @@ export const ContentEditor = () => {
     setVideoUrl("");
   };
 
-  const handleEdit = (page: Page) => {
+  const applyPageToForm = (page: Page) => {
     setEditingId(page.id);
     setSlug(page.slug);
     setTitles({ ...languages.reduce((acc, lang) => ({ ...acc, [lang]: "" }), {}), ...page.title_translations });
@@ -111,6 +111,17 @@ export const ContentEditor = () => {
     setHeroImageUrl((page as any).hero_image_url || "");
     setGalleryUrls((page as any).gallery_urls || []);
     setVideoUrl((page as any).video_url || "");
+  };
+
+  const handleEdit = async (page: Page) => {
+    setMessage(null);
+    try {
+      const { data } = await api.get(`/pages/${page.id}`);
+      applyPageToForm(data as Page);
+    } catch (error) {
+      applyPageToForm(page);
+      setMessage("Nao foi possivel carregar o conteudo completo.");
+    }
   };
 
   const handleDelete = async (id: number) => {
