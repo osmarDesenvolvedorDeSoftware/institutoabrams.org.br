@@ -258,6 +258,8 @@ p {
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  flex-wrap: nowrap;
+  max-width: 100%;
 }
 
 .nav-pill {
@@ -533,5 +535,16 @@ p {
   }
   h3 {
     font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .site-header__inner {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .site-nav {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 }
