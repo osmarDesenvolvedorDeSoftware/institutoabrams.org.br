@@ -33,12 +33,13 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
   const [likesCount, setLikesCount] = useState(0);
   const [liked, setLiked] = useState(false);
   const [comments, setComments] = useState<
-    { id: number; name: string; content: string; created_at: string }[]
+    { id: number; name: string; email?: string | null; content: string; created_at: string }[]
   >([]);
   const [commentName, setCommentName] = useState("");
   const [commentEmail, setCommentEmail] = useState("");
   const [commentContent, setCommentContent] = useState("");
   const [commentStatus, setCommentStatus] = useState<string | null>(null);
+  const [shareStatus, setShareStatus] = useState<string | null>(null);
   const currentSlug = slugOverride || slug;
 
   useEffect(() => {
@@ -108,16 +109,6 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
       key: "facebook",
       label: "Facebook",
       href: `https://www.facebook.com/sharer/sharer.php?u=${shareLink}`,
-    },
-    {
-      key: "instagram",
-      label: "Instagram",
-      href: `https://www.instagram.com/?url=${shareLink}`,
-    },
-    {
-      key: "linkedin",
-      label: "LinkedIn",
-      href: `https://www.linkedin.com/sharing/share-offsite/?url=${shareLink}`,
     },
     {
       key: "x",
@@ -237,6 +228,9 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
             {comments.map((comment) => (
               <div key={comment.id} className="comment-card">
                 <strong>{comment.name}</strong>
+                {"email" in comment && comment.email ? (
+                  <small style={{ color: "var(--muted)" }}>{comment.email}</small>
+                ) : null}
                 <p>{comment.content}</p>
               </div>
             ))}
