@@ -1,15 +1,15 @@
 """add comments and page likes
 
-Revision ID: 0002_comments_likes
-Revises: 0001_initial
+Revision ID: 0006_comments_likes
+Revises: 0005_add_sections
 Create Date: 2026-01-02
 """
 
 from alembic import op
 import sqlalchemy as sa
 
-revision = "0002_comments_likes"
-down_revision = "0001_initial"
+revision = "0006_comments_likes"
+down_revision = "0005_add_sections"
 branch_labels = None
 depends_on = None
 
