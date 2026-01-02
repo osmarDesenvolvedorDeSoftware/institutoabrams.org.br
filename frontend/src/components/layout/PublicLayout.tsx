@@ -191,59 +191,17 @@ export const PublicLayout = () => {
 
   return (
     <div className="app-shell">
-      <header
-        style={{
-          background: "#fff",
-          color: "var(--text)",
-          boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
-          borderBottom: "1px solid var(--border)",
-          position: "sticky",
-          top: 0,
-          zIndex: 15,
-        }}
-      >
-        <div
-          className="container"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "0.75rem 1.25rem",
-            gap: "1rem",
-          }}
-        >
-          <Link
-            to="/"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.75rem",
-              color: "var(--primary-dark)",
-              fontWeight: 800,
-              letterSpacing: "0.5px",
-            }}
-          >
+      <header className="site-header">
+        <div className="container site-header__inner">
+          <Link to="/" className="brand">
             {branding.logo_url ? (
               <img
                 src={resolveMediaUrl(branding.logo_url)}
                 alt="Instituto ABRAMS"
-                style={{ height: 42, width: "auto", objectFit: "contain" }}
+                style={{ height: 40, width: "auto", objectFit: "contain" }}
               />
             ) : (
-              <div
-                style={{
-                  width: 42,
-                  height: 42,
-                  borderRadius: 10,
-                  background: "#fff7eb",
-                  color: "var(--primary)",
-                  display: "grid",
-                  placeItems: "center",
-                  fontWeight: 800,
-                }}
-              >
-                A
-              </div>
+              <div className="brand-mark">A</div>
             )}
             Instituto ABRAMS
           </Link>
@@ -264,10 +222,9 @@ export const PublicLayout = () => {
           </button>
 
           <nav
+            className="site-nav"
             style={{
               display: isMobile ? (isMenuOpen ? "grid" : "none") : "flex",
-              gap: "0.75rem",
-              alignItems: "center",
               position: isMobile ? "absolute" : "relative",
               top: isMobile ? "100%" : "auto",
               left: 0,
@@ -276,6 +233,8 @@ export const PublicLayout = () => {
               padding: isMobile ? "0.75rem 0" : 0,
               borderRadius: isMobile ? "0 0 12px 12px" : 0,
               boxShadow: isMobile ? "0 12px 24px rgba(0,0,0,0.08)" : "none",
+              gap: isMobile ? "0.35rem" : undefined,
+              justifyContent: isMobile ? "center" : undefined,
             }}
           >
             {menuTree.map((item) =>
@@ -292,22 +251,9 @@ export const PublicLayout = () => {
                     if (menu) (menu as HTMLElement).style.display = "none";
                   }}
                 >
-                  <span
-                    style={{
-                      fontWeight: 700,
-                      padding: "0.35rem 0.5rem",
-                      borderRadius: 8,
-                      background: isActive(item.target) ? "rgba(207,175,112,0.18)" : "transparent",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "0.3rem",
-                      color: isActive(item.target) ? "var(--primary-dark)" : "var(--text)",
-                      transition: "background-color 120ms ease, color 120ms ease",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
+                  <span className={`nav-pill ${isActive(item.target) ? "active" : ""}`}>
                     {item.label}
-                    <span style={{ fontSize: 10 }}>▼</span>
+                    <span style={{ fontSize: 10 }}>v</span>
                   </span>
                   <div
                     className="dropdown"
@@ -344,19 +290,7 @@ export const PublicLayout = () => {
                   </div>
                 </div>
               ) : (
-                <Link
-                  key={item.id}
-                  to={item.target}
-                  style={{
-                    fontWeight: 700,
-                    color: isActive(item.target) ? "var(--primary-dark)" : "var(--text)",
-                    padding: "0.35rem 0.5rem",
-                    borderRadius: 8,
-                    background: isActive(item.target) ? "rgba(207,175,112,0.18)" : "transparent",
-                    transition: "background-color 120ms ease, color 120ms ease",
-                    whiteSpace: "nowrap",
-                  }}
-                >
+                <Link key={item.id} to={item.target} className={`nav-pill ${isActive(item.target) ? "active" : ""}`}>
                   {item.label}
                 </Link>
               ),
@@ -376,11 +310,11 @@ export const PublicLayout = () => {
               <option value="fr">FR</option>
             </select>
             {isAuthenticated ? (
-              <Link className="btn btn-ghost" to="/admin" style={{ color: "var(--primary-dark)" }}>
+              <Link className="nav-cta" to="/admin">
                 {t("common.adminPanel", { defaultValue: "Painel" })}
               </Link>
             ) : (
-              <Link className="btn btn-ghost" to="/admin/login" style={{ color: "var(--primary-dark)" }}>
+              <Link className="nav-cta" to="/admin/login">
                 {t("common.admin")}
               </Link>
             )}
@@ -390,18 +324,11 @@ export const PublicLayout = () => {
       <main style={{ flex: 1 }}>
         <Outlet />
       </main>
-      <footer
-        style={{
-          borderTop: "1px solid var(--border)",
-          padding: "2rem 0 1.25rem",
-          marginTop: "2.5rem",
-          background: "#f9fafb",
-        }}
-      >
+      <footer className="site-footer">
         <div className="container" style={{ display: "grid", gap: "1.5rem" }}>
-          <div style={{ display: "grid", gap: "1rem", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
-            <div style={{ display: "grid", gap: "0.35rem" }}>
-              <strong>Instituto ABRAMS</strong>
+          <div style={{ display: "grid", gap: "1rem", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))" }}>
+            <div className="footer-card" style={{ display: "grid", gap: "0.35rem" }}>
+              <strong className="footer-title">Instituto ABRAMS</strong>
               <p style={{ margin: 0, color: "var(--muted)" }}>
                 {footerInfo.address ||
                   t("footer.defaultDescription", {
@@ -411,11 +338,11 @@ export const PublicLayout = () => {
               {footerInfo.email && <p style={{ margin: 0, color: "var(--muted)" }}>{footerInfo.email}</p>}
               {footerInfo.phone && <p style={{ margin: 0, color: "var(--muted)" }}>{footerInfo.phone}</p>}
             </div>
-            <div style={{ display: "grid", gap: "0.35rem" }}>
-              <strong>{t("footer.quickLinks", { defaultValue: "Links" })}</strong>
+            <div className="footer-card" style={{ display: "grid", gap: "0.35rem" }}>
+              <strong className="footer-title">{t("footer.quickLinks", { defaultValue: "Links" })}</strong>
               {footerLinks.length ? (
                 footerLinks.map((link) => (
-                  <Link key={link.target} to={link.target} style={{ color: "var(--muted)" }}>
+                  <Link key={link.target} to={link.target} className="footer-link">
                     {link.label}
                   </Link>
                 ))
@@ -423,17 +350,11 @@ export const PublicLayout = () => {
                 <p style={{ margin: 0, color: "var(--muted)" }}>Nenhum link de menu configurado.</p>
               )}
             </div>
-            <div style={{ display: "grid", gap: "0.35rem" }}>
-              <strong>{t("footer.social", { defaultValue: "Redes sociais" })}</strong>
+            <div className="footer-card" style={{ display: "grid", gap: "0.35rem" }}>
+              <strong className="footer-title">{t("footer.social", { defaultValue: "Redes sociais" })}</strong>
               {socialLinks.map((link) =>
                 link.href ? (
-                  <a
-                    key={link.key}
-                    href={link.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{ color: "var(--muted)", display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
-                  >
+                  <a key={link.key} href={link.href} target="_blank" rel="noreferrer" className="footer-link">
                     {renderSocialIcon(link.key)}
                     {link.label}
                   </a>
@@ -446,16 +367,8 @@ export const PublicLayout = () => {
               )}
             </div>
           </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: "1rem",
-              flexWrap: "wrap",
-            }}
-          >
-            <small style={{ color: "#777" }}>© {new Date().getFullYear()} Instituto ABRAMS</small>
+          <div className="footer-meta">
+            <small style={{ color: "#777" }}>(c) {new Date().getFullYear()} Instituto ABRAMS</small>
             {footerInfo.cnpj && (
               <small style={{ color: "var(--muted)" }}>
                 {t("footer.cnpjLabel", { defaultValue: "CNPJ" })}: {footerInfo.cnpj}

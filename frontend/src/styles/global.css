@@ -82,6 +82,120 @@ p {
   flex-direction: column;
 }
 
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 12px 24px rgba(31, 41, 55, 0.06);
+  backdrop-filter: blur(6px);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  gap: 1rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--primary-dark);
+  font-weight: 800;
+  letter-spacing: 0.4px;
+}
+
+.brand-mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fff4da, #ffffff);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 8px 16px rgba(207, 175, 112, 0.25);
+  border: 1px solid #f3e1bf;
+}
+
+.site-nav {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.nav-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  font-weight: 700;
+  color: var(--text);
+  border: 1px solid transparent;
+  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+  white-space: nowrap;
+}
+
+.nav-pill.active {
+  color: var(--primary-dark);
+  background: rgba(207, 175, 112, 0.2);
+  border-color: rgba(207, 175, 112, 0.35);
+}
+
+.nav-pill:hover {
+  background: rgba(207, 175, 112, 0.12);
+}
+
+.nav-cta {
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  border: 1px solid #e9dcc1;
+  color: var(--primary-dark);
+  background: #fff;
+  font-weight: 700;
+}
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2.5rem 0 1.5rem;
+  margin-top: 3rem;
+  background: linear-gradient(135deg, #f9fafb, #ffffff);
+}
+
+.footer-card {
+  background: #fff;
+  border: 1px solid #eef1f4;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 12px 24px rgba(31, 41, 55, 0.05);
+}
+
+.footer-title {
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.footer-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+  border-top: 1px solid #eceff3;
+}
+
 .container {
   width: 100%;
   max-width: 1280px;
@@ -258,6 +372,9 @@ p {
 @media (max-width: 900px) {
   .container {
     padding: 0 1rem;
+  }
+  .site-header__inner {
+    padding: 0.75rem 1rem;
   }
   .card {
     padding: 1.25rem;
