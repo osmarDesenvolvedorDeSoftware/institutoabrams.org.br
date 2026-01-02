@@ -631,6 +631,93 @@ p {
   font-size: 0.95rem;
 }
 
+.page-actions {
+  display: grid;
+  gap: 0.75rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+
+.page-actions__label {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.page-actions__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.like-btn,
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.like-btn.liked {
+  border-color: rgba(207, 175, 112, 0.6);
+  background: rgba(207, 175, 112, 0.18);
+  color: var(--primary-dark);
+}
+
+.share-btn {
+  text-decoration: none;
+}
+
+.page-comments {
+  display: grid;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.page-comments__list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.comment-card {
+  border: 1px solid #eef1f4;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  background: #fff;
+  box-shadow: 0 8px 16px rgba(31, 41, 55, 0.04);
+}
+
+.comment-card strong {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.comment-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.comment-form {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.comment-form input,
+.comment-form textarea {
+  padding: 0.75rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  font-family: inherit;
+}
+
 .dropdown a:hover {
   background: #f3f4f6 !important;
   color: var(--primary-dark) !important;

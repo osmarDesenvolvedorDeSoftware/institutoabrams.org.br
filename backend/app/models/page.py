@@ -17,6 +17,7 @@ class Page(db.Model):
     gallery_urls = db.Column(JSONB, nullable=True, default=list)
     video_url = db.Column(db.String(500), nullable=True)
     sections = db.Column(JSONB, nullable=True)
+    likes_count = db.Column(db.Integer, default=0)
     is_published = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(

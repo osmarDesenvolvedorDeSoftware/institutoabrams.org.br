@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -9,6 +9,7 @@ import { SeoHelmet } from "../../components/seo/SeoHelmet";
 import { DEFAULT_DESCRIPTION, DEFAULT_TITLE } from "../../utils/seoDefaults";
 
 type Page = {
+  id: number;
   slug: string;
   title_translations: Record<string, string>;
   content_translations: Record<string, string>;
@@ -16,6 +17,7 @@ type Page = {
   hero_image_url?: string | null;
   gallery_urls?: string[] | null;
   video_url?: string | null;
+  likes_count?: number | null;
 };
 
 type Props = {
@@ -27,6 +29,16 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
   const { i18n, t } = useTranslation();
   const [page, setPage] = useState<Page | null>(null);
   const [notFound, setNotFound] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
+  const [likesCount, setLikesCount] = useState(0);
+  const [liked, setLiked] = useState(false);
+  const [comments, setComments] = useState<
+    { id: number; name: string; content: string; created_at: string }[]
+  >([]);
+  const [commentName, setCommentName] = useState("");
+  const [commentEmail, setCommentEmail] = useState("");
+  const [commentContent, setCommentContent] = useState("");
+  const [commentStatus, setCommentStatus] = useState<string | null>(null);
   const currentSlug = slugOverride || slug;
 
   useEffect(() => {
@@ -40,8 +52,28 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
       .then(({ data }) => {
         setPage(data);
         setNotFound(false);
+        setLikesCount(data.likes_count || 0);
       })
       .catch(() => setNotFound(true));
+  }, [currentSlug]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setShareUrl(window.location.href);
+  }, []);
+
+  useEffect(() => {
+    if (!page?.id) return;
+    const stored = localStorage.getItem(`liked-page-${page.id}`);
+    setLiked(stored === "1");
+  }, [page?.id]);
+
+  useEffect(() => {
+    if (!currentSlug) return;
+    api
+      .get(`/comments/page/${currentSlug}`)
+      .then(({ data }) => setComments(data || []))
+      .catch(() => setComments([]));
   }, [currentSlug]);
 
   if (notFound) {
@@ -64,6 +96,72 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
   const content = getLocalized(page.content_translations, i18n.language);
   const embedUrl = getYoutubeEmbedUrl(page.video_url);
   const description = content ? content.replace(/<[^>]+>/g, "").slice(0, 180) : DEFAULT_DESCRIPTION;
+  const shareText = encodeURIComponent(title || DEFAULT_TITLE);
+  const shareLink = encodeURIComponent(shareUrl);
+  const shareItems = useMemo(
+    () => [
+      {
+        key: "whatsapp",
+        label: "WhatsApp",
+        href: `https://api.whatsapp.com/send?text=${shareText}%20${shareLink}`,
+      },
+      {
+        key: "facebook",
+        label: "Facebook",
+        href: `https://www.facebook.com/sharer/sharer.php?u=${shareLink}`,
+      },
+      {
+        key: "instagram",
+        label: "Instagram",
+        href: `https://www.instagram.com/?url=${shareLink}`,
+      },
+      {
+        key: "linkedin",
+        label: "LinkedIn",
+        href: `https://www.linkedin.com/sharing/share-offsite/?url=${shareLink}`,
+      },
+      {
+        key: "x",
+        label: "X",
+        href: `https://twitter.com/intent/tweet?url=${shareLink}&text=${shareText}`,
+      },
+    ],
+    [shareLink, shareText],
+  );
+
+  const handleLike = async () => {
+    if (!page?.id || liked) return;
+    try {
+      const { data } = await api.post(`/pages/${page.id}/like`);
+      setLikesCount(data.likes_count || likesCount + 1);
+      setLiked(true);
+      localStorage.setItem(`liked-page-${page.id}`, "1");
+    } catch (error) {
+      setLikesCount((prev) => prev + 1);
+    }
+  };
+
+  const handleSubmitComment = async () => {
+    if (!commentName.trim() || !commentContent.trim()) {
+      setCommentStatus("Preencha nome e comentario.");
+      return;
+    }
+    setCommentStatus(null);
+    try {
+      const { data } = await api.post(`/comments/page/${page.slug}`, {
+        name: commentName.trim(),
+        email: commentEmail.trim() || null,
+        content: commentContent.trim(),
+      });
+      setComments((prev) => [...prev, data]);
+      setCommentName("");
+      setCommentEmail("");
+      setCommentContent("");
+      setCommentStatus("Comentario enviado.");
+    } catch (error) {
+      setCommentStatus("Nao foi possivel enviar o comentario.");
+    }
+  };
 
   return (
     <div className="container section" style={{ display: "grid", gap: "1rem" }}>
@@ -87,6 +185,21 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
         style={{ color: "var(--muted)", lineHeight: 1.7 }}
         dangerouslySetInnerHTML={{ __html: content || "" }}
       />
+      <div className="page-actions">
+        <div className="page-actions__group">
+          <span className="page-actions__label">Curta e compartilhe</span>
+          <div className="page-actions__buttons">
+            <button className={`like-btn${liked ? " liked" : ""}`} type="button" onClick={handleLike}>
+              {liked ? "Curtido" : "Curtir"} ({likesCount})
+            </button>
+            {shareItems.map((item) => (
+              <a key={item.key} href={item.href} target="_blank" rel="noreferrer" className="share-btn">
+                {item.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
       {embedUrl && (
         <div style={{ marginTop: "0.5rem" }}>
           <div
@@ -120,6 +233,43 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
           ))}
         </div>
       )}
+      <div className="page-comments">
+        <h3>Comentarios</h3>
+        {comments.length ? (
+          <div className="page-comments__list">
+            {comments.map((comment) => (
+              <div key={comment.id} className="comment-card">
+                <strong>{comment.name}</strong>
+                <p>{comment.content}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p style={{ color: "var(--muted)" }}>Seja o primeiro a comentar.</p>
+        )}
+        <div className="comment-form">
+          <input
+            placeholder="Seu nome"
+            value={commentName}
+            onChange={(e) => setCommentName(e.target.value)}
+          />
+          <input
+            placeholder="Seu e-mail (opcional)"
+            value={commentEmail}
+            onChange={(e) => setCommentEmail(e.target.value)}
+          />
+          <textarea
+            placeholder="Escreva um comentario"
+            rows={4}
+            value={commentContent}
+            onChange={(e) => setCommentContent(e.target.value)}
+          />
+          <button className="btn btn-primary" type="button" onClick={handleSubmitComment}>
+            Enviar comentario
+          </button>
+          {commentStatus && <small style={{ color: "var(--muted)" }}>{commentStatus}</small>}
+        </div>
+      </div>
     </div>
   );
 };

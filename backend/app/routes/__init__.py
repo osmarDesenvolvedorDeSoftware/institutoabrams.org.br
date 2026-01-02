@@ -5,6 +5,7 @@ from .health import bp as health_bp
 from .media import media_api_bp, media_bp
 from .menus import bp as menus_bp
 from .pages import bp as pages_bp
+from .comments import bp as comments_bp
 from .seo import bp as seo_bp
 from .sitemap import bp as sitemap_bp
 from .settings import bp as settings_bp
@@ -17,6 +18,7 @@ def register_routes(app: Flask) -> None:
     app.register_blueprint(health_bp, url_prefix=prefix)
     app.register_blueprint(auth_bp, url_prefix=f"{prefix}/auth")
     app.register_blueprint(pages_bp, url_prefix=f"{prefix}/pages")
+    app.register_blueprint(comments_bp, url_prefix=f"{prefix}/comments")
     app.register_blueprint(menus_bp, url_prefix=f"{prefix}/menus")
     app.register_blueprint(translations_bp, url_prefix=f"{prefix}/translations")
     app.register_blueprint(seo_bp, url_prefix=f"{prefix}/public/seo")

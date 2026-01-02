@@ -50,6 +50,16 @@ def get_page_by_slug(slug: str):
     return jsonify(page_schema.dump(page))
 
 
+@bp.post("/<int:page_id>/like")
+def like_page(page_id: int):
+    page = page_service.get_page(page_id)
+    if not page:
+        return jsonify({"message": "Page not found"}), 404
+    page.likes_count = (page.likes_count or 0) + 1
+    db.session.commit()
+    return jsonify({"likes_count": page.likes_count}), 200
+
+
 @bp.put("/<int:page_id>")
 @jwt_required()
 def update_page(page_id: int):
