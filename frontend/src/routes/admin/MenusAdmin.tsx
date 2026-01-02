@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { api } from "../../services/api";
-import { ContentWizard } from "./components/ContentWizard";
 
 type MenuItem = {
   id: number;
@@ -13,19 +12,32 @@ type MenuItem = {
   order?: number;
 };
 
+type PageItem = {
+  id: number;
+  slug: string;
+  title_translations: Record<string, string>;
+};
+
 export const MenusAdmin = () => {
   const [items, setItems] = useState<MenuItem[]>([]);
-  const [wizardOpen, setWizardOpen] = useState(false);
-  const [wizardParentId, setWizardParentId] = useState<number | undefined>(undefined);
+  const [pages, setPages] = useState<PageItem[]>([]);
   const [orderDrafts, setOrderDrafts] = useState<Record<number, number | undefined>>({});
+  const [selectedParentId, setSelectedParentId] = useState<number | null>(null);
+  const [newMenuOrder, setNewMenuOrder] = useState<string>("");
 
   const fetchMenus = async () => {
     const { data } = await api.get("/menus", { params: { per_page: 200 } });
     setItems(data.items || data);
   };
 
+  const fetchPages = async () => {
+    const { data } = await api.get("/pages", { params: { per_page: 200 } });
+    setPages(data.items || data);
+  };
+
   useEffect(() => {
     fetchMenus();
+    fetchPages();
   }, []);
 
   const parents = useMemo(() => items.filter((i) => !i.parent_id), [items]);
@@ -63,10 +75,31 @@ export const MenusAdmin = () => {
     fetchMenus();
   };
 
-  const handleAddSubmenu = (parent: MenuItem) => {
-    setWizardParentId(parent.id);
-    setWizardOpen(true);
+  const handleAddToMenu = async (pageId: number) => {
+    await api.post("/menus/from-page", {
+      page_id: pageId,
+      parent_id: selectedParentId ?? null,
+      order: newMenuOrder ? Number(newMenuOrder) : undefined,
+    });
+    setNewMenuOrder("");
+    fetchMenus();
+    fetchPages();
   };
+
+  const menuPageSlugs = useMemo(() => {
+    const slugs = new Set<string>();
+    items.forEach((item) => {
+      if (item.target?.startsWith("/pages/")) {
+        slugs.add(item.target.replace("/pages/", ""));
+      }
+    });
+    return slugs;
+  }, [items]);
+
+  const availablePages = useMemo(
+    () => pages.filter((p) => p.slug !== "home-content" && !menuPageSlugs.has(p.slug)),
+    [pages, menuPageSlugs],
+  );
 
   const previewTree = useMemo(() => {
     const base = [...items];
@@ -78,11 +111,79 @@ export const MenusAdmin = () => {
         children: base
           .filter((c) => c.parent_id === parent.id)
           .sort((a, b) => (a.order || 0) - (b.order || 0)),
-      }));
+    }));
   }, [items]);
 
   return (
     <div className="grid two" style={{ alignItems: "start", gap: "1.25rem" }}>
+      <div className="card" style={{ display: "grid", gap: "0.75rem" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "1rem",
+            paddingBottom: "0.5rem",
+            borderBottom: "1px solid var(--border)",
+          }}
+        >
+          <div>
+            <p style={{ margin: 0, color: "var(--muted)" }}>Paginas</p>
+            <h3 style={{ margin: "0.25rem 0" }}>Disponiveis para o menu</h3>
+          </div>
+          <button className="btn btn-ghost" type="button" onClick={fetchPages}>
+            Atualizar
+          </button>
+        </div>
+
+        <div className="card" style={{ background: "#f9fafb", display: "grid", gap: "0.5rem" }}>
+          <p style={{ margin: 0, fontWeight: 600 }}>Destino</p>
+          <div style={{ display: "grid", gap: "0.5rem" }}>
+            <select
+              value={selectedParentId ?? ""}
+              onChange={(e) => setSelectedParentId(e.target.value ? Number(e.target.value) : null)}
+              style={{ padding: "0.7rem 0.85rem", borderRadius: 10, border: "1px solid var(--border)" }}
+            >
+              <option value="">Menu principal</option>
+              {parents.map((p) => (
+                <option key={p.id} value={p.id}>
+                  Submenu de: {p.label}
+                </option>
+              ))}
+            </select>
+            <input
+              type="number"
+              placeholder="Ordem (opcional)"
+              value={newMenuOrder}
+              onChange={(e) => setNewMenuOrder(e.target.value)}
+              style={{ padding: "0.7rem 0.85rem", borderRadius: 10, border: "1px solid var(--border)" }}
+            />
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gap: "0.65rem" }}>
+          {availablePages.length === 0 && (
+            <div className="card" style={{ background: "#f9fafb" }}>
+              <p style={{ margin: 0, color: "var(--muted)" }}>Todas as paginas ja estao no menu.</p>
+            </div>
+          )}
+          {availablePages.map((page) => (
+            <div
+              key={page.id}
+              className="card"
+              style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem" }}
+            >
+              <div>
+                <strong>{page.title_translations?.pt || page.slug}</strong>
+                <p style={{ margin: "0.25rem 0 0", color: "var(--muted)" }}>/pages/{page.slug}</p>
+              </div>
+              <button className="btn btn-primary" type="button" onClick={() => handleAddToMenu(page.id)}>
+                Adicionar
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
       <div className="card" style={{ display: "grid", gap: "0.75rem" }}>
         <div
           style={{
@@ -201,28 +302,12 @@ export const MenusAdmin = () => {
                   <button className="btn btn-ghost" onClick={() => handleDelete(item.id)}>
                     Excluir
                   </button>
-                  <button className="btn btn-primary" type="button" onClick={() => handleAddSubmenu(item)}>
-                    Adicionar submenu
-                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <ContentWizard
-        isOpen={wizardOpen}
-        onClose={() => {
-          setWizardOpen(false);
-          setWizardParentId(undefined);
-        }}
-        onSuccess={() => {
-          setWizardOpen(false);
-          setWizardParentId(undefined);
-          fetchMenus();
-        }}
-        parentMenuId={wizardParentId}
-      />
     </div>
   );
 };

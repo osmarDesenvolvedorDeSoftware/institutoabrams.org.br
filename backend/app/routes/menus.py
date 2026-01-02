@@ -54,6 +54,52 @@ def update_menu(menu_id: int):
     return jsonify(menu_schema.dump(updated)), 200
 
 
+@bp.post("/from-page")
+@jwt_required()
+def create_menu_from_page():
+    payload = request.get_json() or {}
+    page_id = payload.get("page_id")
+    parent_id = payload.get("parent_id")
+    order = payload.get("order")
+
+    if not page_id:
+        return jsonify({"message": "page_id is required"}), 400
+
+    page = page_service.get_page(page_id)
+    if not page:
+        return jsonify({"message": "Page not found"}), 404
+    if page.slug == "home-content":
+        return jsonify({"message": "home-content cannot be added to menus"}), 400
+
+    parent = None
+    if parent_id is not None:
+        parent = menu_service.get_menu(parent_id)
+        if not parent:
+            return jsonify({"message": "Parent menu not found"}), 404
+
+    menu_payload = {
+        "label": (page.title_translations or {}).get("pt") or page.slug,
+        "slug": page.slug,
+        "target": menu_service.normalize_target(page.slug),
+        "parent_id": parent_id,
+        "order": order,
+    }
+
+    try:
+        menu = menu_service.create_menu_with_defaults(menu_payload)
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({"message": "Slug conflict creating menu"}), 409
+    except ValueError as err:
+        db.session.rollback()
+        return jsonify({"message": str(err)}), 400
+
+    if parent:
+        menu_service.ensure_dropdown(parent.id)
+
+    return jsonify(menu_schema.dump(menu)), 201
+
+
 @bp.post("/<int:menu_id>/add-submenu")
 @jwt_required()
 def add_submenu(menu_id: int):

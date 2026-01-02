@@ -156,7 +156,7 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, parentMenuId }: Prop
       return true;
     }
     return true;
-  }, [currentStep, selectedType, submenuPageMode, submenuExistingPageId, submenuNewPage.title, parentPage.title]);
+  }, [currentStep, selectedType, submenuPageMode, submenuExistingPageId, submenuNewPage.title, parentPage.title, subPages]);
 
   const goNext = () => {
     if (!canGoNext) return;
