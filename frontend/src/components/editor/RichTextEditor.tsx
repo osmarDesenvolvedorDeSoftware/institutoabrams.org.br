@@ -4,7 +4,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 import { api } from "../../services/api";
-import { resolveMediaUrl } from "../../utils/media";
+import { getYoutubeEmbedUrl, resolveMediaUrl } from "../../utils/media";
 
 type Props = {
   value: string;
@@ -22,10 +22,11 @@ export const RichTextEditor = ({ value, onChange }: Props) => {
   const handleVideoClick = useCallback(() => {
     const url = window.prompt("Cole a URL do YouTube:");
     if (!url || !quillRef.current) return;
+    const embedUrl = getYoutubeEmbedUrl(url) || url;
     const editor = quillRef.current.getEditor();
     const range = editor.getSelection(true);
     const insertAt = range?.index ?? editor.getLength();
-    editor.insertEmbed(insertAt, "video", url, "user");
+    editor.insertEmbed(insertAt, "video", embedUrl, "user");
     editor.setSelection(insertAt + 1);
   }, []);
 

@@ -17,6 +17,7 @@ type Page = {
   content_translations?: Record<string, any>;
   hero_image_url?: string | null;
   is_published?: boolean;
+  created_at?: string;
 };
 
 type MenuItem = {
@@ -72,19 +73,14 @@ export const Home = () => {
     [pages],
   );
 
-  const highlightPages = useMemo(() => {
-    const parents = menus.filter((m) => !m.parent_id);
-    const sorted = parents.sort((a, b) => (a.order || 0) - (b.order || 0));
-    const mapped = sorted
-      .map((m) => {
-        const slug = m.target?.startsWith("/pages/") ? m.target.replace("/pages/", "") : null;
-        if (!slug || slug === "home-content") return null;
-        const page = visiblePages.find((p) => p.slug === slug);
-        return page ? { page, order: m.order || 0 } : null;
-      })
-      .filter(Boolean) as { page: Page; order: number }[];
-    return mapped.map((item) => item.page);
-  }, [menus, visiblePages]);
+  const latestPages = useMemo(() => {
+    const sorted = [...visiblePages].sort((a, b) => {
+      const aTime = a.created_at ? new Date(a.created_at).getTime() : 0;
+      const bTime = b.created_at ? new Date(b.created_at).getTime() : 0;
+      return bTime - aTime;
+    });
+    return sorted.slice(0, 6);
+  }, [visiblePages]);
 
   const getLocalized = (translations: Record<string, string> | undefined, lang: string) =>
     translations?.[lang] || translations?.[lang?.slice(0, 2)] || translations?.["pt"];
@@ -165,19 +161,19 @@ export const Home = () => {
 
       {sections.map((section: any, index: number) => renderSection(section, index))}
 
-      {highlightPages.length ? (
+      {latestPages.length ? (
         <section className="section" style={{ padding: 0 }}>
           <div style={{ display: "grid", gap: "1.25rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
               <div>
-                <p className="subtitle" style={{ marginBottom: "0.15rem" }}>{t("home.instituteHighlightsTitle", { defaultValue: "Destaques" })}</p>
-                <h2 style={{ margin: 0 }}>{t("home.instituteHighlightsSubtitle", { defaultValue: "Selecionados pelo menu" })}</h2>
+                <p className="subtitle" style={{ marginBottom: "0.15rem" }}>{t("home.latestTitle", { defaultValue: "Ultimas paginas" })}</p>
+                <h2 style={{ margin: 0 }}>{t("home.latestSubtitle", { defaultValue: "Novidades do instituto" })}</h2>
                 <div className="divider" />
               </div>
             </div>
 
             <div className="grid three">
-              {highlightPages.map((page) => renderHighlightCard(page))}
+              {latestPages.map((page) => renderHighlightCard(page))}
             </div>
           </div>
         </section>
