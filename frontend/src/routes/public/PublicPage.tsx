@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -98,36 +98,33 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
   const description = content ? content.replace(/<[^>]+>/g, "").slice(0, 180) : DEFAULT_DESCRIPTION;
   const shareText = encodeURIComponent(title || DEFAULT_TITLE);
   const shareLink = encodeURIComponent(shareUrl);
-  const shareItems = useMemo(
-    () => [
-      {
-        key: "whatsapp",
-        label: "WhatsApp",
-        href: `https://api.whatsapp.com/send?text=${shareText}%20${shareLink}`,
-      },
-      {
-        key: "facebook",
-        label: "Facebook",
-        href: `https://www.facebook.com/sharer/sharer.php?u=${shareLink}`,
-      },
-      {
-        key: "instagram",
-        label: "Instagram",
-        href: `https://www.instagram.com/?url=${shareLink}`,
-      },
-      {
-        key: "linkedin",
-        label: "LinkedIn",
-        href: `https://www.linkedin.com/sharing/share-offsite/?url=${shareLink}`,
-      },
-      {
-        key: "x",
-        label: "X",
-        href: `https://twitter.com/intent/tweet?url=${shareLink}&text=${shareText}`,
-      },
-    ],
-    [shareLink, shareText],
-  );
+  const shareItems = [
+    {
+      key: "whatsapp",
+      label: "WhatsApp",
+      href: `https://api.whatsapp.com/send?text=${shareText}%20${shareLink}`,
+    },
+    {
+      key: "facebook",
+      label: "Facebook",
+      href: `https://www.facebook.com/sharer/sharer.php?u=${shareLink}`,
+    },
+    {
+      key: "instagram",
+      label: "Instagram",
+      href: `https://www.instagram.com/?url=${shareLink}`,
+    },
+    {
+      key: "linkedin",
+      label: "LinkedIn",
+      href: `https://www.linkedin.com/sharing/share-offsite/?url=${shareLink}`,
+    },
+    {
+      key: "x",
+      label: "X",
+      href: `https://twitter.com/intent/tweet?url=${shareLink}&text=${shareText}`,
+    },
+  ];
 
   const handleLike = async () => {
     if (!page?.id || liked) return;
