@@ -34,8 +34,13 @@ export const SiteSettingsAdmin = () => {
   const [isSavingBranding, setIsSavingBranding] = useState(false);
   const [isSavingFooter, setIsSavingFooter] = useState(false);
   const [isSavingTracking, setIsSavingTracking] = useState(false);
+  const [isSavingPassword, setIsSavingPassword] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [trackingStatus, setTrackingStatus] = useState<string | null>(null);
+  const [passwordStatus, setPasswordStatus] = useState<string | null>(null);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const formatError = tracking.gtm_id
     ? /^GTM-[A-Z0-9]{6,}$/i.test(tracking.gtm_id.trim())
       ? null
@@ -183,6 +188,38 @@ export const SiteSettingsAdmin = () => {
     } catch (error) {
       setTrackingStatus("Não foi possível validar o GA. Verifique o ID e a conexão.");
       return false;
+    }
+  };
+
+  const savePassword = async () => {
+    setPasswordStatus(null);
+    if (!currentPassword || !newPassword) {
+      setPasswordStatus("Preencha a senha atual e a nova senha.");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordStatus("A confirmacao nao confere.");
+      return;
+    }
+    if (newPassword.length < 8) {
+      setPasswordStatus("A nova senha deve ter pelo menos 8 caracteres.");
+      return;
+    }
+    setIsSavingPassword(true);
+    try {
+      await api.post("/auth/change-password", {
+        current_password: currentPassword,
+        new_password: newPassword,
+        confirm_password: confirmPassword,
+      });
+      setPasswordStatus("Senha atualizada com sucesso.");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (error) {
+      setPasswordStatus("Nao foi possivel atualizar a senha.");
+    } finally {
+      setIsSavingPassword(false);
     }
   };
 
@@ -358,6 +395,51 @@ export const SiteSettingsAdmin = () => {
         </div>
         {formatError && <small style={{ color: "tomato" }}>{formatError}</small>}
         {!formatError && trackingStatus && <small style={{ color: "var(--muted)" }}>{trackingStatus}</small>}
+      </div>
+
+      <div className="card" style={{ display: "grid", gap: "0.75rem" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: "1rem",
+            paddingBottom: "0.5rem",
+            borderBottom: "1px solid var(--border)",
+          }}
+        >
+          <div>
+            <p style={{ margin: 0, color: "var(--muted)" }}>Seguranca</p>
+            <h3 style={{ margin: "0.2rem 0 0" }}>Alterar senha</h3>
+          </div>
+        </div>
+
+        <input
+          placeholder="Senha atual"
+          type="password"
+          value={currentPassword}
+          onChange={(e) => setCurrentPassword(e.target.value)}
+          style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
+        />
+        <input
+          placeholder="Nova senha"
+          type="password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
+        />
+        <input
+          placeholder="Confirmar nova senha"
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
+        />
+
+        <button className="btn btn-primary" type="button" onClick={savePassword} disabled={isSavingPassword}>
+          {isSavingPassword ? "Salvando..." : "Atualizar senha"}
+        </button>
+        {passwordStatus && <small style={{ color: "var(--muted)" }}>{passwordStatus}</small>}
       </div>
 
       {statusMessage && (
