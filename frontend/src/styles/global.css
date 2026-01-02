@@ -327,6 +327,11 @@ p {
   margin-bottom: 0.35rem;
 }
 
+.site-footer .footer-text {
+  margin-bottom: 0.25rem;
+  line-height: 1.3;
+}
+
 .footer-meta {
   display: flex;
   justify-content: space-between;
