@@ -35,6 +35,7 @@ export const SiteSettingsAdmin = () => {
   const [isSavingFooter, setIsSavingFooter] = useState(false);
   const [isSavingTracking, setIsSavingTracking] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [trackingStatus, setTrackingStatus] = useState<string | null>(null);
 
   const fetchSettings = async () => {
     try {
@@ -83,12 +84,89 @@ export const SiteSettingsAdmin = () => {
   const saveTracking = async () => {
     setIsSavingTracking(true);
     try {
-      await api.put("/settings/site_tracking", { value: tracking });
+      const payload: Tracking = tracking.gtm_id
+        ? { gtm_id: tracking.gtm_id, ga_id: "" }
+        : { ga_id: tracking.ga_id, gtm_id: "" };
+      await api.put("/settings/site_tracking", { value: payload });
       setStatusMessage("Configurações de Analytics salvas com sucesso.");
+      setTracking((prev) => ({
+        ga_id: payload.ga_id || "",
+        gtm_id: payload.gtm_id || "",
+      }));
+      setTrackingStatus(null);
     } catch (error) {
       setStatusMessage("Erro ao salvar configurações de Analytics.");
     } finally {
       setIsSavingTracking(false);
+    }
+  };
+
+  const validateTracking = async () => {
+    setTrackingStatus(null);
+    if (tracking.gtm_id) {
+      const gtmId = tracking.gtm_id.trim();
+      if (!/^GTM-[A-Z0-9]+$/i.test(gtmId)) {
+        setTrackingStatus("Formato inválido. Use o GTM-XXXX.");
+        return;
+      }
+      try {
+        const existing = document.getElementById("gtm-validate-script");
+        if (!existing) {
+          const script = document.createElement("script");
+          script.id = "gtm-validate-script";
+          script.async = true;
+          script.src = `https://www.googletagmanager.com/gtm.js?id=${gtmId}`;
+          document.head.appendChild(script);
+        }
+        await new Promise<void>((resolve, reject) => {
+          const timer = window.setTimeout(() => reject(new Error("timeout")), 3000);
+          const poll = window.setInterval(() => {
+            const w = window as any;
+            if (w.dataLayer) {
+              window.clearTimeout(timer);
+              window.clearInterval(poll);
+              resolve();
+            }
+          }, 150);
+        });
+        setTrackingStatus("GTM carregado com sucesso (validação silenciosa).");
+      } catch (error) {
+        setTrackingStatus("Não foi possível validar o GTM. Verifique o ID e a conexão.");
+      }
+      return;
+    }
+    const gaId = tracking.ga_id?.trim();
+    if (!gaId) {
+      setTrackingStatus("Preencha o Measurement ID (G-XXXX).");
+      return;
+    }
+    if (!/^G-[A-Z0-9]+$/i.test(gaId)) {
+      setTrackingStatus("Formato inválido. Use o Measurement ID (G-XXXX).");
+      return;
+    }
+    try {
+      const existing = document.getElementById("ga-validate-script");
+      if (!existing) {
+        const script = document.createElement("script");
+        script.id = "ga-validate-script";
+        script.async = true;
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+        document.head.appendChild(script);
+      }
+      await new Promise<void>((resolve, reject) => {
+        const timer = window.setTimeout(() => reject(new Error("timeout")), 3000);
+        const poll = window.setInterval(() => {
+          const w = window as any;
+          if (w.gtag) {
+            window.clearTimeout(timer);
+            window.clearInterval(poll);
+            resolve();
+          }
+        }, 150);
+      });
+      setTrackingStatus("GA carregado com sucesso (validação silenciosa).");
+    } catch (error) {
+      setTrackingStatus("Não foi possível validar o GA. Verifique o ID e a conexão.");
     }
   };
 
@@ -239,19 +317,30 @@ export const SiteSettingsAdmin = () => {
         <input
           placeholder="Google Analytics Measurement ID (ex: G-XXXX)"
           value={tracking.ga_id || ""}
-          onChange={(e) => setTracking((prev) => ({ ...prev, ga_id: e.target.value }))}
+          onChange={(e) => setTracking((prev) => ({ ...prev, ga_id: e.target.value, gtm_id: "" }))}
+          disabled={Boolean(tracking.gtm_id)}
           style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
         />
         <input
           placeholder="Google Tag Manager ID (ex: GTM-XXXX)"
           value={tracking.gtm_id || ""}
-          onChange={(e) => setTracking((prev) => ({ ...prev, gtm_id: e.target.value }))}
+          onChange={(e) => setTracking((prev) => ({ ...prev, gtm_id: e.target.value, ga_id: "" }))}
+          disabled={Boolean(tracking.ga_id)}
           style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
         />
+        <small style={{ color: "var(--muted)" }}>
+          Ativo: {tracking.gtm_id ? "GTM" : tracking.ga_id ? "GA" : "nenhum"} (apenas um por vez)
+        </small>
 
-        <button className="btn btn-primary" type="button" onClick={saveTracking} disabled={isSavingTracking}>
-          {isSavingTracking ? "Salvando..." : "Salvar Analytics"}
-        </button>
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+          <button className="btn btn-ghost" type="button" onClick={validateTracking}>
+            Validar GA
+          </button>
+          <button className="btn btn-primary" type="button" onClick={saveTracking} disabled={isSavingTracking}>
+            {isSavingTracking ? "Salvando..." : "Salvar Analytics"}
+          </button>
+        </div>
+        {trackingStatus && <small style={{ color: "var(--muted)" }}>{trackingStatus}</small>}
       </div>
 
       {statusMessage && (

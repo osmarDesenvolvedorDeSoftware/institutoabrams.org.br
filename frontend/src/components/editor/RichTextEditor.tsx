@@ -19,6 +19,16 @@ export const RichTextEditor = ({ value, onChange }: Props) => {
     inputRef.current?.click();
   }, []);
 
+  const handleVideoClick = useCallback(() => {
+    const url = window.prompt("Cole a URL do YouTube:");
+    if (!url || !quillRef.current) return;
+    const editor = quillRef.current.getEditor();
+    const range = editor.getSelection(true);
+    const insertAt = range?.index ?? editor.getLength();
+    editor.insertEmbed(insertAt, "video", url, "user");
+    editor.setSelection(insertAt + 1);
+  }, []);
+
   const handleImageSelected = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -53,15 +63,16 @@ export const RichTextEditor = ({ value, onChange }: Props) => {
           [{ color: [] }, { background: [] }],
           [{ align: [] }],
           [{ list: "ordered" }, { list: "bullet" }],
-          ["link", "image"],
+          ["link", "image", "video"],
           ["clean"],
         ],
         handlers: {
           image: handleImageClick,
+          video: handleVideoClick,
         },
       },
     }),
-    [handleImageClick],
+    [handleImageClick, handleVideoClick],
   );
 
   return (
@@ -86,6 +97,7 @@ export const RichTextEditor = ({ value, onChange }: Props) => {
           "bullet",
           "link",
           "image",
+          "video",
         ]}
         placeholder="Digite o conteǧdo..."
       />
