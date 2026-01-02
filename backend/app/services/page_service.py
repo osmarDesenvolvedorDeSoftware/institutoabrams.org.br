@@ -4,6 +4,7 @@ from ..extensions import db
 from ..models import Page
 from ..utils.pagination import paginate
 from ..utils.slugify import slugify
+from . import translation_service
 
 
 def list_pages(page: int = 1, per_page: int = 10, category: str | None = None) -> Dict:
@@ -23,6 +24,7 @@ def get_page_by_slug(slug: str) -> Optional[Page]:
 
 
 def create_page_in_session(payload: dict, commit: bool = True) -> Page:
+    payload = expand_translations(payload)
     if not payload.get("slug"):
         title_pt = payload.get("title_translations", {}).get("pt") or ""
         payload["slug"] = slugify(title_pt or "pagina")
@@ -35,11 +37,37 @@ def create_page_in_session(payload: dict, commit: bool = True) -> Page:
 
 
 def update_page(page: Page, payload: dict) -> Page:
+    payload = expand_translations(payload)
     payload.pop("slug", None)
     for key, value in payload.items():
         setattr(page, key, value)
     db.session.commit()
     return page
+
+
+def expand_translations(
+    payload: dict,
+    source_lang: str = "pt",
+    targets: tuple[str, ...] = ("en", "es", "fr"),
+) -> dict:
+    if not payload:
+        return payload
+
+    for field in ("title_translations", "content_translations"):
+        translations = payload.get(field)
+        if not isinstance(translations, dict):
+            continue
+        source_text = translations.get(source_lang)
+        if not isinstance(source_text, str) or not source_text.strip():
+            continue
+        for target in targets:
+            if translations.get(target):
+                continue
+            translated = translation_service.translate_text(source_text, target, source=source_lang)
+            if translated:
+                translations[target] = translated
+        payload[field] = translations
+    return payload
 
 
 def delete_page(page: Page) -> None:

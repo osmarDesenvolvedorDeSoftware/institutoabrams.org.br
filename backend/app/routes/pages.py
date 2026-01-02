@@ -57,6 +57,7 @@ def update_page(page_id: int):
     if not page:
         return jsonify({"message": "Page not found"}), 404
     payload = request.get_json() or {}
+    payload = page_service.expand_translations(payload)
     errors = page_schema.validate(payload, partial=True)
     if errors:
         return jsonify({"message": "Invalid payload", "errors": errors}), 400
@@ -83,6 +84,7 @@ def patch_page(page_id: int):
         "sections",
     }
     partial_payload = {k: v for k, v in payload.items() if k in allowed_fields}
+    partial_payload = page_service.expand_translations(partial_payload)
     errors = page_schema.validate(partial_payload, partial=True)
     if errors:
         return jsonify({"message": "Invalid payload", "errors": errors}), 400
@@ -111,6 +113,7 @@ def create_page_with_menu():
         page_payload["slug"] = slugify(page_payload["slug"])
 
     try:
+        page_payload = page_service.expand_translations(page_payload)
         page_data = page_schema.load(page_payload)
     except ValidationError as err:
         return jsonify({"message": "Invalid payload", "errors": err.messages}), 400
@@ -174,6 +177,8 @@ def create_pages_bulk_with_menus():
     children_menu_orders = payload.get("children_menu_orders")
 
     try:
+        parent_payload = page_service.expand_translations(parent_payload)
+        children_payloads = [page_service.expand_translations(child) for child in children_payloads]
         parent_data = page_schema.load(parent_payload)
         children_data = [page_schema.load(child) for child in children_payloads]
     except ValidationError as err:

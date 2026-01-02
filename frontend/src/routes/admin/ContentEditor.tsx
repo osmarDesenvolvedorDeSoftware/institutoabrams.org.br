@@ -6,7 +6,7 @@ import { MediaButton } from "../../components/media/MediaButton";
 import { api } from "../../services/api";
 import { ContentWizard } from "./components/ContentWizard";
 
-const languages = ["pt", "en", "es", "fr"] as const;
+const languages = ["pt"] as const;
 const singlePageCategories = ["contato", "institucional"] as const;
 
 type Page = {
@@ -34,7 +34,6 @@ export const ContentEditor = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [pages, setPages] = useState<Page[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [activeLang, setActiveLang] = useState<(typeof languages)[number]>("pt");
   const [heroImageUrl, setHeroImageUrl] = useState<string>("");
   const [galleryUrls, setGalleryUrls] = useState<string[]>([]);
   const [videoUrl, setVideoUrl] = useState<string>("");
@@ -129,37 +128,7 @@ export const ContentEditor = () => {
     fetchPages();
   };
 
-  const langButton = (lang: (typeof languages)[number]) => {
-    const missing = !titles[lang];
-    return (
-      <button
-        key={lang}
-        type="button"
-        onClick={() => setActiveLang(lang)}
-        className="btn btn-ghost"
-        style={{
-          borderColor: activeLang === lang ? "var(--primary)" : "var(--border)",
-          color: activeLang === lang ? "var(--primary-dark)" : "var(--text)",
-          position: "relative",
-        }}
-      >
-        {lang.toUpperCase()}
-        {missing && (
-          <span
-            style={{
-              position: "absolute",
-              top: 4,
-              right: 4,
-              width: 8,
-              height: 8,
-              borderRadius: "50%",
-              background: "var(--primary)",
-            }}
-          />
-        )}
-      </button>
-    );
-  };
+  const activeLang = "pt";
 
   return (
     <>
@@ -206,23 +175,19 @@ export const ContentEditor = () => {
           </select>
           </div>
 
-          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-            {languages.map((lang) => langButton(lang))}
-          </div>
-
           <div style={{ display: "grid", gap: "0.75rem" }}>
             <input
-              placeholder={`Titulo (${activeLang})`}
-              value={titles[activeLang] || ""}
-              onChange={(e) => setTitles({ ...titles, [activeLang]: e.target.value })}
+              placeholder="Titulo"
+              value={titles.pt || ""}
+              onChange={(e) => setTitles({ ...titles, pt: e.target.value })}
               style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
             />
             <div style={{ display: "grid", gap: "0.35rem" }}>
-              <small>Conteudo ({activeLang})</small>
+              <small>Conteudo</small>
               <div className="editor-shell">
                 <RichTextEditor
-                  value={contents[activeLang] || ""}
-                  onChange={(value) => setContents({ ...contents, [activeLang]: value })}
+                  value={contents.pt || ""}
+                  onChange={(value) => setContents({ ...contents, pt: value })}
                 />
               </div>
             </div>
