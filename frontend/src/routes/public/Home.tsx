@@ -5,6 +5,10 @@ import { useTranslation } from "react-i18next";
 import { SeoHelmet } from "../../components/seo/SeoHelmet";
 import { DEFAULT_DESCRIPTION, DEFAULT_TITLE } from "../../utils/seoDefaults";
 import { api } from "../../services/api";
+import { resolveMediaUrl } from "../../utils/media";
+import heroBanner from "../../assets/paidin/hero/banner.png";
+import heroStar from "../../assets/paidin/hero/star.svg";
+import heroLine from "../../assets/paidin/hero/lineone.svg";
 
 type Page = {
   id: number;
@@ -61,6 +65,7 @@ export const Home = () => {
   const heroSection = sections.find((s: any) => s?.type === "hero") || null;
   const heroImage =
     heroSection?.image || heroSection?.image_url || heroSection?.hero_image_url || homeContent?.hero_image_url;
+  const heroImageResolved = heroImage ? resolveMediaUrl(heroImage) : heroBanner;
 
   const visiblePages = useMemo(
     () => pages.filter((p) => p.slug !== "home-content" && p.is_published !== false),
@@ -94,43 +99,23 @@ export const Home = () => {
     if (section.type === "hero") {
       if (!heroTitle && !heroSubtitle && !heroImage) return null;
       return (
-        <section
-          key={`hero-${index}`}
-          className="card"
-          style={{
-            display: "grid",
-            gap: "1.5rem",
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-            alignItems: "center",
-            background: "linear-gradient(135deg, #fff9ec, #fff)",
-            padding: "2rem",
-          }}
-        >
-          <div style={{ display: "grid", gap: "1rem", textAlign: "center" }}>
+        <section key={`hero-${index}`} className="hero-premium">
+          <img src={heroStar} alt="" className="hero-premium__decor hero-premium__decor--star" />
+          <img src={heroLine} alt="" className="hero-premium__decor hero-premium__decor--line" />
+          <div className="hero-premium__content">
             <span className="pill">{t("heroTagline", { defaultValue: "Instituto ABRAMS" })}</span>
-            {heroTitle ? (
-              <h1 className="title-centered" style={{ textAlign: "center", marginBottom: "0.25rem" }}>
-                {heroTitle}
-              </h1>
-            ) : null}
-            {(heroTitle || heroSubtitle) && <div className="divider" />}
-            {heroSubtitle ? (
-              <p style={{ margin: 0, fontSize: "1.08rem", color: "var(--muted)" }}>{heroSubtitle}</p>
-            ) : null}
+            {heroTitle ? <h1>{heroTitle}</h1> : null}
+            {heroSubtitle ? <p>{heroSubtitle}</p> : null}
             {heroCtaLabel && heroCtaLink ? (
-              <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", justifyContent: "center" }}>
+              <div className="hero-premium__actions">
                 <Link className="btn btn-primary" to={heroCtaLink}>
                   {heroCtaLabel}
                 </Link>
               </div>
             ) : null}
-          {heroImage && (
-              <img
-                src={heroImage}
-                alt={heroTitle || "Hero"}
-                style={{ width: "100%", maxHeight: 280, objectFit: "cover", borderRadius: 12 }}
-              />
-            )}
+          </div>
+          <div className="hero-premium__media">
+            <img src={heroImageResolved} alt={heroTitle || "Hero"} />
           </div>
         </section>
       );
