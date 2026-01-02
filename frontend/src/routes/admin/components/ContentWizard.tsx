@@ -112,7 +112,7 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, parentMenuId }: Prop
   useEffect(() => {
     if (!isOpen) return;
     api
-      .get("/page-templates")
+      .get("/pages/page-templates")
       .then(({ data }) => setTemplates(data.templates || []))
       .catch(() => setTemplates([]));
     api

@@ -1,4 +1,5 @@
-import { useMemo, useRef } from "react";
+import type { ChangeEvent } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
@@ -13,11 +14,11 @@ export const RichTextEditor = ({ value, onChange }: Props) => {
   const quillRef = useRef<ReactQuill | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleImageClick = () => {
+  const handleImageClick = useCallback(() => {
     inputRef.current?.click();
-  };
+  }, []);
 
-  const handleImageSelected = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageSelected = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
     try {
@@ -38,7 +39,7 @@ export const RichTextEditor = ({ value, onChange }: Props) => {
     } finally {
       event.target.value = "";
     }
-  };
+  }, []);
 
   const modules = useMemo(
     () => ({
