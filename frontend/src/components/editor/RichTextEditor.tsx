@@ -4,7 +4,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 import { api } from "../../services/api";
-import { getYoutubeEmbedUrl, resolveMediaUrl } from "../../utils/media";
+import { getYoutubeEmbedUrl, normalizeYoutubeEmbeds, resolveMediaUrl } from "../../utils/media";
 
 type Props = {
   value: string;
@@ -14,6 +14,7 @@ type Props = {
 export const RichTextEditor = ({ value, onChange }: Props) => {
   const quillRef = useRef<ReactQuill | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const normalizedValue = useMemo(() => normalizeYoutubeEmbeds(value), [value]);
 
   const handleImageClick = useCallback(() => {
     inputRef.current?.click();
@@ -76,13 +77,20 @@ export const RichTextEditor = ({ value, onChange }: Props) => {
     [handleImageClick, handleVideoClick],
   );
 
+  const handleChange = useCallback(
+    (html: string) => {
+      onChange(normalizeYoutubeEmbeds(html));
+    },
+    [onChange],
+  );
+
   return (
     <>
       <ReactQuill
         ref={quillRef}
         theme="snow"
-        value={value}
-        onChange={onChange}
+        value={normalizedValue}
+        onChange={handleChange}
         modules={modules}
         formats={[
           "header",
