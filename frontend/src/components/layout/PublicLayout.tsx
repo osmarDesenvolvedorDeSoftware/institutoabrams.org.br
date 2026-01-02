@@ -423,21 +423,21 @@ export const PublicLayout = () => {
           <div style={{ display: "grid", gap: "0.5rem", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))" }}>
             <div className="footer-card" style={{ display: "grid", gap: "0.15rem" }}>
               <strong className="footer-title">Instituto ABRAMS</strong>
-              <p style={{ margin: 0, color: "var(--muted)" }} className="footer-text">
+              <div className="footer-text" style={{ color: "var(--muted)" }}>
                 {footerInfo.address ||
                   t("footer.defaultDescription", {
                     defaultValue: "Construindo futuro com oportunidades e proposito.",
                   })}
-              </p>
+              </div>
               {footerInfo.email && (
-                <p style={{ margin: 0, color: "var(--muted)" }} className="footer-text">
+                <div className="footer-text" style={{ color: "var(--muted)" }}>
                   {footerInfo.email}
-                </p>
+                </div>
               )}
               {footerInfo.phone && (
-                <p style={{ margin: 0, color: "var(--muted)" }} className="footer-text">
+                <div className="footer-text" style={{ color: "var(--muted)" }}>
                   {footerInfo.phone}
-                </p>
+                </div>
               )}
             </div>
             <div className="footer-card" style={{ display: "grid", gap: "0.15rem" }}>
