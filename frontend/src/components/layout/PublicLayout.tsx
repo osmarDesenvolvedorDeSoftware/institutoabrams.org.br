@@ -421,7 +421,7 @@ export const PublicLayout = () => {
       <footer className="site-footer">
         <div className="container" style={{ display: "grid", gap: "0.75rem" }}>
           <div style={{ display: "grid", gap: "0.5rem", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))" }}>
-            <div className="footer-card" style={{ display: "grid", gap: "0.15rem" }}>
+            <div className="footer-card" style={{ display: "grid", gap: "0.1rem" }}>
               <strong className="footer-title">Instituto ABRAMS</strong>
               <div className="footer-text" style={{ color: "var(--muted)" }}>
                 {footerInfo.address ||
@@ -440,7 +440,7 @@ export const PublicLayout = () => {
                 </div>
               )}
             </div>
-            <div className="footer-card" style={{ display: "grid", gap: "0.15rem" }}>
+            <div className="footer-card" style={{ display: "grid", gap: "0.1rem" }}>
               <strong className="footer-title">{t("footer.quickLinks", { defaultValue: "Links" })}</strong>
               {footerLinks.length ? (
                 footerLinks.map((link) => (
@@ -452,7 +452,7 @@ export const PublicLayout = () => {
                 <p style={{ margin: 0, color: "var(--muted)" }}>Nenhum link de menu configurado.</p>
               )}
             </div>
-            <div className="footer-card" style={{ display: "grid", gap: "0.15rem" }}>
+            <div className="footer-card" style={{ display: "grid", gap: "0.1rem" }}>
               <strong className="footer-title">{t("footer.social", { defaultValue: "Redes sociais" })}</strong>
               {socialLinks.map((link) =>
                 link.href ? (
