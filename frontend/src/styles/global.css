@@ -515,16 +515,8 @@ p {
   gap: 1.5rem;
 }
 
-.latest-featured {
-  display: grid;
-  gap: 1.25rem;
-}
-
-.latest-carousel {
+.latest-carousel-slot {
   position: relative;
-}
-
-.latest-carousel__slide {
   animation: fadeSlide 240ms ease;
 }
 
@@ -574,11 +566,6 @@ p {
   box-shadow: 0 16px 28px rgba(31, 41, 55, 0.1);
 }
 
-.latest-card.featured {
-  grid-column: span 2;
-  padding: 1.25rem;
-  width: 100%;
-}
 
 .latest-card__media {
   position: relative;
@@ -682,9 +669,6 @@ p {
   .latest-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .latest-card.featured {
-    grid-column: span 2;
-  }
   h1 {
     font-size: 1.9rem;
   }
@@ -733,9 +717,6 @@ p {
 @media (max-width: 640px) {
   .latest-grid {
     grid-template-columns: 1fr;
-  }
-  .latest-card.featured {
-    grid-column: span 1;
   }
 }
 

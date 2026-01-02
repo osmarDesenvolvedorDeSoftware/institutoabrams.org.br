@@ -86,7 +86,7 @@ export const Home = () => {
 
   const featuredCount = Math.min(4, latestPages.length);
   const featuredPages = latestPages.slice(0, featuredCount);
-  const remainingPages = latestPages.slice(featuredCount);
+  const remainingPages = latestPages.slice(1, 8);
 
   useEffect(() => {
     if (featuredPages.length <= 1) return;
@@ -168,17 +168,17 @@ export const Home = () => {
     return clean.map((part) => part[0]).join("").toUpperCase();
   };
 
-  const renderHighlightCard = (item: Page, featured = false) => {
+  const renderHighlightCard = (item: Page, isCarousel = false) => {
     const title = getLocalized(item.title_translations, i18n.language) || item.slug;
     const descRaw = getLocalized(item.content_translations as any, i18n.language) || "";
-    const desc = descRaw ? descRaw.replace(/<[^>]+>/g, "").slice(0, featured ? 200 : 120) : "";
+    const desc = descRaw ? descRaw.replace(/<[^>]+>/g, "").slice(0, isCarousel ? 160 : 120) : "";
     const imageUrl = item.hero_image_url ? resolveMediaUrl(item.hero_image_url) : null;
     const badgeLabel = title;
     return (
       <Link
         key={item.slug}
         to={`/pages/${item.slug}`}
-        className={`latest-card${featured ? " featured" : ""}`}
+        className={`latest-card${isCarousel ? " latest-card--carousel" : ""}`}
       >
         <div
           className={`latest-card__media${imageUrl ? "" : " placeholder"}`}
@@ -215,14 +215,10 @@ export const Home = () => {
               </div>
             </div>
 
-            <div className="latest-featured">
-              {featuredPages.length ? (
-                <div className="latest-carousel">
-                  <div className="latest-carousel__slide" key={featuredPages[featuredIndex]?.id}>
-                    {featuredPages[featuredIndex]
-                      ? renderHighlightCard(featuredPages[featuredIndex], true)
-                      : null}
-                  </div>
+            <div className="latest-grid">
+              {featuredPages[featuredIndex] ? (
+                <div className="latest-carousel-slot">
+                  {renderHighlightCard(featuredPages[featuredIndex], true)}
                   {featuredPages.length > 1 && (
                     <div className="latest-carousel__controls">
                       <button
@@ -230,9 +226,7 @@ export const Home = () => {
                         type="button"
                         aria-label="Anterior"
                         onClick={() =>
-                          setFeaturedIndex((prev) =>
-                            (prev - 1 + featuredPages.length) % featuredPages.length,
-                          )
+                          setFeaturedIndex((prev) => (prev - 1 + featuredPages.length) % featuredPages.length)
                         }
                       >
                         ‹
@@ -249,9 +243,6 @@ export const Home = () => {
                   )}
                 </div>
               ) : null}
-            </div>
-
-            <div className="latest-grid">
               {remainingPages.map((page) => renderHighlightCard(page))}
             </div>
           </div>
