@@ -37,13 +37,13 @@ export const SiteSettingsAdmin = () => {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [trackingStatus, setTrackingStatus] = useState<string | null>(null);
   const formatError = tracking.gtm_id
-    ? /^GTM-[A-Z0-9]+$/i.test(tracking.gtm_id.trim())
+    ? /^GTM-[A-Z0-9]{6,}$/i.test(tracking.gtm_id.trim())
       ? null
-      : "Formato inválido. Use o GTM-XXXX."
+      : "Formato inválido. Use o GTM-XXXXXX."
     : tracking.ga_id
-      ? /^G-[A-Z0-9]+$/i.test(tracking.ga_id.trim())
+      ? /^G-[A-Z0-9]{8,}$/i.test(tracking.ga_id.trim())
         ? null
-        : "Formato inválido. Use o Measurement ID (G-XXXX)."
+        : "Formato inválido. Use o Measurement ID (G-XXXXXXXX)."
       : null;
 
   const fetchSettings = async () => {
@@ -118,8 +118,8 @@ export const SiteSettingsAdmin = () => {
     setTrackingStatus(null);
     if (tracking.gtm_id) {
       const gtmId = tracking.gtm_id.trim();
-      if (!/^GTM-[A-Z0-9]+$/i.test(gtmId)) {
-        setTrackingStatus("Formato inválido. Use o GTM-XXXX.");
+      if (!/^GTM-[A-Z0-9]{6,}$/i.test(gtmId)) {
+        setTrackingStatus("Formato inválido. Use o GTM-XXXXXX.");
         return false;
       }
       try {
@@ -151,11 +151,11 @@ export const SiteSettingsAdmin = () => {
     }
     const gaId = tracking.ga_id?.trim();
     if (!gaId) {
-      setTrackingStatus("Preencha o Measurement ID (G-XXXX).");
+      setTrackingStatus("Preencha o Measurement ID (G-XXXXXXXX).");
       return false;
     }
-    if (!/^G-[A-Z0-9]+$/i.test(gaId)) {
-      setTrackingStatus("Formato inválido. Use o Measurement ID (G-XXXX).");
+    if (!/^G-[A-Z0-9]{8,}$/i.test(gaId)) {
+      setTrackingStatus("Formato inválido. Use o Measurement ID (G-XXXXXXXX).");
       return false;
     }
     try {

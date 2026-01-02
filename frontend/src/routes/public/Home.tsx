@@ -18,6 +18,7 @@ type Page = {
   hero_image_url?: string | null;
   is_published?: boolean;
   created_at?: string;
+  category?: string | null;
 };
 
 type MenuItem = {
@@ -143,14 +144,45 @@ export const Home = () => {
     return null;
   };
 
-  const renderHighlightCard = (item: Page) => {
+  const getCategoryLabel = (value?: string | null) => {
+    if (!value) return null;
+    const map: Record<string, string> = {
+      projeto: "Projeto",
+      institucional: "Institucional",
+      contato: "Contato",
+    };
+    return map[value] || value;
+  };
+
+  const getInitials = (text: string) => {
+    const clean = text.trim().split(/\s+/).slice(0, 2);
+    return clean.map((part) => part[0]).join("").toUpperCase();
+  };
+
+  const renderHighlightCard = (item: Page, featured = false) => {
     const title = getLocalized(item.title_translations, i18n.language) || item.slug;
     const descRaw = getLocalized(item.content_translations as any, i18n.language) || "";
-    const desc = descRaw ? descRaw.replace(/<[^>]+>/g, "").slice(0, 180) : "";
+    const desc = descRaw ? descRaw.replace(/<[^>]+>/g, "").slice(0, featured ? 200 : 120) : "";
+    const imageUrl = item.hero_image_url ? resolveMediaUrl(item.hero_image_url) : null;
+    const categoryLabel = getCategoryLabel(item.category);
     return (
-      <Link key={item.slug} to={`/pages/${item.slug}`} className="card" style={{ display: "grid", gap: "0.55rem" }}>
-        <h3 style={{ margin: 0 }}>{title}</h3>
-        {desc ? <p style={{ margin: 0, color: "var(--muted)" }}>{desc}</p> : null}
+      <Link
+        key={item.slug}
+        to={`/pages/${item.slug}`}
+        className={`latest-card${featured ? " featured" : ""}`}
+      >
+        <div
+          className={`latest-card__media${imageUrl ? "" : " placeholder"}`}
+          style={imageUrl ? { backgroundImage: `url(${imageUrl})` } : undefined}
+        >
+          {!imageUrl && <span>{getInitials(title)}</span>}
+          {categoryLabel && <span className="latest-card__badge">{categoryLabel}</span>}
+        </div>
+        <div className="latest-card__body">
+          <h3>{title}</h3>
+          {desc ? <p>{desc}</p> : null}
+          <span className="latest-card__cta">Ver mais →</span>
+        </div>
       </Link>
     );
   };
@@ -166,14 +198,16 @@ export const Home = () => {
           <div style={{ display: "grid", gap: "1.25rem" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
               <div>
-                <p className="subtitle" style={{ marginBottom: "0.15rem" }}>{t("home.latestTitle", { defaultValue: "Ultimas paginas" })}</p>
+                <p className="subtitle" style={{ marginBottom: "0.15rem" }}>
+                  {t("home.latestTitle", { defaultValue: "Destaques recentes" })}
+                </p>
                 <h2 style={{ margin: 0 }}>{t("home.latestSubtitle", { defaultValue: "Novidades do instituto" })}</h2>
                 <div className="divider" />
               </div>
             </div>
 
-            <div className="grid three">
-              {latestPages.map((page) => renderHighlightCard(page))}
+            <div className="latest-grid">
+              {latestPages.map((page, index) => renderHighlightCard(page, index === 0))}
             </div>
           </div>
         </section>
