@@ -6,7 +6,6 @@ import { api } from "../../services/api";
 
 type Branding = {
   logo_url?: string;
-  logo_dark_url?: string;
   favicon_url?: string;
 };
 
@@ -119,16 +118,6 @@ export const SiteSettingsAdmin = () => {
             value={branding.logo_url}
             onChange={(url) => setBranding((prev) => ({ ...prev, logo_url: url }))}
             label="Upload logo"
-          />
-        </div>
-
-        <div style={{ display: "grid", gap: "0.65rem" }}>
-          <label style={{ fontWeight: 600 }}>Logo escura (opcional)</label>
-          <ImagePlaceholder url={branding.logo_dark_url} label="Nenhuma logo" maxHeight={120} />
-          <MediaButton
-            value={branding.logo_dark_url}
-            onChange={(url) => setBranding((prev) => ({ ...prev, logo_dark_url: url }))}
-            label="Upload logo escura"
           />
         </div>
 

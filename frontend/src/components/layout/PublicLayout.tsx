@@ -58,6 +58,17 @@ export const PublicLayout = () => {
   }, []);
 
   useEffect(() => {
+    const faviconHref = branding.logo_url ? resolveMediaUrl(branding.logo_url) : "/favicon.svg";
+    let favicon = document.querySelector("link[rel='icon']") as HTMLLinkElement | null;
+    if (!favicon) {
+      favicon = document.createElement("link");
+      favicon.rel = "icon";
+      document.head.appendChild(favicon);
+    }
+    favicon.href = faviconHref;
+  }, [branding.logo_url]);
+
+  useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 900);
     handleResize();
     window.addEventListener("resize", handleResize);
