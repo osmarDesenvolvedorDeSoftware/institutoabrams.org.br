@@ -5,6 +5,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { resolveMediaUrl } from "../../utils/media";
 import { api } from "../../services/api";
+import facebookIcon from "../../assets/paidin/footer/facebook.svg";
+import instagramIcon from "../../assets/paidin/footer/instagram.svg";
 
 type MenuItem = {
   id: number;
@@ -153,6 +155,11 @@ export const PublicLayout = () => {
   );
 
   const hasSocialLinks = socialLinks.some((link) => Boolean(link.href));
+
+  const socialIconMap: Record<string, string> = {
+    facebook: facebookIcon,
+    instagram: instagramIcon,
+  };
 
   const renderSocialIcon = (key: string) => {
     const common = { width: 16, height: 16, viewBox: "0 0 24 24", fill: "currentColor", "aria-hidden": true };
@@ -355,7 +362,11 @@ export const PublicLayout = () => {
               {socialLinks.map((link) =>
                 link.href ? (
                   <a key={link.key} href={link.href} target="_blank" rel="noreferrer" className="footer-link">
-                    {renderSocialIcon(link.key)}
+                    {socialIconMap[link.key] ? (
+                      <img src={socialIconMap[link.key]} alt="" className="footer-icon" />
+                    ) : (
+                      renderSocialIcon(link.key)
+                    )}
                     {link.label}
                   </a>
                 ) : null,
