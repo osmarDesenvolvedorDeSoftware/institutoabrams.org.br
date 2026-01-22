@@ -32,6 +32,31 @@ def list_pages():
     )
 
 
+@bp.post("")
+@jwt_required()
+def create_page():
+    payload = request.get_json() or {}
+    if isinstance(payload, dict) and payload.get("slug"):
+        payload["slug"] = slugify(payload["slug"])
+
+    try:
+        payload = page_service.expand_translations(payload)
+        page_data = page_schema.load(payload)
+    except ValidationError as err:
+        return jsonify({"message": "Invalid payload", "errors": err.messages}), 400
+
+    try:
+        page = page_service.create_page_in_session(page_data, commit=True)
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({"message": "Slug already exists"}), 409
+    except ValueError as err:
+        db.session.rollback()
+        return jsonify({"message": str(err)}), 400
+
+    return jsonify(page_schema.dump(page)), 201
+
+
 @bp.get("/<int:page_id>")
 def get_page(page_id: int):
     page = page_service.get_page(page_id)
