@@ -119,15 +119,15 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, onSelectSingle }: Pr
 
   const handleSubmit = async () => {
     if (selectedType !== "parent_children") {
-      setError("Selecione o tipo de cria??o.");
+      setError("Selecione o tipo de criação.");
       return;
     }
     if (!parentPage.title.trim()) {
-      setError("Preencha o t?tulo da p?gina principal.");
+      setError("Preencha o título da página principal.");
       return;
     }
     if (subPages.length === 0 || !subPages.every((sp) => sp.title.trim())) {
-      setError("Adicione ao menos uma subp?gina com t?tulo.");
+      setError("Adicione ao menos uma subpágina com título.");
       return;
     }
 
@@ -201,7 +201,7 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, onSelectSingle }: Pr
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <h2 style={{ margin: 0 }}>Assistente de cria??o</h2>
+          <h2 style={{ margin: 0 }}>Assistente de criação</h2>
           <button className="btn btn-ghost" onClick={onClose}>
             Fechar
           </button>
@@ -209,11 +209,11 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, onSelectSingle }: Pr
 
         {currentStep === 1 && (
           <div style={{ display: "grid", gap: "0.75rem" }}>
-            <p style={{ margin: 0, color: "var(--muted)" }}>Escolha o tipo de p?gina</p>
+            <p style={{ margin: 0, color: "var(--muted)" }}>Escolha o tipo de página</p>
             <div className="grid two">
               {[
-                { key: "simple", label: "P?gina ?nica" },
-                { key: "parent_children", label: "P?gina pai com subp?ginas" },
+                { key: "simple", label: "Página única" },
+                { key: "parent_children", label: "Página pai com subpáginas" },
               ].map((opt) => (
                 <label
                   key={opt.key}
@@ -240,11 +240,11 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, onSelectSingle }: Pr
 
         {currentStep === 2 && selectedType === "parent_children" && (
           <div style={{ display: "grid", gap: "0.75rem" }}>
-            <p style={{ margin: 0, color: "var(--muted)" }}>Dados da(s) p?gina(s)</p>
+            <p style={{ margin: 0, color: "var(--muted)" }}>Dados da(s) página(s)</p>
 
             <div className="card" style={{ display: "grid", gap: "0.5rem" }}>
               <input
-                placeholder="T?tulo (pt) da p?gina"
+                placeholder="Título (pt) da página"
                 value={parentPage.title}
                 onChange={(e) => setParentPage({ ...parentPage, title: e.target.value })}
                 style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
@@ -284,20 +284,20 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, onSelectSingle }: Pr
 
             <div className="card" style={{ display: "grid", gap: "0.75rem" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <h4 style={{ margin: 0 }}>Subp?ginas</h4>
+                <h4 style={{ margin: 0 }}>Subpáginas</h4>
                 <button
                   className="btn btn-primary"
                   type="button"
                   onClick={() => setSubPages([...subPages, { title: "", slug: "", content: "" }])}
                 >
-                  Adicionar subp?gina
+                  Adicionar subpágina
                 </button>
               </div>
               <div className="grid two">
                 {subPages.map((sp, idx) => (
                   <div key={idx} className="card" style={{ display: "grid", gap: "0.5rem" }}>
                     <input
-                      placeholder="T?tulo (pt)"
+                      placeholder="Título (pt)"
                       value={sp.title}
                       onChange={(e) => {
                         const clone = [...subPages];
@@ -317,7 +317,7 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, onSelectSingle }: Pr
                       style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
                     />
                     <textarea
-                      placeholder="Conte?do curto (HTML permitido)"
+                      placeholder="Conteúdo curto (HTML permitido)"
                       value={sp.content || ""}
                       onChange={(e) => {
                         const clone = [...subPages];
@@ -342,7 +342,7 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, onSelectSingle }: Pr
 
         {currentStep === 3 && selectedType === "parent_children" && (
           <div style={{ display: "grid", gap: "0.75rem" }}>
-            <p style={{ margin: 0, color: "var(--muted)" }}>Configura??o de menu</p>
+            <p style={{ margin: 0, color: "var(--muted)" }}>Configuração de menu</p>
             <div className="card" style={{ display: "grid", gap: "0.75rem" }}>
               <label style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
                 <input
@@ -370,11 +370,11 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, onSelectSingle }: Pr
                 style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
               />
               <div className="card" style={{ display: "grid", gap: "0.35rem" }}>
-                <p style={{ margin: 0, fontWeight: 600 }}>Ordem das subp?ginas</p>
-                {subPages.length === 0 && <small style={{ color: "var(--muted)" }}>Nenhuma subp?gina adicionada.</small>}
+                <p style={{ margin: 0, fontWeight: 600 }}>Ordem das subpáginas</p>
+                {subPages.length === 0 && <small style={{ color: "var(--muted)" }}>Nenhuma subpágina adicionada.</small>}
                 {subPages.map((sp, idx) => (
                   <div key={idx} style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "0.5rem" }}>
-                    <span>{sp.title || sp.slug || `Subp?gina ${idx + 1}`}</span>
+                    <span>{sp.title || sp.slug || `Subpágina ${idx + 1}`}</span>
                     <input
                       type="number"
                       placeholder="Ordem"
@@ -402,20 +402,20 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, onSelectSingle }: Pr
           <div style={{ display: "grid", gap: "0.75rem" }}>
             <p style={{ margin: 0, color: "var(--muted)" }}>Resumo</p>
             <div className="card" style={{ display: "grid", gap: "0.35rem" }}>
-              <strong>P?gina principal:</strong> {parentPage.title || "-"}
+              <strong>Página principal:</strong> {parentPage.title || "-"}
               <div>
-                <strong>Subp?ginas:</strong>
+                <strong>Subpáginas:</strong>
                 <ul>
                   {subPages.map((sp, idx) => (
-                    <li key={idx}>{sp.title || sp.slug || `Subp?gina ${idx + 1}`}</li>
+                    <li key={idx}>{sp.title || sp.slug || `Subpágina ${idx + 1}`}</li>
                   ))}
                 </ul>
               </div>
               <div>
                 <strong>Menu pai:</strong>{" "}
                 {menuConfig.createParentMenu
-                  ? `criar (dropdown: ${menuConfig.markParentDropdown ? "sim" : "n?o"})`
-                  : "n?o criar"}
+                  ? `criar (dropdown: ${menuConfig.markParentDropdown ? "sim" : "não"})`
+                  : "não criar"}
               </div>
             </div>
           </div>
@@ -430,7 +430,7 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, onSelectSingle }: Pr
           <div style={{ display: "flex", gap: "0.5rem" }}>
             {currentStep < 4 && (
               <button className="btn btn-primary" onClick={goNext} disabled={!canGoNext}>
-                {currentStep === 1 && selectedType === "simple" ? "Continuar" : "Pr?ximo"}
+                {currentStep === 1 && selectedType === "simple" ? "Continuar" : "Próximo"}
               </button>
             )}
             {currentStep === 4 && (
