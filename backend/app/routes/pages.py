@@ -301,6 +301,9 @@ def _markdown_to_html_basic(markdown_text: str) -> str:
 def load_templates():
     with open(TEMPLATES_PATH, "r", encoding="utf-8") as fp:
         data = json.load(fp)
+
+    if isinstance(data, dict):
+        data = data.get("templates")
     if not isinstance(data, list):
         raise ValueError("Templates file must be a list")
 

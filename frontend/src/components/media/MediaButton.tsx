@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 
 import { api } from "../../services/api";
+import { MediaLibrary } from "./MediaLibrary";
 
 type Props = {
   value?: string;
@@ -10,6 +11,7 @@ type Props = {
 
 export const MediaButton = ({ value, onChange, label = "Upload imagem" }: Props) => {
   const [isUploading, setIsUploading] = useState(false);
+  const [showLibrary, setShowLibrary] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFile = async (file?: File | null) => {
@@ -34,27 +36,21 @@ export const MediaButton = ({ value, onChange, label = "Upload imagem" }: Props)
 
   return (
     <div style={{ display: "grid", gap: "0.35rem" }}>
-      <button
-        type="button"
-        className="btn btn-ghost"
-        style={{
-          width: "100%",
-          justifyContent: "center",
-          borderStyle: "dashed",
-          borderColor: "var(--border)",
-          background: "#fff",
-          opacity: isUploading ? 0.7 : 1,
-        }}
-        onClick={() => inputRef.current?.click()}
-        disabled={isUploading}
-      >
-        {isUploading ? "Enviando..." : label}
-      </button>
-      {value && (
-        <small style={{ color: "var(--muted)" }}>
-          Arquivo atual: {value}
-        </small>
-      )}
+      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+        <button type="button" className="btn btn-secondary" onClick={() => setShowLibrary(true)}>
+          Escolher da Biblioteca
+        </button>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={() => inputRef.current?.click()}
+          disabled={isUploading}
+          style={{ opacity: isUploading ? 0.7 : 1 }}
+        >
+          {isUploading ? "Enviando..." : label}
+        </button>
+      </div>
+      {value && <small style={{ color: "var(--muted)" }}>Arquivo atual: {value}</small>}
       <input
         ref={inputRef}
         type="file"
@@ -62,6 +58,15 @@ export const MediaButton = ({ value, onChange, label = "Upload imagem" }: Props)
         style={{ display: "none" }}
         onChange={(e) => handleFile(e.target.files?.[0])}
       />
+      {showLibrary && (
+        <MediaLibrary
+          onSelect={(url) => {
+            onChange(url);
+            setShowLibrary(false);
+          }}
+          onClose={() => setShowLibrary(false)}
+        />
+      )}
     </div>
   );
 };

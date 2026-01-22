@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 from flask import Blueprint, current_app, jsonify, request, send_from_directory
 from flask_jwt_extended import jwt_required
@@ -31,6 +32,34 @@ def upload_media():
         return jsonify({"message": str(exc)}), 400
 
     return jsonify({"url": url})
+
+
+@media_api_bp.get("/list")
+@jwt_required()
+def list_media():
+    upload_folder = current_app.config.get("UPLOAD_FOLDER", "uploads")
+    media_base_url = current_app.config.get("MEDIA_BASE_URL", "/uploads")
+
+    try:
+        files = []
+        if os.path.exists(upload_folder):
+            for filename in os.listdir(upload_folder):
+                filepath = os.path.join(upload_folder, filename)
+                if os.path.isfile(filepath):
+                    stat = os.stat(filepath)
+                    files.append(
+                        {
+                            "filename": filename,
+                            "url": f"{media_base_url}/{filename}",
+                            "size": stat.st_size,
+                            "uploaded_at": datetime.fromtimestamp(stat.st_mtime).isoformat(),
+                        }
+                    )
+
+        files.sort(key=lambda x: x["uploaded_at"], reverse=True)
+        return jsonify({"files": files}), 200
+    except Exception as exc:
+        return jsonify({"message": f"Erro ao listar midia: {str(exc)}"}), 500
 
 
 @media_bp.get("/uploads/<path:filename>")

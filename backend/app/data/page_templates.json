@@ -1,10 +1,52 @@
-[
-  {
-    "id": "default",
-    "name": "Pagina padrao",
-    "sections": [
-      { "type": "hero" },
-      { "type": "text" }
-    ]
-  }
-]
+{
+  "templates": [
+    {
+      "id": "blank",
+      "name": "Página em Branco",
+      "description": "Comece do zero com uma página vazia",
+      "category": null,
+      "icon": "",
+      "content": ""
+    },
+    {
+      "id": "about",
+      "name": "Página Institucional",
+      "description": "Template para Quem Somos, Missão e Valores",
+      "category": "institucional",
+      "icon": "",
+      "content": "<h2>Nossa História</h2><p>O Instituto ABRAMS foi fundado com o objetivo de...</p><p>Ao longo dos anos, temos trabalhado para...</p><h2>Missão</h2><p>Nossa missão é...</p><h2>Visão</h2><p>Buscamos ser...</p><h2>Valores</h2><ul><li><strong>Transparência:</strong> Atuamos com...</li><li><strong>Compromisso:</strong> Dedicados a...</li><li><strong>Inovação:</strong> Sempre buscando...</li></ul>"
+    },
+    {
+      "id": "project",
+      "name": "Projeto com Galeria",
+      "description": "Template para projetos com fotos e vídeo",
+      "category": "projeto",
+      "icon": "",
+      "content": "<h2>Sobre o Projeto</h2><p>Este projeto teve como objetivo...</p><p><strong>Período:</strong> [Insira o período]</p><p><strong>Local:</strong> [Insira o local]</p><p><strong>Parceiros:</strong> [Insira os parceiros]</p><h2>Objetivos</h2><ul><li>Objetivo 1</li><li>Objetivo 2</li><li>Objetivo 3</li></ul><h2>Resultados Alcançados</h2><p>Como resultado deste projeto, conseguimos...</p><ul><li>Resultado 1</li><li>Resultado 2</li><li>Resultado 3</li></ul><h2>Galeria de Fotos</h2><p><em>Adicione fotos na aba \"Mídia\"</em></p>"
+    },
+    {
+      "id": "contact",
+      "name": "Página de Contato",
+      "description": "Template para página de contato",
+      "category": "contato",
+      "icon": "",
+      "content": "<h2>Entre em Contato</h2><p>Estamos à disposição para esclarecer dúvidas, receber sugestões ou iniciar parcerias.</p><h3>Nossos Canais</h3><p><strong>Email:</strong> contato@institutoabrams.org.br</p><p><strong>Telefone:</strong> (11) 1234-5678</p><p><strong>Endereço:</strong> Rua Exemplo, 123 - São Paulo, SP</p><h3>Horário de Atendimento</h3><p>Segunda a Sexta: 9h às 18h</p><h3>Envie sua Mensagem</h3><p><em>O formulário de contato será exibido automaticamente nesta página.</em></p>"
+    },
+    {
+      "id": "news",
+      "name": "Notícia/Artigo",
+      "description": "Template para notícias e artigos",
+      "category": null,
+      "icon": "",
+      "content": "<p><em>Publicado em [data]</em></p><h2>Introdução</h2><p>Escreva aqui um resumo ou introdução do artigo...</p><h2>Desenvolvimento</h2><p>Desenvolva o conteúdo principal aqui...</p><h3>Subtítulo 1</h3><p>Conteúdo do subtítulo...</p><h3>Subtítulo 2</h3><p>Conteúdo do subtítulo...</p><h2>Conclusão</h2><p>Conclua o artigo aqui...</p>"
+    },
+    {
+      "id": "team",
+      "name": "Nossa Equipe",
+      "description": "Template para apresentar a equipe",
+      "category": "institucional",
+      "icon": "",
+      "content": "<h2>Nossa Equipe</h2><p>Conheça as pessoas que fazem o Instituto ABRAMS acontecer.</p><h3>Diretoria</h3><p><strong>Nome do Diretor</strong><br><em>Cargo</em><br>Breve biografia...</p><h3>Coordenação</h3><p><strong>Nome do Coordenador</strong><br><em>Cargo</em><br>Breve biografia...</p><h3>Equipe Técnica</h3><p><strong>Nome do Membro</strong><br><em>Cargo</em><br>Breve biografia...</p>"
+    }
+  ]
+}
