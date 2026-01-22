@@ -5,6 +5,7 @@ import { FieldWithHelp } from "../../components/forms/FieldWithHelp";
 import { ImagePlaceholder } from "../../components/media/ImagePlaceholder";
 import { MediaButton } from "../../components/media/MediaButton";
 import { TemplateSelector } from "../../components/templates/TemplateSelector";
+import { ContentWizard } from "./components/ContentWizard";
 import { api } from "../../services/api";
 
 const languages = ["pt"] as const;
@@ -62,6 +63,7 @@ export const ContentEditor = () => {
   const [autoSaving, setAutoSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [wizardOpen, setWizardOpen] = useState(false);
 
   const fetchPages = async () => {
     const { data } = await api.get("/pages", { params: { per_page: 100 } });
@@ -242,7 +244,7 @@ export const ContentEditor = () => {
     }
 
     const confirmed = window.confirm(
-      "Voc? tem altera??es não salvas. Deseja realmente sair sem salvar?",
+      "Voc? tem altera?es não salvas. Deseja realmente sair sem salvar?",
     );
     if (confirmed) {
       resetForm();
@@ -448,7 +450,7 @@ export const ContentEditor = () => {
               Gerencie o conteúdo do seu site institucional
             </p>
           </div>
-          <button className="btn btn-primary" onClick={handleNewPage}>
+          <button className="btn btn-primary" onClick={() => setWizardOpen(true)}>
             Nova Página
           </button>
         </div>
@@ -574,6 +576,19 @@ export const ContentEditor = () => {
             ))}
           </tbody>
         </table>
+
+        <ContentWizard
+          isOpen={wizardOpen}
+          onClose={() => setWizardOpen(false)}
+          onSuccess={() => {
+            setWizardOpen(false);
+            fetchPages();
+          }}
+          onSelectSingle={() => {
+            setWizardOpen(false);
+            handleNewPage();
+          }}
+        />
       </div>
     );
   }
