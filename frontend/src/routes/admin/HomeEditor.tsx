@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
+import { RichTextEditor } from "../../components/editor/RichTextEditor";
 import { ImagePlaceholder } from "../../components/media/ImagePlaceholder";
 import { MediaButton } from "../../components/media/MediaButton";
 import { api } from "../../services/api";
@@ -294,12 +295,12 @@ export const HomeEditor = () => {
                     </button>
                   </div>
                 </div>
-                <textarea
-                  placeholder="Conteudo"
-                  value={(section as any).content || ""}
-                  onChange={(e) => updateSection(index, { content: e.target.value })}
-                  style={{ padding: "0.75rem 1rem", borderRadius: 10, border: "1px solid var(--border)", minHeight: 120 }}
-                />
+                <div className="editor-shell">
+                  <RichTextEditor
+                    value={(section as any).content || ""}
+                    onChange={(value) => updateSection(index, { content: value })}
+                  />
+                </div>
               </div>
             );
           }

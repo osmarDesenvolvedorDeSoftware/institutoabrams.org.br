@@ -109,6 +109,7 @@ export const Home = () => {
   const heroSubtitle = heroSection?.subtitle;
   const heroCtaLabel = heroSection?.cta_label;
   const heroCtaLink = heroSection?.cta_link;
+  const hasHtmlTags = (value: string) => /<\/?[a-z][\s\S]*>/i.test(value);
 
   const renderSection = (section: any, index: number) => {
     if (!section || typeof section !== "object") return null;
@@ -138,10 +139,16 @@ export const Home = () => {
     }
     if (section.type === "text") {
       if (!section.content) return null;
+      const rawContent = String(section.content);
+      const contentHtml = hasHtmlTags(rawContent) ? rawContent : rawContent.replace(/\n/g, "<br />");
       return (
         <section key={`text-${index}`} className="card" style={{ padding: "1.5rem", display: "grid", gap: "0.75rem" }}>
           <div className="divider" />
-          <div style={{ color: "var(--muted)", lineHeight: 1.7 }}>{section.content}</div>
+          <div
+            className="rich-content"
+            style={{ color: "var(--muted)", lineHeight: 1.7 }}
+            dangerouslySetInnerHTML={{ __html: contentHtml }}
+          />
         </section>
       );
     }
