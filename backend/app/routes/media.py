@@ -3,6 +3,7 @@ from datetime import datetime
 
 from flask import Blueprint, current_app, jsonify, request, send_from_directory
 from flask_jwt_extended import jwt_required
+from werkzeug.utils import secure_filename
 
 from ..services import media_service
 
@@ -60,6 +61,30 @@ def list_media():
         return jsonify({"files": files}), 200
     except Exception as exc:
         return jsonify({"message": f"Erro ao listar midia: {str(exc)}"}), 500
+
+
+@media_api_bp.delete("/<path:filename>")
+@jwt_required()
+def delete_media(filename):
+    upload_folder = current_app.config.get("UPLOAD_FOLDER", "uploads")
+
+    if not filename:
+        return jsonify({"message": "Nome de arquivo invalido."}), 400
+
+    safe_name = secure_filename(filename)
+    if safe_name != filename:
+        return jsonify({"message": "Nome de arquivo invalido."}), 400
+
+    path = os.path.join(upload_folder, safe_name)
+    if not os.path.exists(path):
+        return jsonify({"message": "Arquivo nao encontrado."}), 404
+
+    try:
+        os.remove(path)
+    except OSError as exc:
+        return jsonify({"message": f"Nao foi possivel remover o arquivo: {exc}"}), 500
+
+    return jsonify({"message": "Arquivo removido com sucesso."}), 200
 
 
 @media_bp.get("/uploads/<path:filename>")

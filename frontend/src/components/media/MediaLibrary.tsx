@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { api } from "../../services/api";
+import { resolveMediaUrl } from "../../utils/media";
 
 type MediaFile = {
   filename: string;
@@ -19,6 +20,7 @@ export const MediaLibrary = ({ onSelect, onClose }: MediaLibraryProps) => {
   const [loading, setLoading] = useState(true);
   const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchFiles = async () => {
@@ -61,6 +63,25 @@ export const MediaLibrary = ({ onSelect, onClose }: MediaLibraryProps) => {
     if (selectedUrl) {
       onSelect(selectedUrl);
       onClose();
+    }
+  };
+
+  const handleDelete = async (file: MediaFile) => {
+    const confirmed = window.confirm(`Remover a imagem "${file.filename}"? Essa acao nao pode ser desfeita.`);
+    if (!confirmed) return;
+
+    try {
+      setDeleting(file.filename);
+      await api.delete(`/media/${encodeURIComponent(file.filename)}`);
+      setFiles((prev) => prev.filter((item) => item.filename !== file.filename));
+      if (selectedUrl === file.url) {
+        setSelectedUrl(null);
+      }
+    } catch (error) {
+      console.error("Erro ao remover midia:", error);
+      alert("Nao foi possivel remover a imagem.");
+    } finally {
+      setDeleting(null);
     }
   };
 
@@ -167,6 +188,7 @@ export const MediaLibrary = ({ onSelect, onClose }: MediaLibraryProps) => {
                   overflow: "hidden",
                   transition: "all 0.2s ease",
                   background: "var(--card-bg, white)",
+                  position: "relative",
                 }}
                 onMouseEnter={(event) => {
                   if (selectedUrl !== file.url) {
@@ -181,8 +203,33 @@ export const MediaLibrary = ({ onSelect, onClose }: MediaLibraryProps) => {
                   }
                 }}
               >
+                <button
+                  className="btn btn-ghost"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    if (!deleting) {
+                      void handleDelete(file);
+                    }
+                  }}
+                  disabled={deleting === file.filename}
+                  style={{
+                    position: "absolute",
+                    top: 6,
+                    right: 6,
+                    padding: "0.2rem 0.45rem",
+                    fontSize: "0.75rem",
+                    background: "rgba(255,255,255,0.9)",
+                    border: "1px solid var(--border)",
+                    opacity: deleting === file.filename ? 0.6 : 1,
+                    cursor: deleting === file.filename ? "not-allowed" : "pointer",
+                    zIndex: 2,
+                  }}
+                  title="Remover imagem"
+                >
+                  {deleting === file.filename ? "Removendo..." : "Remover"}
+                </button>
                 <img
-                  src={file.url}
+                  src={resolveMediaUrl(file.url)}
                   alt={file.filename}
                   style={{
                     width: "100%",
