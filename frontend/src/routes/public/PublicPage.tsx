@@ -160,11 +160,45 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
         url={currentSlug ? `/pages/${currentSlug}` : undefined}
       />
       {page.hero_image_url && (
-        <img
-          src={resolveMediaUrl(page.hero_image_url)}
-          alt={title}
-          style={{ width: "100%", maxHeight: 320, objectFit: "contain", borderRadius: 14, background: "#f8f6ef" }}
-        />
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            minHeight: 320,
+            maxHeight: 460,
+            borderRadius: 14,
+            overflow: "hidden",
+            display: "grid",
+            placeItems: "center",
+            background: "#efe7d4",
+          }}
+        >
+          <div
+            aria-hidden="true"
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundImage: `url(${resolveMediaUrl(page.hero_image_url)})`,
+              backgroundPosition: "center",
+              backgroundSize: "cover",
+              filter: "blur(24px)",
+              transform: "scale(1.08)",
+              opacity: 0.35,
+            }}
+          />
+          <img
+            src={resolveMediaUrl(page.hero_image_url)}
+            alt={title}
+            style={{
+              position: "relative",
+              zIndex: 1,
+              width: "100%",
+              maxHeight: 460,
+              objectFit: "contain",
+              padding: "1rem",
+            }}
+          />
+        </div>
       )}
       <h2>{title}</h2>
       <div className="divider" />
@@ -197,12 +231,45 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
       {page.gallery_urls && page.gallery_urls.length > 0 && (
         <div className="grid two" style={{ gap: "0.75rem" }}>
           {page.gallery_urls.map((url, idx) => (
-            <img
+            <div
               key={idx}
-              src={resolveMediaUrl(url)}
-              alt={t("publicPage.galleryAlt", { defaultValue: `Galeria ${idx + 1}`, index: idx + 1 })}
-              style={{ width: "100%", borderRadius: 12, objectFit: "contain", maxHeight: 220, background: "#f8f6ef" }}
-            />
+              style={{
+                position: "relative",
+                minHeight: 220,
+                borderRadius: 12,
+                overflow: "hidden",
+                display: "grid",
+                placeItems: "center",
+                background: "#f8f6ef",
+              }}
+            >
+              <div
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  backgroundImage: `url(${resolveMediaUrl(url)})`,
+                  backgroundPosition: "center",
+                  backgroundSize: "cover",
+                  filter: "blur(18px)",
+                  transform: "scale(1.06)",
+                  opacity: 0.28,
+                }}
+              />
+              <img
+                src={resolveMediaUrl(url)}
+                alt={t("publicPage.galleryAlt", { defaultValue: `Galeria ${idx + 1}`, index: idx + 1 })}
+                style={{
+                  position: "relative",
+                  zIndex: 1,
+                  width: "100%",
+                  borderRadius: 12,
+                  objectFit: "contain",
+                  maxHeight: 260,
+                  padding: "0.75rem",
+                }}
+              />
+            </div>
           ))}
         </div>
       )}
