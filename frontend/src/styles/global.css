@@ -509,6 +509,7 @@ p {
   min-height: 220px;
   color: #111827;
   padding: 12px;
+  line-height: 1.15;
 }
 
 .editor-shell .ql-editor > * {
@@ -527,6 +528,17 @@ p {
 .editor-shell .ql-editor h4 {
   margin-top: 0;
   margin-bottom: 0;
+  line-height: 1.15;
+}
+
+.editor-shell .ql-editor ul,
+.editor-shell .ql-editor ol {
+  padding-left: 1.1rem;
+}
+
+.editor-shell .ql-editor li {
+  line-height: 1.15;
+  padding-left: 0;
 }
 
 .editor-shell .ql-editor li + li {
