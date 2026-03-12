@@ -2,6 +2,7 @@ from typing import Dict, Optional
 
 from ..extensions import db
 from ..models import Page
+from ..utils.html import normalize_rich_text_html
 from ..utils.pagination import paginate
 from ..utils.slugify import slugify
 from . import translation_service
@@ -24,6 +25,7 @@ def get_page_by_slug(slug: str) -> Optional[Page]:
 
 
 def create_page_in_session(payload: dict, commit: bool = True) -> Page:
+    payload = normalize_page_payload(payload)
     payload = expand_translations(payload)
     if not payload.get("slug"):
         title_pt = payload.get("title_translations", {}).get("pt") or ""
@@ -37,6 +39,7 @@ def create_page_in_session(payload: dict, commit: bool = True) -> Page:
 
 
 def update_page(page: Page, payload: dict) -> Page:
+    payload = normalize_page_payload(payload)
     payload = expand_translations(payload)
     payload.pop("slug", None)
     for key, value in payload.items():
@@ -67,6 +70,19 @@ def expand_translations(
             if translated:
                 translations[target] = translated
         payload[field] = translations
+    return payload
+
+
+def normalize_page_payload(payload: dict) -> dict:
+    if not payload:
+        return payload
+
+    content_translations = payload.get("content_translations")
+    if isinstance(content_translations, dict):
+        payload["content_translations"] = {
+            lang: normalize_rich_text_html(value) for lang, value in content_translations.items()
+        }
+
     return payload
 
 

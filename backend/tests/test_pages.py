@@ -32,3 +32,30 @@ def test_pages_crud_and_slug_immutable(client, auth_header):
     )
     assert resp_update.status_code == 200
     assert resp_update.json["slug"] == slug
+
+
+def test_page_content_is_normalized_on_save(client, auth_header):
+    create_payload = {
+        "title_translations": {"pt": "Pagina com espacos"},
+        "content_translations": {
+            "pt": "<p>Primeiro bloco</p><p><br></p><p>&nbsp;</p><p>Segundo bloco</p>"
+        },
+        "is_published": True,
+    }
+
+    resp = client.post("/api/v1/pages", json=create_payload, headers=auth_header)
+    assert resp.status_code == 201
+    assert resp.json["content_translations"]["pt"] == "<p>Primeiro bloco</p><p>Segundo bloco</p>"
+
+    page_id = resp.json["id"]
+    update_resp = client.put(
+        f"/api/v1/pages/{page_id}",
+        json={
+            "content_translations": {
+                "pt": "<p>Atualizado</p><p><br></p><p><br></p><p>Final</p>"
+            }
+        },
+        headers=auth_header,
+    )
+    assert update_resp.status_code == 200
+    assert update_resp.json["content_translations"]["pt"] == "<p>Atualizado</p><p>Final</p>"
