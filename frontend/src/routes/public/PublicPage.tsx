@@ -163,7 +163,7 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
         <img
           src={resolveMediaUrl(page.hero_image_url)}
           alt={title}
-          style={{ width: "100%", maxHeight: 320, objectFit: "cover", borderRadius: 14 }}
+          style={{ width: "100%", maxHeight: 320, objectFit: "contain", borderRadius: 14, background: "#f8f6ef" }}
         />
       )}
       <h2>{title}</h2>
@@ -201,7 +201,7 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
               key={idx}
               src={resolveMediaUrl(url)}
               alt={t("publicPage.galleryAlt", { defaultValue: `Galeria ${idx + 1}`, index: idx + 1 })}
-              style={{ width: "100%", borderRadius: 12, objectFit: "cover", maxHeight: 220 }}
+              style={{ width: "100%", borderRadius: 12, objectFit: "contain", maxHeight: 220, background: "#f8f6ef" }}
             />
           ))}
         </div>
