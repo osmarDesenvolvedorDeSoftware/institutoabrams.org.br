@@ -27,7 +27,7 @@ export const ImagePlaceholder = ({ url, label = "Nenhuma imagem selecionada", ma
         <img
           src={resolved}
           alt="Pré-visualização"
-          style={{ width: "100%", height: "100%", objectFit: "cover", maxHeight }}
+          style={{ width: "100%", height: "100%", objectFit: "contain", maxHeight, background: "#f8f6ef" }}
         />
       ) : (
         label

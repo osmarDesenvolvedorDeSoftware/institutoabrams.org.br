@@ -599,8 +599,10 @@ p {
 .latest-card__media {
   position: relative;
   border-radius: 12px;
-  background-size: cover;
+  background-size: contain;
   background-position: center;
+  background-repeat: no-repeat;
+  background-color: #f8f6ef;
   aspect-ratio: 16 / 9;
   display: grid;
   align-items: center;
