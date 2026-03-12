@@ -1,9 +1,11 @@
 export const normalizeRichTextHtml = (html: string): string => {
   if (!html) return "";
 
+  const emptyParagraphPattern = /<p>(?:\s|&nbsp;|&#160;|<br\s*\/?>)*<\/p>/gi;
+
   return html
-    .replace(/(\s*<p><br><\/p>\s*){2,}/g, "<p><br></p>")
-    .replace(/^(\s*<p><br><\/p>\s*)+/g, "")
-    .replace(/(\s*<p><br><\/p>\s*)+$/g, "")
+    .replace(new RegExp(`(\\s*${emptyParagraphPattern.source}\\s*){2,}`, "gi"), "<p><br></p>")
+    .replace(new RegExp(`^(\\s*${emptyParagraphPattern.source}\\s*)+`, "gi"), "")
+    .replace(new RegExp(`(\\s*${emptyParagraphPattern.source}\\s*)+$`, "gi"), "")
     .trim();
 };

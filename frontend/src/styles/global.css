@@ -511,6 +511,34 @@ p {
   padding: 12px;
 }
 
+.rich-content > :first-child {
+  margin-top: 0;
+}
+
+.rich-content > :last-child {
+  margin-bottom: 0;
+}
+
+.rich-content p,
+.rich-content ul,
+.rich-content ol,
+.rich-content blockquote {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+.rich-content h1,
+.rich-content h2,
+.rich-content h3,
+.rich-content h4 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.rich-content li + li {
+  margin-top: 0.2rem;
+}
+
 .editor-shell .ql-editor .ql-video,
 .rich-content iframe {
   width: 100%;
