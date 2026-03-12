@@ -64,6 +64,7 @@ export const ContentEditor = () => {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [wizardOpen, setWizardOpen] = useState(false);
+  const visiblePages = pages.filter((page) => page.slug !== "home-content");
 
   const fetchPages = async () => {
     const { data } = await api.get("/pages", { params: { per_page: 100 } });
@@ -501,7 +502,7 @@ export const ContentEditor = () => {
             </tr>
           </thead>
           <tbody>
-            {pages.map((page) => (
+            {visiblePages.map((page) => (
               <tr key={page.id} style={{ borderTop: "1px solid var(--border)" }}>
                 <td style={{ padding: "0.65rem 0" }}>{page.slug}</td>
                 <td style={{ padding: "0.65rem 0" }}>

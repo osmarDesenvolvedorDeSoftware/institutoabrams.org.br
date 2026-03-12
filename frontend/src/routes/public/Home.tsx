@@ -108,8 +108,8 @@ export const Home = () => {
 
   const heroTitle = heroSection?.title;
   const heroSubtitle = heroSection?.subtitle;
-  const heroCtaLabel = heroSection?.cta_label;
-  const heroCtaLink = heroSection?.cta_link;
+  const heroCtaLabel = heroSection?.cta_label || heroSection?.button_text;
+  const heroCtaLink = heroSection?.cta_link || heroSection?.button_url;
   const hasHtmlTags = (value: string) => /<\/?[a-z][\s\S]*>/i.test(value);
 
   const renderSection = (section: any, index: number) => {
