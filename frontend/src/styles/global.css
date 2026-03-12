@@ -511,6 +511,28 @@ p {
   padding: 12px;
 }
 
+.editor-shell .ql-editor > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.editor-shell .ql-editor p,
+.editor-shell .ql-editor ul,
+.editor-shell .ql-editor ol,
+.editor-shell .ql-editor blockquote,
+.editor-shell .ql-editor pre,
+.editor-shell .ql-editor h1,
+.editor-shell .ql-editor h2,
+.editor-shell .ql-editor h3,
+.editor-shell .ql-editor h4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.editor-shell .ql-editor li + li {
+  margin-top: 0;
+}
+
 .rich-content > :first-child {
   margin-top: 0;
 }
