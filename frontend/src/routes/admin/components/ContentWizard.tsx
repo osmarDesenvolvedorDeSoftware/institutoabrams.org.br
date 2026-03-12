@@ -2,6 +2,8 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { RichTextEditor } from "../../../components/editor/RichTextEditor";
+import { ImagePlaceholder } from "../../../components/media/ImagePlaceholder";
+import { MediaButton } from "../../../components/media/MediaButton";
 import { api } from "../../../services/api";
 
 type Template = {
@@ -17,6 +19,7 @@ type PageDraft = {
   content?: string;
   templateId?: string;
   sections?: any[];
+  hero_image_url?: string;
 };
 
 type SubPageDraft = PageDraft & {
@@ -140,6 +143,7 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, onSelectSingle }: Pr
           title_translations: { pt: c.title },
           content_translations: { pt: c.content || "" },
           sections: c.sections,
+          hero_image_url: c.hero_image_url || null,
           slug: c.slug || undefined,
           is_published: true,
         }));
@@ -155,6 +159,7 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, onSelectSingle }: Pr
           title_translations: { pt: parentPage.title },
           content_translations: { pt: parentPage.content || "" },
           sections: parentPage.sections,
+          hero_image_url: parentPage.hero_image_url || null,
           slug: parentPage.slug || undefined,
           is_published: true,
         },
@@ -280,6 +285,20 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, onSelectSingle }: Pr
                   onChange={(v) => setParentPage({ ...parentPage, content: v })}
                 />
               </div>
+              <div style={{ display: "grid", gap: "0.5rem" }}>
+                <ImagePlaceholder url={parentPage.hero_image_url} label="Sem imagem de capa" maxHeight={180} />
+                <MediaButton
+                  value={parentPage.hero_image_url}
+                  onChange={(value) => setParentPage({ ...parentPage, hero_image_url: value })}
+                  label="Selecionar capa"
+                />
+                <input
+                  placeholder="URL da imagem de capa (opcional)"
+                  value={parentPage.hero_image_url || ""}
+                  onChange={(e) => setParentPage({ ...parentPage, hero_image_url: e.target.value })}
+                  style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
+                />
+              </div>
             </div>
 
             <div className="card" style={{ display: "grid", gap: "0.75rem" }}>
@@ -326,6 +345,28 @@ export const ContentWizard = ({ isOpen, onClose, onSuccess, onSelectSingle }: Pr
                       }}
                       style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)", minHeight: 120 }}
                     />
+                    <div style={{ display: "grid", gap: "0.5rem" }}>
+                      <ImagePlaceholder url={sp.hero_image_url} label="Sem imagem de capa" maxHeight={140} />
+                      <MediaButton
+                        value={sp.hero_image_url}
+                        onChange={(value) => {
+                          const clone = [...subPages];
+                          clone[idx] = { ...clone[idx], hero_image_url: value };
+                          setSubPages(clone);
+                        }}
+                        label="Selecionar capa"
+                      />
+                      <input
+                        placeholder="URL da imagem de capa (opcional)"
+                        value={sp.hero_image_url || ""}
+                        onChange={(e) => {
+                          const clone = [...subPages];
+                          clone[idx] = { ...clone[idx], hero_image_url: e.target.value };
+                          setSubPages(clone);
+                        }}
+                        style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
+                      />
+                    </div>
                     <button
                       className="btn btn-ghost"
                       type="button"

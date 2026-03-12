@@ -14,6 +14,7 @@ type PageProject = {
   title_translations: Record<string, string>;
   content_translations: Record<string, string>;
   hero_image_url?: string | null;
+  gallery_urls?: string[] | null;
   video_url?: string | null;
 };
 
@@ -53,6 +54,7 @@ export const Projects = () => {
     ? projects.map((project) => {
         const title = getLocalized(project.title_translations, i18n.language);
         const summary = getLocalized(project.content_translations, i18n.language);
+        const previewImage = project.hero_image_url || project.gallery_urls?.[0] || null;
         return (
           <div
             key={project.id}
@@ -65,9 +67,9 @@ export const Projects = () => {
               borderRadius: 14,
             }}
           >
-            {project.hero_image_url && (
+            {previewImage && (
               <img
-                src={resolveMediaUrl(project.hero_image_url)}
+                src={resolveMediaUrl(previewImage)}
                 alt={title}
                 style={{ width: "100%", height: 160, objectFit: "cover", borderRadius: 12 }}
               />

@@ -16,6 +16,7 @@ type Page = {
   title_translations: Record<string, string>;
   content_translations?: Record<string, any>;
   hero_image_url?: string | null;
+  gallery_urls?: string[] | null;
   is_published?: boolean;
   created_at?: string;
   category?: string | null;
@@ -175,11 +176,14 @@ export const Home = () => {
     return clean.map((part) => part[0]).join("").toUpperCase();
   };
 
+  const getPreviewImage = (item: Page) => item.hero_image_url || item.gallery_urls?.[0] || null;
+
   const renderHighlightCard = (item: Page, isCarousel = false) => {
     const title = getLocalized(item.title_translations, i18n.language) || item.slug;
     const descRaw = getLocalized(item.content_translations as any, i18n.language) || "";
     const desc = descRaw ? descRaw.replace(/<[^>]+>/g, "").slice(0, isCarousel ? 160 : 120) : "";
-    const imageUrl = item.hero_image_url ? resolveMediaUrl(item.hero_image_url) : null;
+    const previewImage = getPreviewImage(item);
+    const imageUrl = previewImage ? resolveMediaUrl(previewImage) : null;
     const badgeLabel = title;
     return (
       <Link
