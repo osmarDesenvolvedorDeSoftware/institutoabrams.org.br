@@ -176,7 +176,12 @@ export const ContentEditor = () => {
     setEditingId(page.id);
     setSlug(page.slug);
     setTitles({ ...languages.reduce((acc, lang) => ({ ...acc, [lang]: "" }), {}), ...page.title_translations });
-    setContents({ ...languages.reduce((acc, lang) => ({ ...acc, [lang]: "" }), {}), ...page.content_translations });
+    setContents({
+      ...languages.reduce((acc, lang) => ({ ...acc, [lang]: "" }), {}),
+      ...Object.fromEntries(
+        Object.entries(page.content_translations || {}).map(([lang, value]) => [lang, normalizeRichTextHtml(value)]),
+      ),
+    });
     setIsPublished(page.is_published);
     setCategory(page.category || undefined);
     setHeroImageUrl(page.hero_image_url || "");
@@ -214,7 +219,7 @@ export const ContentEditor = () => {
       const duplicateSlug = cleanSlugInput(`${baseSlug}-copia-${Date.now()}`);
       setTitles({ pt: `${baseTitle} (Cópia)` });
       setSlug(duplicateSlug);
-      setContents({ pt: data.content_translations?.pt || "" });
+      setContents({ pt: normalizeRichTextHtml(data.content_translations?.pt || "") });
       setCategory(data.category || undefined);
       setIsPublished(false);
       setHeroImageUrl(data.hero_image_url || "");
