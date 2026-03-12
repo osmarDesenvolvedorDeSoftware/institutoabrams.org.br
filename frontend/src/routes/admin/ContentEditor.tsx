@@ -5,6 +5,7 @@ import { FieldWithHelp } from "../../components/forms/FieldWithHelp";
 import { ImagePlaceholder } from "../../components/media/ImagePlaceholder";
 import { MediaButton } from "../../components/media/MediaButton";
 import { TemplateSelector } from "../../components/templates/TemplateSelector";
+import { normalizeRichTextHtml } from "../../utils/html";
 import { ContentWizard } from "./components/ContentWizard";
 import { api } from "../../services/api";
 
@@ -334,7 +335,9 @@ export const ContentEditor = () => {
     const draftSlug = slug.trim() || `rascunho-${Date.now()}`;
     const payload = {
       title_translations: titles,
-      content_translations: contents,
+      content_translations: Object.fromEntries(
+        Object.entries(contents).map(([lang, value]) => [lang, normalizeRichTextHtml(value)]),
+      ),
       slug: draftSlug,
       is_published: false,
       category: category || null,
@@ -393,7 +396,9 @@ export const ContentEditor = () => {
 
     const payload = {
       title_translations: titles,
-      content_translations: contents,
+      content_translations: Object.fromEntries(
+        Object.entries(contents).map(([lang, value]) => [lang, normalizeRichTextHtml(value)]),
+      ),
       slug: slug.trim(),
       is_published: isPublished,
       category: category || null,

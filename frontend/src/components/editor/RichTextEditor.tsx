@@ -4,6 +4,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 import { api } from "../../services/api";
+import { normalizeRichTextHtml } from "../../utils/html";
 import { getYoutubeEmbedUrl, normalizeYoutubeEmbeds, resolveMediaUrl } from "../../utils/media";
 
 type Props = {
@@ -14,7 +15,10 @@ type Props = {
 export const RichTextEditor = ({ value, onChange }: Props) => {
   const quillRef = useRef<ReactQuill | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
-  const normalizedValue = useMemo(() => normalizeYoutubeEmbeds(value), [value]);
+  const normalizedValue = useMemo(
+    () => normalizeRichTextHtml(normalizeYoutubeEmbeds(value)),
+    [value],
+  );
 
   const handleImageClick = useCallback(() => {
     inputRef.current?.click();
@@ -79,7 +83,7 @@ export const RichTextEditor = ({ value, onChange }: Props) => {
 
   const handleChange = useCallback(
     (html: string) => {
-      onChange(normalizeYoutubeEmbeds(html));
+      onChange(normalizeRichTextHtml(normalizeYoutubeEmbeds(html)));
     },
     [onChange],
   );
