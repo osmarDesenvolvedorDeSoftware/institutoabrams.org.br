@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { SeoHelmet } from "../../components/seo/SeoHelmet";
 import { DEFAULT_DESCRIPTION, DEFAULT_TITLE } from "../../utils/seoDefaults";
+import { RichContent } from "../../components/media/RichContent";
 import { api } from "../../services/api";
 import { resolveMediaUrl } from "../../utils/media";
 import heroBanner from "../../assets/paidin/hero/banner.png";
@@ -145,11 +146,7 @@ export const Home = () => {
       return (
         <section key={`text-${index}`} className="card" style={{ padding: "1.5rem", display: "grid", gap: "0.75rem" }}>
           <div className="divider" />
-          <div
-            className="rich-content"
-            style={{ color: "var(--muted)", lineHeight: 1.7 }}
-            dangerouslySetInnerHTML={{ __html: contentHtml }}
-          />
+          <RichContent className="rich-content" style={{ color: "var(--muted)", lineHeight: 1.7 }} html={contentHtml} />
         </section>
       );
     }

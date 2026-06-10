@@ -4,7 +4,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 import { api } from "../../services/api";
-import { getYoutubeEmbedUrl, normalizeYoutubeEmbeds, resolveMediaUrl } from "../../utils/media";
+import { getRichTextVideoEmbedHtml, getVideoEmbedConfig, normalizeYoutubeEmbeds, resolveMediaUrl } from "../../utils/media";
 
 type Props = {
   value: string;
@@ -21,13 +21,32 @@ export const RichTextEditor = ({ value, onChange }: Props) => {
   }, []);
 
   const handleVideoClick = useCallback(() => {
-    const url = window.prompt("Cole a URL do YouTube:");
+    const url = window.prompt("Cole a URL publica do video (YouTube, Vimeo, Instagram, TikTok ou Facebook):");
     if (!url || !quillRef.current) return;
-    const embedUrl = getYoutubeEmbedUrl(url) || url;
+
     const editor = quillRef.current.getEditor();
     const range = editor.getSelection(true);
     const insertAt = range?.index ?? editor.getLength();
-    editor.insertEmbed(insertAt, "video", embedUrl, "user");
+
+    const config = getVideoEmbedConfig(url);
+    if (!config) {
+      window.alert("URL nao suportada. Use um link publico de YouTube, Vimeo, Instagram, TikTok ou Facebook.");
+      return;
+    }
+
+    if (config.embedKind === "iframe" && config.embedUrl) {
+      editor.insertEmbed(insertAt, "video", config.embedUrl, "user");
+      editor.setSelection(insertAt + 1);
+      return;
+    }
+
+    const embedHtml = getRichTextVideoEmbedHtml(url);
+    if (!embedHtml) {
+      window.alert("Nao foi possivel gerar o embed para esta URL.");
+      return;
+    }
+
+    editor.clipboard.dangerouslyPasteHTML(insertAt, embedHtml, "user");
     editor.setSelection(insertAt + 1);
   }, []);
 

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { api } from "../../services/api";
 import { getLocalized } from "../../utils/content";
 import { SeoHelmet } from "../../components/seo/SeoHelmet";
+import { RichContent } from "../../components/media/RichContent";
 import { DEFAULT_DESCRIPTION } from "../../utils/seoDefaults";
 import { resolveMediaUrl } from "../../utils/media";
 
@@ -55,16 +56,15 @@ export const QuemSomos = () => {
       )}
       <h2 style={{ margin: 0, marginBottom: "0.35rem" }}>{title}</h2>
       <div className="divider" />
-      <div
+      <RichContent
         className="card"
         style={{ background: "#fff", lineHeight: 1.7, padding: "1.35rem", borderRadius: 14 }}
-        dangerouslySetInnerHTML={{
-          __html:
-            content ||
-            t("projectPlaceholder", {
-              defaultValue: "Conteúdo institucional do Instituto ABRAMS. Edite esta página no CMS para atualizar.",
-            }),
-        }}
+        html={
+          content ||
+          t("projectPlaceholder", {
+            defaultValue: "Conteúdo institucional do Instituto ABRAMS. Edite esta página no CMS para atualizar.",
+          })
+        }
       />
     </div>
   );

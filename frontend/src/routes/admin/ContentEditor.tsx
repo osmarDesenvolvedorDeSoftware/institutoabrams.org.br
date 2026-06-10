@@ -6,6 +6,7 @@ import { ImagePlaceholder } from "../../components/media/ImagePlaceholder";
 import { MediaButton } from "../../components/media/MediaButton";
 import { TemplateSelector } from "../../components/templates/TemplateSelector";
 import { normalizeRichTextHtml } from "../../utils/html";
+import { getVideoEmbedConfig } from "../../utils/media";
 import { ContentWizard } from "./components/ContentWizard";
 import { api } from "../../services/api";
 
@@ -110,6 +111,7 @@ export const ContentEditor = () => {
       : "error";
   const messageIcon = messageVariant === "success" ? "Sucesso" : messageVariant === "warning" ? "Aviso" : "Erro";
   const messageText = message ? stripMessagePrefix(message) : "";
+  const videoEmbedConfig = getVideoEmbedConfig(videoUrl);
 
   const resetForm = () => {
     if (autoSaveTimerRef.current) {
@@ -312,6 +314,26 @@ export const ContentEditor = () => {
     return true;
   };
 
+  const validateVideoUrl = (value: string): boolean => {
+    if (category !== "projeto") {
+      clearError("video");
+      return true;
+    }
+
+    if (!value.trim()) {
+      clearError("video");
+      return true;
+    }
+
+    if (!getVideoEmbedConfig(value)) {
+      setErrors((prev) => ({ ...prev, video: "Use um link publico de YouTube, Vimeo, Instagram, TikTok ou Facebook." }));
+      return false;
+    }
+
+    clearError("video");
+    return true;
+  };
+
   const cleanSlugInput = (value: string) =>
     value
       .toLowerCase()
@@ -332,6 +354,10 @@ export const ContentEditor = () => {
 
   const autoSave = async () => {
     if (mode === "list" || !hasUnsavedChanges || !titles.pt?.trim()) {
+      return;
+    }
+
+    if (!validateVideoUrl(videoUrl)) {
       return;
     }
 
@@ -392,8 +418,9 @@ export const ContentEditor = () => {
     const isTitleValid = validateTitle(titles.pt || "");
     const isSlugValid = validateSlug(slug);
     const isContentValid = validateContent(contents.pt || "");
+    const isVideoValid = validateVideoUrl(videoUrl);
 
-    if (!isTitleValid || !isSlugValid || !isContentValid) {
+    if (!isTitleValid || !isSlugValid || !isContentValid || !isVideoValid) {
       setMessage(`${MESSAGE_PREFIX_ERROR} Por favor, corrija os erros antes de salvar.`);
       setActiveTab("content");
       return;
@@ -948,18 +975,40 @@ export const ContentEditor = () => {
 
           {category === "projeto" && (
             <FieldWithHelp
-              label="Vídeo do Projeto (YouTube)"
-              helpText="Cole o link completo do vídeo no YouTube. Exemplo: https://www.youtube.com/watch?v=abc123. Apenas vídeos do YouTube são suportados."
+              label="Vídeo do Projeto"
+              helpText="Cole o link público do vídeo em YouTube, Vimeo, Instagram, TikTok ou Facebook. O sistema detecta a plataforma automaticamente."
+              error={errors.video}
             >
-              <input
-                placeholder="https://www.youtube.com/watch?v=..."
-                value={videoUrl}
-                onChange={(e) => {
-                  setVideoUrl(e.target.value);
-                  setHasUnsavedChanges(true);
-                }}
-                style={{ padding: "0.85rem 1rem", borderRadius: 10, border: "1px solid var(--border)" }}
-              />
+              <div style={{ display: "grid", gap: "0.5rem" }}>
+                <input
+                  placeholder="https://www.youtube.com/watch?v=..."
+                  value={videoUrl}
+                  onChange={(e) => {
+                    setVideoUrl(e.target.value);
+                    if (!e.target.value.trim() || getVideoEmbedConfig(e.target.value)) {
+                      clearError("video");
+                    }
+                    setHasUnsavedChanges(true);
+                  }}
+                  style={{
+                    padding: "0.85rem 1rem",
+                    borderRadius: 10,
+                    border: `1px solid ${errors.video ? "var(--error, red)" : "var(--border)"}`,
+                  }}
+                />
+                {videoUrl.trim() ? (
+                  <div
+                    style={{
+                      fontSize: "0.92rem",
+                      color: videoEmbedConfig ? "var(--success, #15803d)" : "var(--danger, #b91c1c)",
+                    }}
+                  >
+                    {videoEmbedConfig
+                      ? `Plataforma detectada: ${videoEmbedConfig.platform}.`
+                      : "URL nao suportada. Use um link publico de YouTube, Vimeo, Instagram, TikTok ou Facebook."}
+                  </div>
+                ) : null}
+              </div>
             </FieldWithHelp>
           )}
 

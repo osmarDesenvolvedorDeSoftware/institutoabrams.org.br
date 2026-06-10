@@ -4,8 +4,10 @@ import { useTranslation } from "react-i18next";
 
 import { api } from "../../services/api";
 import { getLocalized } from "../../utils/content";
-import { getYoutubeEmbedUrl, resolveMediaUrl } from "../../utils/media";
+import { resolveMediaUrl } from "../../utils/media";
 import { SeoHelmet } from "../../components/seo/SeoHelmet";
+import { VideoEmbed } from "../../components/media/VideoEmbed";
+import { RichContent } from "../../components/media/RichContent";
 import { DEFAULT_DESCRIPTION, DEFAULT_TITLE } from "../../utils/seoDefaults";
 
 type Page = {
@@ -95,7 +97,6 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
 
   const title = getLocalized(page.title_translations, i18n.language);
   const content = getLocalized(page.content_translations, i18n.language);
-  const embedUrl = getYoutubeEmbedUrl(page.video_url);
   const description = content ? content.replace(/<[^>]+>/g, "").slice(0, 180) : DEFAULT_DESCRIPTION;
   const shareText = encodeURIComponent(title || DEFAULT_TITLE);
   const shareLink = encodeURIComponent(shareUrl);
@@ -202,32 +203,8 @@ export const PublicPage = ({ slugOverride }: Props = {}) => {
       )}
       <h2>{title}</h2>
       <div className="divider" />
-      <div
-        className="rich-content"
-        style={{ color: "var(--muted)", lineHeight: 1.7 }}
-        dangerouslySetInnerHTML={{ __html: content || "" }}
-      />
-      {embedUrl && (
-        <div style={{ marginTop: "0.5rem" }}>
-          <div
-            style={{
-              position: "relative",
-              paddingBottom: "56.25%",
-              height: 0,
-              overflow: "hidden",
-              borderRadius: 14,
-            }}
-          >
-            <iframe
-              src={embedUrl}
-              title={t("publicPage.videoTitle", { defaultValue: "Vídeo do projeto" })}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
-            />
-          </div>
-        </div>
-      )}
+      <RichContent className="rich-content" style={{ color: "var(--muted)", lineHeight: 1.7 }} html={content || ""} />
+      <VideoEmbed url={page.video_url} title={t("publicPage.videoTitle", { defaultValue: "Vídeo do projeto" })} />
       {page.gallery_urls && page.gallery_urls.length > 0 && (
         <div className="grid two" style={{ gap: "0.75rem" }}>
           {page.gallery_urls.map((url, idx) => (

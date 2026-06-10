@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { api } from "../../services/api";
 import { getLocalized } from "../../utils/content";
 import { SeoHelmet } from "../../components/seo/SeoHelmet";
+import { RichContent } from "../../components/media/RichContent";
 import { DEFAULT_DESCRIPTION } from "../../utils/seoDefaults";
 
 type Page = {
@@ -66,7 +67,7 @@ export const Contact = () => {
         >
           <strong>{t("contactChannels", { defaultValue: "Canais" })}</strong>
           {content ? (
-            <div style={{ color: "var(--muted)" }} dangerouslySetInnerHTML={{ __html: content }} />
+            <RichContent style={{ color: "var(--muted)" }} html={content} />
           ) : (
             <>
               <span>{t("contactEmailLabel", { defaultValue: "E-mail" })}: contato@institutoabrams.org.br</span>
